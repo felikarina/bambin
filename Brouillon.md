@@ -61,3 +61,9 @@ Droit de rectification et d'effacement
 Durée conservation des données sur les enfants : https://www.cnil.fr/fr/cnil-direct/question/combien-de-temps-une-creche-peut-elle-conserver-des-informations-sur-les  
 
 # 5. Planning
+
+# 6. Ressources nécessaires
+
+IDE : Visual Studio Code
+Gestion de version : Git
+Hébergement : à définir
