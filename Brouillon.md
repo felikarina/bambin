@@ -12,13 +12,13 @@ L’application vise à améliorer la communication entre les crèches et les pa
 - Personnel de crèche
 
 ### Besoins
-- Administrateur (directeur de crèche):
+- Administrateur (directeur de crèche) :
     - gestion des paramètres globaux et configuration des droits d'accès
-- Personnel de crèche:
+- Personnel de crèche :
     - Publication de contenus multimédias
     - Rédaction des journaux d'activités
     - Communication avec les parents
-- Parents:
+- Parents :
     - Consultation des contenus partagés
     - Réception des notifications et messages
 
@@ -43,19 +43,21 @@ L’application vise à améliorer la communication entre les crèches et les pa
 
 # 3. Technologies et architecture technique
 
-Front-end : Vue.js
-Back-end : Node.js
-Orm : à définir
-Base de données : à définir
-Stockage des médias : à définir
-Authentification : à définir
+Front-end : Vue.js  
+Back-end : Node.js  
+Orm : à définir  
+Base de données : à définir  
+Stockage des médias : à définir  
+Authentification : à définir  
 Gestion des permissions et rôles utilisateurs (Parents, Personnel de crèche, Admin)
 ![alt text](image.png)
 
-4. Sécurité et réglementation
+# 4. Sécurité et réglementation
 
-Conformité RGPD
-Accès aux médias restreint aux parents concernés
-Consentement explicite pour l’utilisation des photos
-Droit de rectification et d'effacement
-Durée conservation des données sur les enfants : https://www.cnil.fr/fr/cnil-direct/question/combien-de-temps-une-creche-peut-elle-conserver-des-informations-sur-les
+Conformité RGPD  
+Accès aux médias restreint aux parents concernés  
+Consentement explicite pour l’utilisation des photos  
+Droit de rectification et d'effacement  
+Durée conservation des données sur les enfants : https://www.cnil.fr/fr/cnil-direct/question/combien-de-temps-une-creche-peut-elle-conserver-des-informations-sur-les  
+
+# 5. Planning
