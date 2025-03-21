@@ -50,7 +50,8 @@ Base de données : à définir
 Stockage des médias : à définir  
 Authentification : à définir  
 Gestion des permissions et rôles utilisateurs (Parents, Personnel de crèche, Admin)
-![alt text](image.png)
+![schéma](https://github.com/user-attachments/assets/30e2a2d1-f78c-4a2e-b3a7-aa18965ce519)
+
 
 # 4. Sécurité et réglementation
 
