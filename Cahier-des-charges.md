@@ -10,6 +10,7 @@ L’application vise à améliorer la communication entre les crèches et les pa
 
 - Parents d’enfants inscrits en crèche
 - Personnel de crèche
+- Directeur de crèche
 
 ### Besoins
 - Administrateur (directeur de crèche) :
@@ -25,17 +26,17 @@ L’application vise à améliorer la communication entre les crèches et les pa
 
 # 2. Fonctionnalités
 
-### Partie gestion de comptes
+### Partie gestion de comptes (géré par le directeur de crèche)
 - création compte utilisateur
 - gestion compte utilisateur
 
-### Partie partage multimédia - galerie photo
+### Partie partage multimédia - galerie photo (consultée par les parents, remplie par le personnel de crèche)
 - Upload sécurisé de photos et sons
 - Tagging des enfants sur les photos
 - Validation des autorisations parentales
 - Gestion des droits à l'image
 
-### Partie journal d’activités
+### Partie journal d’activités (consultée par les parents, remplie par le personnel de crèche)
 - Création d’un journal quotidien par le personnel encadrant
 - Ajout de descriptions des activités (jeux, apprentissages)
 
