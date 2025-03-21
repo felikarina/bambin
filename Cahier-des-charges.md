@@ -25,7 +25,11 @@ L’application vise à améliorer la communication entre les crèches et les pa
 
 # 2. Fonctionnalités
 
-### Partie partage multimédia
+### Partie gestion de comptes
+- création compte utilisateur
+- gestion compte utilisateur
+
+### Partie partage multimédia - galerie photo
 - Upload sécurisé de photos et sons
 - Tagging des enfants sur les photos
 - Validation des autorisations parentales
