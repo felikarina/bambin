@@ -55,16 +55,25 @@ Gestion des permissions et rôles utilisateurs (Parents, Personnel de crèche, A
 
 # 4. Sécurité et réglementation
 
-Conformité RGPD  
-Accès aux médias restreint aux parents concernés  
-Consentement explicite pour l’utilisation des photos  
-Droit de rectification et d'effacement  
-Durée conservation des données sur les enfants : https://www.cnil.fr/fr/cnil-direct/question/combien-de-temps-une-creche-peut-elle-conserver-des-informations-sur-les  
+- Protection des données :
+    - Conformité RGPD  
+    - Accès aux médias restreint aux parents concernés  
+    - Consentement explicite pour l’utilisation des photos  
+    - Droit de rectification et d'effacement  
+    - Durée conservation des données sur les enfants : https://www.cnil.fr/fr/cnil-direct/question/combien-de-temps-une-creche-peut-elle-conserver-des-informations-sur-les  
+- Authentification :
+    - Système de connexion sécurisée avec gestion des mots de passe
+    - Gestion des rôles utilisateurs
 
 # 5. Planning
 
+Phase 1: Conception et Design   
+Phase 2: Développement   
+Phase 3: Tests et Validation    
+Phase 4: Déploiement   
+
 # 6. Ressources nécessaires
 
-IDE : Visual Studio Code
-Gestion de version : Git
-Hébergement : à définir
+IDE : Visual Studio Code   
+Gestion de version : Git   
+Hébergement : à définir   
