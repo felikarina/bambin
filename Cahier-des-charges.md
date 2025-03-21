@@ -50,8 +50,8 @@ L’application vise à améliorer la communication entre les crèches et les pa
 
 Front-end : Vue.js  
 Back-end : Node.js  
-Orm : à définir  
-Base de données : à définir  
+Orm : TypeORM  
+Base de données : MySQL pour les comptes utilisateurs et MongoDB pour le contenu et le multimédia
 Stockage des médias : à définir  
 Authentification : à définir  
 Gestion des permissions et rôles utilisateurs (Parents, Personnel de crèche, Admin)
