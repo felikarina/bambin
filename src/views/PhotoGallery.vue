@@ -5,8 +5,8 @@ import Gallery from '@/components/Gallery.vue'
 
 <template>
   <main class="">
-    <navigationSidebar />
-    <gallery />
+    <NavigationSidebar />
+    <Gallery />
   </main>
 </template>
 
