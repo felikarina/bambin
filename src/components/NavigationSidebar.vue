@@ -8,7 +8,7 @@
           to="/galerie-photo"
           class="button is-fullwidth is-outlined my-2 has-background-white has-background-white"
         >
-          Galerie photo
+          Galerie photoo
         </router-link>
       </li>
       <li>
