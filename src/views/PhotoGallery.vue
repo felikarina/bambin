@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import NavigationSidebar from './../components/NavigationSidebar.vue'
+import navigationSidebar from '@/components/navigationSidebar.vue'
+import gallery from '@/components/gallery.vue'
 </script>
 
 <template>
-  <NavigationSidebar />
+  <main class="">
+    <navigationSidebar />
+    <gallery />
+  </main>
 </template>
 
 <style scoped></style>
