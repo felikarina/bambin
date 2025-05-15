@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import navigationSidebar from '@/components/navigationSidebar.vue'
-import gallery from '@/components/gallery.vue'
+import NavigationSidebar from '@/components/NavigationSidebar.vue'
+import Gallery from '@/components/Gallery.vue'
 </script>
 
 <template>
