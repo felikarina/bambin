@@ -54,7 +54,7 @@ const route = useRoute()
 
 <style scoped>
 .card {
-  width: 60%;
+  width: 50%;
   box-shadow: 0px 0px 62px rgba(0, 0, 0, 0.6);
 }
 

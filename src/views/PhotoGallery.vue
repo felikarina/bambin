@@ -4,9 +4,9 @@ import gallery from './../components/gallery.vue'
 </script>
 
 <template>
-  <main class="">
+  <main class="grid">
     <NavigationSidebar />
-    <gallery />
+    <gallery class="mt-6" />
   </main>
 </template>
 
