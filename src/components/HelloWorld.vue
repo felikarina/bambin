@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 defineProps<{
   msg: string
@@ -16,13 +17,15 @@ const tabs = ref<Tab[]>([
   { name: "Journal d'activité", icon: 'fas fa-pen-to-square', route: '/journal-activite' },
   { name: 'connexion', icon: 'fas fa-film', route: '/connexion' },
 ])
+
+const route = useRoute()
 </script>
 
 <template>
   <div class="home is-flex is-flex-direction-column is-align-items-center mt-6">
     <div class="tabs is-toggle is-fullwidth">
       <ul>
-        <li v-for="tab in tabs" :key="tab.name" :class="{ 'is-active': $route.path === tab.route }">
+        <li v-for="tab in tabs" :key="tab.name" :class="{ 'is-active': route.path === tab.route }">
           <router-link :to="tab.route">
             <span class="icon is-small">
               <i :class="tab.icon" aria-hidden="true"></i>
