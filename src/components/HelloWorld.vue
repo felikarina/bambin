@@ -15,7 +15,7 @@ interface Tab {
 const tabs = ref<Tab[]>([
   { name: 'Galerie photo', icon: 'fas fa-image', route: '/galerie-photo' },
   { name: "Journal d'activité", icon: 'fas fa-pen-to-square', route: '/journal-activite' },
-  { name: 'connexion', icon: 'fas fa-film', route: '/connexion' },
+  { name: 'connexion', icon: 'fas fa-power-off', route: '/connexion' },
 ])
 
 const route = useRoute()
@@ -37,6 +37,7 @@ const route = useRoute()
     </div>
     <div class="card my-4">
       <div class="card-image">
+        <p class="card-header-title">chat poulpe</p>
         <figure class="image is-16by9">
           <img src="@/assets/chatpoulpe.jpg" alt="Placeholder image" />
         </figure>
