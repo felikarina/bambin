@@ -23,7 +23,6 @@ import headerGallery from './../components/headerGallery.vue'
 <style scoped>
 .left-part {
   height: 102vh;
-  overflow: auto;
 }
 .right-part {
   height: 102vh;
