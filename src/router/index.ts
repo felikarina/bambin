@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import PhotoGallery from '../views/PhotoGallery.vue'
 import HelloWorld from '@/components/HelloWorld.vue'
+import activityBook from '@/views/activityBook.vue'
 
 const routes = [
   {
@@ -12,6 +13,11 @@ const routes = [
     path: '/galerie-photo',
     name: 'PhotoGallery',
     component: PhotoGallery,
+  },
+  {
+    path: '/journal-activite',
+    name: 'activityBook',
+    component: activityBook,
   },
 ]
 

@@ -22,7 +22,7 @@
         </li>
         <li>
           <router-link
-            to="/galerie-photo"
+            to="/journal-activite"
             class="button is-fullwidth is-outlined is-link my-4 p-3 has-background-white is-justify-content-space-between"
           >
             <span class="icon">
@@ -68,7 +68,7 @@
         </li>
         <li class="">
           <router-link
-            to="/galerie-photo"
+            to="/"
             class="button is-fullwidth is-outlined is-link mt-4 p-3 has-background-white is-justify-content-space-between"
           >
             <span class="icon">
