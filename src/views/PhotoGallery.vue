@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import NavigationSidebar from './../components/NavigationSidebar.vue'
-import Gallery from './../components/Gallery.vue'
+import gallery from './../components/gallery.vue'
 </script>
 
 <template>
   <main class="">
     <NavigationSidebar />
-    <Gallery />
+    <gallery />
   </main>
 </template>
 
