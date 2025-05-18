@@ -3,7 +3,7 @@ name: Vercel Deploy
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   trigger-vercel-deploy:
