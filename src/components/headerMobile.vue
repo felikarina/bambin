@@ -4,14 +4,14 @@
     <button class="button is-large">photo</button>
     <button class="button is-large">activité</button>
     <div class="is-flex is-flex-direction-column is-align-items-center">
-      <button class="button barIcon mb-2 is-info">
+      <button class="button barIcon mb-2 is-info" aria-label="Menu">
         <span class="icon">
-          <i class="fas fa-bars"></i>
+          <i class="fas fa-bars" aria-hidden="true"></i>
         </span>
       </button>
-      <button class="button bellIcon is-info">
+      <button class="button bellIcon is-info" aria-label="Notifications">
         <span class="icon">
-          <i class="fas fa-bell"></i>
+          <i class="fas fa-bell" aria-hidden="true"></i>
         </span>
       </button>
     </div>
