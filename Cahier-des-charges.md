@@ -48,14 +48,17 @@ L’application vise à améliorer la communication entre les crèches et les pa
 
 # 3. Technologies et architecture technique
 
-Front-end : Vue.js  
+Front-end : Vue.js + Bulma pour le CSS
 Back-end : Node.js  
 Orm : TypeORM  
-Base de données : MySQL pour les comptes utilisateurs et MongoDB pour le contenu et le multimédia
+Base de données : MySQL
 Stockage des médias : à définir  
 Authentification : à définir  
 Gestion des permissions et rôles utilisateurs (Parents, Personnel de crèche, Admin)
-![schéma](https://github.com/user-attachments/assets/30e2a2d1-f78c-4a2e-b3a7-aa18965ce519)
+<img width="50%" alt="MCD5" src="https://github.com/user-attachments/assets/30e2a2d1-f78c-4a2e-b3a7-aa18965ce519" /> <br>
+Modèle conceptuel de données <br>
+<img width="50%" alt="MCD5" src="https://github.com/user-attachments/assets/4e97b1bc-c818-4517-a1eb-58969d92f280" />
+
 
 
 # 4. Sécurité et réglementation
