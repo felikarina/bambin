@@ -9,7 +9,7 @@
               <p class="card-header-title">Mercredi 4 - Assemblage Lego</p>
               <figure>
                 <img
-                  src="@/assets/children.jpg"
+                  v-lazy="'src/assets/children.jpg'"
                   alt="photo de plusieurs enfants qui jouent aux lego"
                 />
               </figure>
@@ -24,7 +24,7 @@
             <div class="card-image">
               <p class="card-header-title">Mercredi 4 - Jeu de brique</p>
               <figure>
-                <img src="@/assets/boy.jpg" alt="photo d'un enfant qui joue aux lego" />
+                <img v-lazy="'src/assets/boy.jpg'" alt="photo d'un enfant qui joue aux lego" />
               </figure>
             </div>
             <div class="card-content">
@@ -37,7 +37,7 @@
             <div class="card-image">
               <p class="card-header-title">Mercredi 4 - Jeu de brique</p>
               <figure>
-                <img src="@/assets/boy.jpg" alt="photo d'un enfant qui joue aux lego" />
+                <img v-lazy="'src/assets/boy.jpg'" alt="photo d'un enfant qui joue aux lego" />
               </figure>
             </div>
             <div class="card-content">
@@ -51,65 +51,7 @@
               <p class="card-header-title">Mercredi 4 - Assemblage Lego</p>
               <figure>
                 <img
-                  src="@/assets/children.jpg"
-                  alt="photo de plusieurs enfants qui jouent aux lego"
-                />
-              </figure>
-            </div>
-            <div class="card-content">
-              <div class="content has-text-weight-bold">#Omar #Léa #Bastien</div>
-            </div>
-          </div>
-        </div>
-        <div class="cell">
-          <div class="card my-4">
-            <div class="card-image">
-              <p class="card-header-title">Mercredi 4 - Assemblage Lego</p>
-              <figure>
-                <img
-                  src="@/assets/children.jpg"
-                  alt="photo de plusieurs enfants qui jouent aux lego"
-                />
-              </figure>
-            </div>
-            <div class="card-content">
-              <div class="content has-text-weight-bold">#Omar #Léa #Bastien</div>
-            </div>
-          </div>
-        </div>
-        <div class="cell">
-          <div class="card my-4">
-            <div class="card-image">
-              <p class="card-header-title">Mercredi 4 - Jeu de brique</p>
-              <figure>
-                <img src="@/assets/boy.jpg" alt="photo d'un enfant qui joue aux lego" />
-              </figure>
-            </div>
-            <div class="card-content">
-              <div class="content has-text-weight-bold">#Théo</div>
-            </div>
-          </div>
-        </div>
-        <div class="cell">
-          <div class="card my-4">
-            <div class="card-image">
-              <p class="card-header-title">Mercredi 4 - Jeu de brique</p>
-              <figure>
-                <img src="@/assets/boy.jpg" alt="photo d'un enfant qui joue aux lego" />
-              </figure>
-            </div>
-            <div class="card-content">
-              <div class="content has-text-weight-bold">#Théo</div>
-            </div>
-          </div>
-        </div>
-        <div class="cell">
-          <div class="card my-4">
-            <div class="card-image">
-              <p class="card-header-title">Mercredi 4 - Assemblage Lego</p>
-              <figure>
-                <img
-                  src="@/assets/children.jpg"
+                  v-lazy="'src/assets/children.jpg'"
                   alt="photo de plusieurs enfants qui jouent aux lego"
                 />
               </figure>
@@ -125,7 +67,7 @@
               <p class="card-header-title">Mercredi 4 - Assemblage Lego</p>
               <figure>
                 <img
-                  src="@/assets/children.jpg"
+                  v-lazy="'src/assets/children.jpg'"
                   alt="photo de plusieurs enfants qui jouent aux lego"
                 />
               </figure>
@@ -140,7 +82,7 @@
             <div class="card-image">
               <p class="card-header-title">Mercredi 4 - Jeu de brique</p>
               <figure>
-                <img src="@/assets/boy.jpg" alt="photo d'un enfant qui joue aux lego" />
+                <img v-lazy="'src/assets/boy.jpg'" alt="photo d'un enfant qui joue aux lego" />
               </figure>
             </div>
             <div class="card-content">
@@ -153,7 +95,7 @@
             <div class="card-image">
               <p class="card-header-title">Mercredi 4 - Jeu de brique</p>
               <figure>
-                <img src="@/assets/boy.jpg" alt="photo d'un enfant qui joue aux lego" />
+                <img v-lazy="'src/assets/boy.jpg'" alt="photo d'un enfant qui joue aux lego" />
               </figure>
             </div>
             <div class="card-content">
@@ -167,7 +109,7 @@
               <p class="card-header-title">Mercredi 4 - Assemblage Lego</p>
               <figure>
                 <img
-                  src="@/assets/children.jpg"
+                  v-lazy="'src/assets/children.jpg'"
                   alt="photo de plusieurs enfants qui jouent aux lego"
                 />
               </figure>
@@ -183,7 +125,7 @@
               <p class="card-header-title">Mercredi 4 - Assemblage Lego</p>
               <figure>
                 <img
-                  src="@/assets/children.jpg"
+                  v-lazy="'src/assets/children.jpg'"
                   alt="photo de plusieurs enfants qui jouent aux lego"
                 />
               </figure>
@@ -198,7 +140,7 @@
             <div class="card-image">
               <p class="card-header-title">Mercredi 4 - Jeu de brique</p>
               <figure>
-                <img src="@/assets/boy.jpg" alt="photo d'un enfant qui joue aux lego" />
+                <img v-lazy="'src/assets/boy.jpg'" alt="photo d'un enfant qui joue aux lego" />
               </figure>
             </div>
             <div class="card-content">
@@ -211,7 +153,7 @@
             <div class="card-image">
               <p class="card-header-title">Mercredi 4 - Jeu de brique</p>
               <figure>
-                <img src="@/assets/boy.jpg" alt="photo d'un enfant qui joue aux lego" />
+                <img v-lazy="'src/assets/boy.jpg'" alt="photo d'un enfant qui joue aux lego" />
               </figure>
             </div>
             <div class="card-content">
@@ -225,7 +167,65 @@
               <p class="card-header-title">Mercredi 4 - Assemblage Lego</p>
               <figure>
                 <img
-                  src="@/assets/children.jpg"
+                  v-lazy="'src/assets/children.jpg'"
+                  alt="photo de plusieurs enfants qui jouent aux lego"
+                />
+              </figure>
+            </div>
+            <div class="card-content">
+              <div class="content has-text-weight-bold">#Omar #Léa #Bastien</div>
+            </div>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="card my-4">
+            <div class="card-image">
+              <p class="card-header-title">Mercredi 4 - Assemblage Lego</p>
+              <figure>
+                <img
+                  v-lazy="'src/assets/children.jpg'"
+                  alt="photo de plusieurs enfants qui jouent aux lego"
+                />
+              </figure>
+            </div>
+            <div class="card-content">
+              <div class="content has-text-weight-bold">#Omar #Léa #Bastien</div>
+            </div>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="card my-4">
+            <div class="card-image">
+              <p class="card-header-title">Mercredi 4 - Jeu de brique</p>
+              <figure>
+                <img v-lazy="'src/assets/boy.jpg'" alt="photo d'un enfant qui joue aux lego" />
+              </figure>
+            </div>
+            <div class="card-content">
+              <div class="content has-text-weight-bold">#Théo</div>
+            </div>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="card my-4">
+            <div class="card-image">
+              <p class="card-header-title">Mercredi 4 - Jeu de brique</p>
+              <figure>
+                <img v-lazy="'src/assets/boy.jpg'" alt="photo d'un enfant qui joue aux lego" />
+              </figure>
+            </div>
+            <div class="card-content">
+              <div class="content has-text-weight-bold">#Théo</div>
+            </div>
+          </div>
+        </div>
+        <div class="cell">
+          <div class="card my-4">
+            <div class="card-image">
+              <p class="card-header-title">Mercredi 4 - Assemblage Lego</p>
+              <figure>
+                <img
+                  v-lazy="'src/assets/children.jpg'"
                   alt="photo de plusieurs enfants qui jouent aux lego"
                 />
               </figure>
