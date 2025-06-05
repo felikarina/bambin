@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { supabase } from '../supabaseClient'
 
 interface Activity {
   id_activity?: number
@@ -12,14 +11,9 @@ interface Activity {
 const activities = ref<Activity[]>([])
 
 const fetchActivities = async () => {
-  const { data, error } = await supabase.from('Activity').select('*')
-  console.log('data:', data)
-  console.log('error:', error)
-  if (error) {
-    console.error('Erreur Supabase:', error)
-  } else {
-    activities.value = (data as Activity[]) || []
-  }
+  const response = await fetch('/api/activities')
+  const data = await response.json()
+  activities.value = data
 }
 
 onMounted(fetchActivities)
