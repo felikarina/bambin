@@ -16,6 +16,12 @@ const fetchActivities = async () => {
   activities.value = data
 }
 
+// To format the json "date":"2025-05-15T22:00:00.000Z"
+function formattedDate(date?: string) {
+  if (!date) return ''
+  return date.slice(0, 10)
+}
+
 onMounted(fetchActivities)
 </script>
 <template>
@@ -25,7 +31,7 @@ onMounted(fetchActivities)
         <div class="cell" v-for="activity in activities" :key="activity.id_activity">
           <div class="card my-4">
             <div class="card-header">
-              <p class="card-header-title">{{ activity.date }}</p>
+              <p class="card-header-title">{{ formattedDate(activity.date) }}</p>
             </div>
             <div class="card-content">
               <div class="content has-text-weight-semibold">

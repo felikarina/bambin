@@ -16,7 +16,9 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@supabase/supabase-js": "^2.49.8",
+    "@types/pg": "^8.15.4",
     "bulma": "^1.0.4",
+    "pg": "^8.16.0",
     "supabase": "^2.23.4",
     "vue": "^3.5.13",
     "vue-lazyload": "^3.0.0",
