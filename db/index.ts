@@ -4,7 +4,7 @@ import * as schema from '../db/schema'
 import * as relations from '../db/relations'
 
 const isProduction = !!process.env.VERCEL
-
+console.log('isProduction:', isProduction)
 const connectionString = isProduction
   ? process.env.SUPABASE_STRING_URL!
   : process.env.LOCAL_DATABASE_URL!
