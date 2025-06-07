@@ -34,7 +34,7 @@
             </span>
           </router-link>
         </li>
-        <li>
+        <!-- <li>
           <router-link
             to="/galerie-photo"
             class="button is-fullwidth is-outlined is-link my-4 p-3 has-background-white is-justify-content-space-between"
@@ -47,12 +47,12 @@
               <i class="fas fa-arrow-right"></i>
             </span>
           </router-link>
-        </li>
+        </li> -->
       </ul>
     </div>
     <div class="">
       <ul>
-        <li>
+        <!-- <li>
           <router-link
             to="/galerie-photo"
             class="button is-fullwidth is-outlined is-link my-4 p-3 has-background-white is-justify-content-space-between"
@@ -65,7 +65,7 @@
               <i class="fas fa-arrow-right"></i>
             </span>
           </router-link>
-        </li>
+        </li> -->
         <li class="">
           <router-link
             to="/"

@@ -1,4 +1,10 @@
 {
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "strict": false,
+    "noImplicitAny": false
+  },
+  "exclude": ["node_modules/**/*"],
   "files": [],
   "references": [
     {
