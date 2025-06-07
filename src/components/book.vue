@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { supabase } from '../supabaseClient'
 
 interface Activity {
   id_activity?: number
@@ -12,14 +11,15 @@ interface Activity {
 const activities = ref<Activity[]>([])
 
 const fetchActivities = async () => {
-  const { data, error } = await supabase.from('Activity').select('*')
-  console.log('data:', data)
-  console.log('error:', error)
-  if (error) {
-    console.error('Erreur Supabase:', error)
-  } else {
-    activities.value = (data as Activity[]) || []
-  }
+  const response = await fetch('/api/activities')
+  const data = await response.json()
+  activities.value = data
+}
+
+// To format the json "date":"2025-05-15T22:00:00.000Z"
+function formattedDate(date?: string) {
+  if (!date) return ''
+  return date.slice(0, 10)
 }
 
 onMounted(fetchActivities)
@@ -31,7 +31,7 @@ onMounted(fetchActivities)
         <div class="cell" v-for="activity in activities" :key="activity.id_activity">
           <div class="card my-4">
             <div class="card-header">
-              <p class="card-header-title">{{ activity.date }}</p>
+              <p class="card-header-title">{{ formattedDate(activity.date) }}</p>
             </div>
             <div class="card-content">
               <div class="content has-text-weight-semibold">
