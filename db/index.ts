@@ -5,7 +5,9 @@ import * as relations from '../db/relations'
 
 const isProduction = !!process.env.VERCEL
 
-const connectionString = isProduction ? process.env.SUPABASE_URL! : process.env.LOCAL_DATABASE_URL!
+const connectionString = isProduction
+  ? process.env.SUPABASE_STRING_URL!
+  : process.env.LOCAL_DATABASE_URL!
 
 const client = postgres(connectionString, {
   prepare: false,
