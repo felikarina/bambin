@@ -1,4 +1,31 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const email = ref('')
+const password = ref('')
+const error = ref('')
+const router = useRouter()
+
+const login = async () => {
+  error.value = ''
+  const res = await fetch('/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email.value, password: password.value }),
+  })
+  const data = await res.json()
+  if (!res.ok) {
+    error.value = data.error || 'Erreur'
+    return
+  }
+  localStorage.setItem('token', data.token)
+  localStorage.setItem('role', data.role)
+  if (data.role === 'admin') router.push('/')
+  else if (data.role === 'parent') router.push('/galerie-photo')
+  else if (data.role === 'nurseryStaff') router.push('/journal-activite')
+}
+</script>
 
 <template>
   <main class="main">
@@ -8,7 +35,7 @@
       <br />
       <label for="label">Mail</label>
       <div class="control has-icons-left">
-        <input class="input is-info" type="email" placeholder="exemple@mail.com" />
+        <input v-model="email" class="input is-info" type="email" placeholder="exemple@mail.com" />
         <span class="icon is-small is-left">
           <i class="fas fa-envelope"></i>
         </span>
@@ -16,12 +43,18 @@
       <br />
       <label for="label">Mot de passe</label>
       <div class="control has-icons-left">
-        <input class="input is-info" type="password" placeholder="mot de passe" />
+        <input
+          v-model="password"
+          class="input is-info"
+          type="password"
+          placeholder="mot de passe"
+        />
         <span class="icon is-small is-left">
           <i class="fas fa-lock"></i>
         </span>
       </div>
-      <button class="button is-link mt-6">Se connecter</button>
+      <button class="button is-link mt-6" @click="login">Se connecter</button>
+      <p v-if="error" style="color: red">{{ error }}</p>
     </div>
   </main>
 </template>
@@ -41,6 +74,10 @@
   height: 500px;
   width: 500px;
   border: solid 1px green;
+  @media (max-width: 600px) {
+    width: 100%;
+    height: auto;
+  }
 }
 
 .field .button {
