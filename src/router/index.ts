@@ -1,8 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import PhotoGallery from '../views/PhotoGallery.vue'
-import HelloWorld from '@/components/HelloWorld.vue'
-import activityBook from '@/views/activityBook.vue'
-import login from '@/views/login.vue'
+import HelloWorld from '../components/HelloWorld.vue'
+import activityBook from '../views/activityBook.vue'
+import login from '../views/login.vue'
 
 const routes = [
   {
