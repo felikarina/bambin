@@ -6,3 +6,4 @@ export async function hashPassword(password: string): Promise<string> {
   console.log('Hashed Password:', hashedPassword)
   return hashedPassword
 }
+hashPassword('test')

@@ -25,7 +25,6 @@ const routes = [
     path: '/journal-activite',
     name: 'activityBook',
     component: activityBook,
-    meta: { requiresAuth: true, roles: ['nurseryStaff', 'admin'] },
   },
 ]
 
@@ -42,11 +41,18 @@ router.beforeEach((to, from, next) => {
     if (!token) {
       next('/connexion')
     } else {
-      if (to.meta.role && to.meta.role !== role) {
-        next('/connexion')
-      } else {
-        next()
+      if (to.meta.role) {
+        if (Array.isArray(to.meta.role)) {
+          if (!to.meta.role.includes(role)) {
+            next('/connexion')
+            return
+          }
+        } else if (to.meta.role !== role) {
+          next('/connexion')
+          return
+        }
       }
+      next()
     }
   } else {
     next()
