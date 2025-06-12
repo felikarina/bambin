@@ -72,7 +72,6 @@ export const user = pgTable('User', {
   lastname: text(),
   email: text(),
   password: text(),
-  salt: text(),
 })
 
 export const picture = pgTable(
