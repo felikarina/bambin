@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { formattedDate } from '../utils/formattedDate'
 
 interface Activity {
   id_activity?: number
@@ -14,12 +15,6 @@ const fetchActivities = async () => {
   const response = await fetch('/api/activities')
   const data = await response.json()
   activities.value = data
-}
-
-// To format the json "date":"2025-05-15T22:00:00.000Z"
-function formattedDate(date?: string) {
-  if (!date) return ''
-  return date.slice(0, 10)
 }
 
 onMounted(fetchActivities)

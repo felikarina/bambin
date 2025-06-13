@@ -9,6 +9,17 @@ jobs:
   trigger-vercel-deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm ci
+      - name: Run unit tests
+        run: npm run test:unit -- --run
       - name: Trigger Vercel Deploy Hook
+        if: success()
         run: |
           curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
