@@ -8,16 +8,16 @@
   "files": [],
   "references": [
     {
-      "path": "./tsconfig.node.json"
+      "path": "./tsconfig/tsconfig.node.json"
     },
     {
-      "path": "./tsconfig.app.json"
+      "path": "./tsconfig/tsconfig.app.json"
     },
     {
-      "path": "./tsconfig.vitest.json"
+      "path": "./tsconfig/tsconfig.vitest.json"
     },
     {
-      "path": "./tsconfig.api.json"
+      "path": "./tsconfig/tsconfig.api.json"
     }
   ]
 }
