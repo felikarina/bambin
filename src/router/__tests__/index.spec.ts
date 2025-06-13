@@ -52,4 +52,30 @@ describe("router/index.ts", () => {
     await authGuard(to, from, next);
     expect(next).toHaveBeenCalledWith("/connexion");
   });
+
+  it("redirige si le rôle n'est pas dans le tableau des rôles autorisés", async () => {
+    (localStorage.getItem as any).mockImplementation((key: string) => {
+      if (key === "token") return "abc";
+      if (key === "role") return "user";
+      return null;
+    });
+    const next = vi.fn();
+    const to = { meta: { requiresAuth: true, role: ["admin", "superadmin"] } };
+    const from = {};
+    await authGuard(to, from, next);
+    expect(next).toHaveBeenCalledWith("/connexion");
+  });
+
+  it("laisse passer si le rôle est dans le tableau des rôles autorisés", async () => {
+    (localStorage.getItem as any).mockImplementation((key: string) => {
+      if (key === "token") return "abc";
+      if (key === "role") return "admin";
+      return null;
+    });
+    const next = vi.fn();
+    const to = { meta: { requiresAuth: true, role: ["admin", "superadmin"] } };
+    const from = {};
+    await authGuard(to, from, next);
+    expect(next).toHaveBeenCalledWith();
+  });
 });
