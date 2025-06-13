@@ -28,3 +28,24 @@ jobs:
         if: success()
         run: |
           curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
+  deploy-coverage-to-gh-pages:
+    needs: trigger-vercel-deploy
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm ci
+      - name: Run unit tests and generate coverage
+        run: npm run test:unit -- --run
+      - name: Deploy coverage to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./coverage
+          publish_branch: gh-pages
