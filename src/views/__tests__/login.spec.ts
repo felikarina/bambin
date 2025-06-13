@@ -1,7 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// Mock de useRouter AVANT l'import du composant
 const push = vi.fn();
 vi.mock("vue-router", () => ({
   useRouter: () => ({ push }),
@@ -9,7 +8,6 @@ vi.mock("vue-router", () => ({
 
 import login from "../login.vue";
 
-// Mock global fetch par défaut
 beforeEach(() => {
   global.fetch = vi.fn();
   push.mockClear();

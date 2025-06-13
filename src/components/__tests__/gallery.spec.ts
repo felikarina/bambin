@@ -12,7 +12,7 @@ describe("Gallery", () => {
     const wrapper = mount(Gallery);
     const cards = wrapper.findAll(".card");
     expect(cards.length).toBeGreaterThan(0);
-    // Vérifie la présence d'au moins un titre et un hashtag
+
     expect(wrapper.html()).toMatch(/card-header-title/);
     expect(wrapper.html()).toMatch(/has-text-weight-bold/);
   });

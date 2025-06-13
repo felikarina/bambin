@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import router, { authGuard } from "../index";
 
-// Mock localStorage
 global.localStorage = {
   getItem: vi.fn(() => null),
   setItem: vi.fn(),
@@ -19,7 +18,7 @@ describe("router/index.ts", () => {
   });
 
   it("redirige vers /connexion si non authentifié sur une route protégée", async () => {
-    (localStorage.getItem as any).mockReturnValueOnce(null); // Pas de token
+    (localStorage.getItem as any).mockReturnValueOnce(null);
     const next = vi.fn();
     const to = { meta: { requiresAuth: true, role: "admin" } };
     const from = {};
