@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { formattedDate } from '../utils/formattedDate.ts'
+import { formattedDate } from '../utils/formattedDate'
 
 interface Activity {
   id_activity?: number
