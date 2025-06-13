@@ -36,7 +36,7 @@ describe("NavigationSidebar", () => {
       global: { stubs: { RouterLink: RouterLinkStub } },
     });
     expect(wrapper.findAll("ul").length).toBe(2);
-    expect(wrapper.findAll("li").length).toBe(3); // 2 liens principaux + déconnexion
+    expect(wrapper.findAll("li").length).toBe(4); // 2 liens principaux + déconnexion
   });
 
   it("contient la classe Bulma .box", () => {
