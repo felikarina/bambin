@@ -1,10 +1,10 @@
 {
   "extends": "./tsconfig.app.json",
-  "include": ["src/**/__tests__/*", "env.d.ts"],
+  "include": ["../src/**/__tests__/*", "../src/env.d.ts"],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "skipLibCheck": true,
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.vitest.tsbuildinfo",
+    "tsBuildInfoFile": "../node_modules/.tmp/tsconfig.vitest.tsbuildinfo",
     "maxNodeModuleJsDepth": 0,
     "lib": [],
     "types": []
