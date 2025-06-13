@@ -1,4 +1,4 @@
-name: Vercel Deploy
+name: Deploy and Coverage
 
 on:
   push:
@@ -23,3 +23,24 @@ jobs:
         if: success()
         run: |
           curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
+  coverage-to-external-gh-pages:
+    name: Publier sur Coverage_bambin
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm ci
+      - name: Run unit tests and generate coverage
+        run: npm run test:unit -- --run
+      - name: Deploy coverage to external repo
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          external_repository: felikarina/Coverage_bambin
+          publish_dir: ./coverage
+          publish_branch: gh-pages
