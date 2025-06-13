@@ -1,62 +1,71 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
-import PhotoGallery from '../views/PhotoGallery.vue'
-import HelloWorld from '../components/HelloWorld.vue'
-import activityBook from '../views/activityBook.vue'
-import login from '../views/login.vue'
+import { createRouter, createWebHashHistory } from "vue-router";
+import PhotoGallery from "../views/PhotoGallery.vue";
+import HelloWorld from "../components/HelloWorld.vue";
+import activityBook from "../views/activityBook.vue";
+import login from "../views/login.vue";
+import adminPanel from "../views/adminPanel.vue";
 
 const routes = [
   {
-    path: '/',
-    name: 'Acceuil',
+    path: "/",
+    name: "Acceuil",
     component: HelloWorld,
-    meta: { requiresAuth: true, role: 'admin' },
+    meta: { requiresAuth: true, role: "admin" },
   },
   {
-    path: '/connexion',
-    name: 'Login',
+    path: "/connexion",
+    name: "Login",
     component: login,
   },
   {
-    path: '/galerie-photo',
-    name: 'PhotoGallery',
+    path: "/galerie-photo",
+    name: "PhotoGallery",
     component: PhotoGallery,
   },
   {
-    path: '/journal-activite',
-    name: 'activityBook',
+    path: "/journal-activite",
+    name: "activityBook",
     component: activityBook,
   },
-]
+  {
+    path: "/administration",
+    name: "adminPanel",
+    component: adminPanel,
+    meta: { requiresAuth: true, role: "admin" },
+  },
+];
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
-})
+});
 
-router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('token')
-  const role = localStorage.getItem('role')
+export function authGuard(to: any, from: any, next: any) {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
 
   if (to.meta.requiresAuth) {
     if (!token) {
-      next('/connexion')
+      next("/connexion");
     } else {
       if (to.meta.role) {
         if (Array.isArray(to.meta.role)) {
           if (!to.meta.role.includes(role)) {
-            next('/connexion')
-            return
+            next("/connexion");
+            return;
           }
         } else if (to.meta.role !== role) {
-          next('/connexion')
-          return
+          next("/connexion");
+          return;
         }
       }
-      next()
+      next();
     }
   } else {
-    next()
+    next();
   }
-})
+}
 
-export default router
+router.beforeEach(authGuard);
+
+export default router;
