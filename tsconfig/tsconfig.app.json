@@ -1,6 +1,6 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "api/ping.ts"],
+  "include": ["src/env.d.ts", "src/**/*", "src/**/*.vue", "api/ping.ts"],
   "exclude": ["src/**/__tests__/*", "node_modules"],
   "compilerOptions": {
     "skipLibCheck": true,
