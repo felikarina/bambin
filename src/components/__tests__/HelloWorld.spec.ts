@@ -3,7 +3,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import HelloWorld from "../HelloWorld.vue";
 import { RouterLinkStub } from "@vue/test-utils";
 
-// Mock de useRoute
 vi.mock("vue-router", () => ({
   useRoute: () => ({ path: "/galerie-photo" }),
 }));

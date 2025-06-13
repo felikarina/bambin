@@ -57,7 +57,6 @@ describe("NavigationSidebar", () => {
       global: { stubs: { RouterLink: RouterLinkStub } },
     });
     expect(wrapper.findAll("ul").length).toBe(2);
-    // 2 liens principaux + déconnexion
     expect(wrapper.findAll("li").length).toBe(3);
   });
 
@@ -68,7 +67,6 @@ describe("NavigationSidebar", () => {
     });
     await flushPromises();
     expect(wrapper.findAll("ul").length).toBe(2);
-    // 2 liens principaux + admin + déconnexion
     expect(wrapper.findAll("li").length).toBe(4);
   });
 
