@@ -10,6 +10,6 @@
     "types": [],
     "maxNodeModuleJsDepth": 0
   },
-  "include": ["api/*.ts"],
+  "include": ["../api/*.ts"],
   "exclude": ["node_modules"]
 }
