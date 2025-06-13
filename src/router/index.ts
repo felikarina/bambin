@@ -3,6 +3,7 @@ import PhotoGallery from "../views/PhotoGallery.vue";
 import HelloWorld from "../components/HelloWorld.vue";
 import activityBook from "../views/activityBook.vue";
 import login from "../views/login.vue";
+import adminPanel from "../views/adminPanel.vue";
 
 const routes = [
   {
@@ -25,6 +26,12 @@ const routes = [
     path: "/journal-activite",
     name: "activityBook",
     component: activityBook,
+  },
+  {
+    path: "/administration",
+    name: "adminPanel",
+    component: adminPanel,
+    meta: { requiresAuth: true, role: "admin" },
   },
 ];
 

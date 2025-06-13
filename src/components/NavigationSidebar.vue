@@ -52,20 +52,20 @@
     </div>
     <div class="">
       <ul>
-        <!-- <li>
+        <li>
           <router-link
-            to="/galerie-photo"
+            to="/administration"
             class="button is-fullwidth is-outlined is-link my-4 p-3 has-background-white is-justify-content-space-between"
           >
             <span class="icon">
               <i class="fas fa-gear"></i>
             </span>
-            Paramètres
+            Administration
             <span class="icon">
               <i class="fas fa-arrow-right"></i>
             </span>
           </router-link>
-        </li> -->
+        </li>
         <li class="">
           <router-link
             to="/"
