@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { db } from "../db";
 import { user } from "../db/schema";
 import { hashPassword } from "./utils/auth";
+import { eq } from "drizzle-orm";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === "POST") {
@@ -22,6 +23,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       res
         .status(500)
         .json({ error: "Erreur lors de l'ajout de l'utilisateur" });
+    }
+    return;
+  }
+  if (req.method === "DELETE") {
+    const id = req.query.id;
+    if (!id) {
+      res.status(400).json({ error: "ID utilisateur manquant" });
+      return;
+    }
+    try {
+      await db.delete(user).where(eq(user.idUser, id as string));
+      res.status(204).end();
+    } catch (error) {
+      console.error("Erreur lors de la suppression de l'utilisateur:", error);
+      res
+        .status(500)
+        .json({ error: "Erreur lors de la suppression de l'utilisateur" });
     }
     return;
   }
