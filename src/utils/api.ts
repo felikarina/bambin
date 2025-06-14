@@ -44,7 +44,7 @@ export async function deleteUserApi(idUser: string) {
 }
 
 export interface Activity {
-  id_activity?: number;
+  idActivity?: number;
   date?: string;
   title?: string;
   description?: string;
@@ -69,4 +69,21 @@ export async function addActivityApi(newActivity: Partial<Activity>) {
     throw new Error(err.error || "Erreur lors de l'ajout de l'activité");
   }
   return response.json();
+}
+
+export async function deleteActivityApi(idActivity: string) {
+  const response = await fetch(`/api/activities?id=${idActivity}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) {
+    const text = await response.text();
+    let err;
+    try {
+      err = text ? JSON.parse(text) : {};
+    } catch {
+      err = {};
+    }
+    throw new Error(err.error || "Erreur lors de la suppression");
+  }
+  return;
 }

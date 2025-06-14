@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from "vue";
 import { formattedDate } from "../utils/formattedDate";
-import { fetchActivities, type Activity } from "../utils/api";
-import { addActivityApi } from "../utils/api";
+import {
+  fetchActivities,
+  addActivityApi,
+  deleteActivityApi,
+  type Activity,
+} from "../utils/api";
 
 const activities = ref<Activity[]>([]);
 
@@ -24,6 +28,9 @@ const loading = ref(false);
 const userId = ref("");
 const userRole = ref("");
 const showModal = ref(false);
+const showModalDelete = ref(false);
+const activityToDelete = ref<Activity | null>(null);
+const successMsg = ref("");
 const errors = ref({
   date: "",
   titre: "",
@@ -106,9 +113,36 @@ const filteredActivities = computed(() => {
     (activity) => activity.userId === userId.value
   );
 });
+
+const askDeleteActivity = (activity: Activity) => {
+  activityToDelete.value = activity;
+  showModalDelete.value = true;
+};
+
+const cancelDeleteActivity = () => {
+  showModalDelete.value = false;
+  activityToDelete.value = null;
+};
+
+const confirmDeleteActivity = async () => {
+  if (!activityToDelete.value || !activityToDelete.value.idActivity) return;
+  try {
+    await deleteActivityApi(String(activityToDelete.value.idActivity));
+    await fetchActivitiesAndSet();
+    successMsg.value = "Activité supprimée avec succès";
+    setTimeout(() => {
+      successMsg.value = "";
+    }, 2000);
+  } catch (e: any) {
+    alert(e.message);
+  } finally {
+    showModalDelete.value = false;
+    activityToDelete.value = null;
+  }
+};
 </script>
 <template>
-  <div class="gallery mt-4">
+  <div class="gallery mt-4" v-bind="$attrs">
     <div class="fixed-grid has-1-cols">
       <div class="grid">
         <div class="cell">
@@ -192,7 +226,7 @@ const filteredActivities = computed(() => {
         <div
           class="cell"
           v-for="activity in filteredActivities"
-          :key="activity.id_activity"
+          :key="activity.idActivity"
         >
           <div class="card">
             <div class="card-header">
@@ -205,13 +239,50 @@ const filteredActivities = computed(() => {
             </div>
             <div class="card-content">
               <div class="content has-text-weight-semibold">
-                <h1>{{ activity.title }}</h1>
-                {{ activity.description }}
+                <div
+                  class="is-flex is-justify-content-space-between is-align-items-center"
+                >
+                  <h1>{{ activity.title }}</h1>
+                  <span
+                    class="button is-danger is-outlined"
+                    title="Supprimer l'utilisateur"
+                    @click="askDeleteActivity(activity)"
+                    ><span class="icon"> <i class="fas fa-trash"></i></span>
+                  </span>
+                </div>
+                <p>{{ activity.description }}</p>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+  <div
+    v-if="showModalDelete"
+    class="modal-overlay is-flex is-justify-content-center is-align-items-center"
+  >
+    <div class="modal-box has-text-centered py-6 px-5">
+      <h3>Suppression d'activité</h3>
+      <p>Voulez-vous vraiment supprimer l'activité ?</p>
+      <div class="is-flex is-justify-content-space-between mt-5 gap-4">
+        <button class="btn-cancel" @click="cancelDeleteActivity">
+          Annuler
+        </button>
+        <button class="btn-confirm" @click="confirmDeleteActivity">
+          Supprimer
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
+    v-if="successMsg"
+    class="modal-overlay is-flex is-justify-content-center is-align-items-center"
+  >
+    <div
+      class="modal-box success-modal has-text-centered has-text-weight-bold py-6 px-5"
+    >
+      {{ successMsg }}
     </div>
   </div>
 </template>
@@ -277,5 +348,21 @@ textarea {
   color: #e74c3c;
   font-size: 0.95em;
   margin-left: 8px;
+}
+.btn-cancel {
+  background: #eee;
+  color: #333;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  cursor: pointer;
+}
+.btn-confirm {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  cursor: pointer;
 }
 </style>
