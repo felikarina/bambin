@@ -4,7 +4,7 @@ import {
   fetchUsers as fetchUsersApi,
   addUserApi,
   deleteUserApi,
-  User,
+  type User,
 } from "../utils/api";
 
 const users = ref<User[]>([]);

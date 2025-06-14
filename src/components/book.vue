@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { formattedDate } from "../utils/formattedDate";
-import { fetchActivities, Activity } from "../utils/api";
+import { fetchActivities, type Activity } from "../utils/api";
 
 const activities = ref<Activity[]>([]);
 
