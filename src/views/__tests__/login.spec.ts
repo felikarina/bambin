@@ -35,7 +35,7 @@ describe("login.vue", () => {
     expect(wrapper.html()).toContain("Erreur");
   });
 
-  it("connecte et redirige l'admin vers /", async () => {
+  it("connecte et redirige l'admin vers /administration", async () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ token: "tok", role: "admin" }),
@@ -45,7 +45,7 @@ describe("login.vue", () => {
     await wrapper.find('input[type="password"]').setValue("test");
     await wrapper.find("button").trigger("click");
     await wrapper.vm.$nextTick();
-    expect(push).toHaveBeenCalledWith("/");
+    expect(push).toHaveBeenCalledWith("/administration");
   });
 
   it("connecte et redirige le parent vers /galerie-photo", async () => {
@@ -61,7 +61,7 @@ describe("login.vue", () => {
     expect(push).toHaveBeenCalledWith("/galerie-photo");
   });
 
-  it("connecte et redirige nurseryStaff vers /journal-activite", async () => {
+  it("connecte et redirige nurseryStaff vers /ajout-activite", async () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ token: "tok", role: "nurseryStaff" }),
@@ -71,7 +71,7 @@ describe("login.vue", () => {
     await wrapper.find('input[type="password"]').setValue("test");
     await wrapper.find("button").trigger("click");
     await wrapper.vm.$nextTick();
-    expect(push).toHaveBeenCalledWith("/journal-activite");
+    expect(push).toHaveBeenCalledWith("/ajout-activite");
   });
 
   it("bouton démo connecte et redirige vers /galerie-photo", async () => {

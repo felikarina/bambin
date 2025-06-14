@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, nextTick } from "vue";
 import { useRouter } from "vue-router";
 
 const email = ref("");
 const password = ref("");
 const error = ref("");
 const router = useRouter();
+const emailInput = ref<HTMLInputElement | null>(null);
+const passwordInput = ref<HTMLInputElement | null>(null);
 
 const login = async () => {
   error.value = "";
@@ -22,9 +24,9 @@ const login = async () => {
   localStorage.setItem("token", data.token);
   localStorage.setItem("role", data.role);
   localStorage.setItem("userId", data.userId);
-  if (data.role === "admin") router.push("/");
+  if (data.role === "admin") router.push("/administration");
   else if (data.role === "parent") router.push("/galerie-photo");
-  else if (data.role === "nurseryStaff") router.push("/journal-activite");
+  else if (data.role === "nurseryStaff") router.push("/ajout-activite");
 };
 
 const loginDemo = async () => {
@@ -43,6 +45,11 @@ const loginDemo = async () => {
   localStorage.setItem("role", data.role);
   router.push("/galerie-photo");
 };
+
+const focusPassword = async () => {
+  await nextTick();
+  passwordInput.value?.focus();
+};
 </script>
 
 <template>
@@ -58,6 +65,8 @@ const loginDemo = async () => {
           class="input is-info"
           type="email"
           placeholder="exemple@mail.com"
+          @keyup.enter="focusPassword"
+          ref="emailInput"
         />
         <span class="icon is-small is-left">
           <i class="fas fa-envelope"></i>
@@ -71,6 +80,8 @@ const loginDemo = async () => {
           class="input is-info"
           type="password"
           placeholder="mot de passe"
+          @keyup.enter="login"
+          ref="passwordInput"
         />
         <span class="icon is-small is-left">
           <i class="fas fa-lock"></i>

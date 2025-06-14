@@ -1,7 +1,20 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
+import { formattedDate } from "../utils/formattedDate";
+import { fetchActivities, type Activity } from "../utils/api";
 import { addActivityApi } from "../utils/api";
 
+const activities = ref<Activity[]>([]);
+
+const fetchActivitiesAndSet = async () => {
+  try {
+    activities.value = await fetchActivities();
+  } catch (e: any) {
+    console.error("Error fetching activities:", e.message);
+  }
+};
+
+onMounted(fetchActivitiesAndSet);
 const date = ref("");
 const titre = ref("");
 const description = ref("");
@@ -9,6 +22,7 @@ const category = ref("");
 const message = ref("");
 const loading = ref(false);
 const userId = ref("");
+const userRole = ref("");
 const showModal = ref(false);
 const errors = ref({
   date: "",
@@ -19,6 +33,7 @@ const errors = ref({
 
 onMounted(() => {
   userId.value = localStorage.getItem("userId") || "";
+  userRole.value = localStorage.getItem("role") || "";
   const today = new Date();
   const yyyy = today.getFullYear();
   const mm = String(today.getMonth() + 1).padStart(2, "0");
@@ -82,13 +97,22 @@ async function submitActivity() {
     loading.value = false;
   }
 }
+
+const filteredActivities = computed(() => {
+  if (userRole.value === "admin") {
+    return activities.value;
+  }
+  return activities.value.filter(
+    (activity) => activity.userId === userId.value
+  );
+});
 </script>
 <template>
-  <div class="gallery">
+  <div class="gallery mt-4">
     <div class="fixed-grid has-1-cols">
       <div class="grid">
         <div class="cell">
-          <div class="card my-4">
+          <div class="card">
             <div class="card-header">
               <p class="card-header-title">Créer une activité</p>
             </div>
@@ -162,6 +186,34 @@ async function submitActivity() {
       </div>
     </div>
   </div>
+  <div class="gallery mt-4">
+    <div class="fixed-grid has-1-cols">
+      <div class="grid">
+        <div
+          class="cell"
+          v-for="activity in filteredActivities"
+          :key="activity.id_activity"
+        >
+          <div class="card">
+            <div class="card-header">
+              <div
+                class="card-header-title is-flex is-justify-content-space-between is-align-items-center"
+              >
+                <p>{{ formattedDate(activity.date) }}</p>
+                <p>#{{ activity.category }}</p>
+              </div>
+            </div>
+            <div class="card-content">
+              <div class="content has-text-weight-semibold">
+                <h1>{{ activity.title }}</h1>
+                {{ activity.description }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 <style scoped>
 .gallery {
@@ -169,7 +221,7 @@ async function submitActivity() {
   border-radius: 20px;
 }
 .cell {
-  padding: 4%;
+  padding: 2%;
 }
 .card {
   background-color: var(--blue-light);
