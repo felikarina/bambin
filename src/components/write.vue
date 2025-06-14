@@ -1,0 +1,229 @@
+<script setup lang="ts">
+import { ref, onMounted, watch } from "vue";
+import { addActivityApi } from "../utils/api";
+
+const date = ref("");
+const titre = ref("");
+const description = ref("");
+const category = ref("");
+const message = ref("");
+const loading = ref(false);
+const userId = ref("");
+const showModal = ref(false);
+const errors = ref({
+  date: "",
+  titre: "",
+  description: "",
+  category: "",
+});
+
+onMounted(() => {
+  userId.value = localStorage.getItem("userId") || "";
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const dd = String(today.getDate()).padStart(2, "0");
+  date.value = `${yyyy}-${mm}-${dd}`;
+});
+
+watch(date, (val) => {
+  if (val && errors.value.date) errors.value.date = "";
+});
+watch(titre, (val) => {
+  if (val && errors.value.titre) errors.value.titre = "";
+});
+watch(description, (val) => {
+  if (val && errors.value.description) errors.value.description = "";
+});
+watch(category, (val) => {
+  if (val && errors.value.category) errors.value.category = "";
+});
+
+async function submitActivity() {
+  errors.value = { date: "", titre: "", description: "", category: "" };
+  let hasError = false;
+  if (!date.value) {
+    errors.value.date = "Veuillez choisir une date";
+    hasError = true;
+  }
+  if (!titre.value) {
+    errors.value.titre = "Veuillez saisir un titre";
+    hasError = true;
+  }
+  if (!description.value) {
+    errors.value.description = "Veuillez saisir une description";
+    hasError = true;
+  }
+  if (!category.value) {
+    errors.value.category = "Veuillez choisir une catégorie";
+    hasError = true;
+  }
+  if (hasError) return;
+  loading.value = true;
+  try {
+    await addActivityApi({
+      date: date.value,
+      title: titre.value,
+      description: description.value,
+      category: category.value,
+      userId: userId.value,
+    });
+    showModal.value = true;
+    date.value = "";
+    titre.value = "";
+    description.value = "";
+    category.value = "";
+    setTimeout(() => {
+      showModal.value = false;
+    }, 2000);
+  } catch (err: any) {
+    message.value = err.message || "Erreur lors de la création de l'activité.";
+  } finally {
+    loading.value = false;
+  }
+}
+</script>
+<template>
+  <div class="gallery">
+    <div class="fixed-grid has-1-cols">
+      <div class="grid">
+        <div class="cell">
+          <div class="card my-4">
+            <div class="card-header">
+              <p class="card-header-title">Créer une activité</p>
+            </div>
+            <div class="card-content">
+              <div class="content has-text-weight-semibold">
+                <label for="date">Date :</label>
+                <span v-if="errors.date" class="error-message">
+                  {{ errors.date }}
+                </span>
+                <input
+                  id="date"
+                  type="date"
+                  v-model="date"
+                  class="input mb-2"
+                />
+                <label for="titre">Titre :</label>
+                <span v-if="errors.titre" class="error-message">
+                  {{ errors.titre }}
+                </span>
+                <input
+                  id="titre"
+                  type="text"
+                  v-model="titre"
+                  class="input mb-2"
+                  placeholder="Titre de l'activité"
+                />
+                <label for="description">Description :</label>
+                <span v-if="errors.description" class="error-message">
+                  {{ errors.description }}
+                </span>
+                <textarea
+                  id="description"
+                  v-model="description"
+                  class="textarea mb-2"
+                  placeholder="Description de l'activité"
+                ></textarea>
+                <label for="category">Catégorie :</label>
+                <span v-if="errors.category" class="error-message">
+                  {{ errors.category }}
+                </span>
+                <select id="category" v-model="category" class="input mb-2">
+                  <option value="">Sélectionner une catégorie</option>
+                  <option value="motricité">Motricité</option>
+                  <option value="artistique">Artistique</option>
+                  <option value="lecture">Lecture</option>
+                  <option value="sortie">Sortie</option>
+                  <option value="autre">Autre</option>
+                </select>
+                <button
+                  class="button is-primary mt-2"
+                  :disabled="loading"
+                  @click="submitActivity"
+                >
+                  {{ loading ? "Création..." : "Créer" }}
+                </button>
+                <div v-if="message" class="mt-2">{{ message }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      v-if="showModal"
+      class="modal-overlay is-flex is-justify-content-center is-align-items-center"
+    >
+      <div
+        class="modal-box success-modal has-text-centered has-text-weight-bold py-6 px-5"
+      >
+        Activité ajoutée au journal
+      </div>
+    </div>
+  </div>
+</template>
+<style scoped>
+.gallery {
+  background-color: var(--blue-lighter);
+  border-radius: 20px;
+}
+.cell {
+  padding: 4%;
+}
+.card {
+  background-color: var(--blue-light);
+}
+.card-content {
+  background-color: white;
+}
+.card-content h1 {
+  color: var(--primary);
+}
+.content {
+  color: black;
+}
+p {
+  color: black;
+}
+input,
+textarea {
+  background-color: var(--blue-light);
+  color: black;
+  border-radius: 5px;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+}
+.modal-box {
+  background: white;
+  border-radius: 10px;
+  min-width: 320px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
+}
+.success-modal {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  border-radius: 10px;
+  min-width: 320px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
+  font-size: 1.1em;
+}
+#category {
+  background-color: var(--blue-light);
+  color: black;
+  border-radius: 5px;
+}
+.error-message {
+  color: #e74c3c;
+  font-size: 0.95em;
+  margin-left: 8px;
+}
+</style>

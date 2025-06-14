@@ -38,7 +38,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         expiresIn: "1d",
       }
     );
-    return res.status(200).json({ token, role: foundUser.role });
+    return res
+      .status(200)
+      .json({ token, role: foundUser.role, userId: foundUser.idUser });
   } catch (error) {
     console.error("Erreur lors de la tentative de connexion:", error);
     return res.status(500).json({ error: "Erreur interne du serveur" });

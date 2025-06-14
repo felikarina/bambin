@@ -1,47 +1,48 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 
-const email = ref('')
-const password = ref('')
-const error = ref('')
-const router = useRouter()
+const email = ref("");
+const password = ref("");
+const error = ref("");
+const router = useRouter();
 
 const login = async () => {
-  error.value = ''
-  const res = await fetch('/api/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+  error.value = "";
+  const res = await fetch("/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email: email.value, password: password.value }),
-  })
-  const data = await res.json()
+  });
+  const data = await res.json();
   if (!res.ok) {
-    error.value = data.error || 'Erreur'
-    return
+    error.value = data.error || "Erreur";
+    return;
   }
-  localStorage.setItem('token', data.token)
-  localStorage.setItem('role', data.role)
-  if (data.role === 'admin') router.push('/')
-  else if (data.role === 'parent') router.push('/galerie-photo')
-  else if (data.role === 'nurseryStaff') router.push('/journal-activite')
-}
+  localStorage.setItem("token", data.token);
+  localStorage.setItem("role", data.role);
+  localStorage.setItem("userId", data.userId);
+  if (data.role === "admin") router.push("/");
+  else if (data.role === "parent") router.push("/galerie-photo");
+  else if (data.role === "nurseryStaff") router.push("/journal-activite");
+};
 
 const loginDemo = async () => {
-  error.value = ''
-  const res = await fetch('/api/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: 'demo@test.com', password: 'test' }),
-  })
-  const data = await res.json()
+  error.value = "";
+  const res = await fetch("/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: "demo@test.com", password: "test" }),
+  });
+  const data = await res.json();
   if (!res.ok) {
-    error.value = data.error || 'Erreur'
-    return
+    error.value = data.error || "Erreur";
+    return;
   }
-  localStorage.setItem('token', data.token)
-  localStorage.setItem('role', data.role)
-  router.push('/galerie-photo')
-}
+  localStorage.setItem("token", data.token);
+  localStorage.setItem("role", data.role);
+  router.push("/galerie-photo");
+};
 </script>
 
 <template>
@@ -52,7 +53,12 @@ const loginDemo = async () => {
       <br />
       <label for="label">Mail</label>
       <div class="control has-icons-left">
-        <input v-model="email" class="input is-info" type="email" placeholder="exemple@mail.com" />
+        <input
+          v-model="email"
+          class="input is-info"
+          type="email"
+          placeholder="exemple@mail.com"
+        />
         <span class="icon is-small is-left">
           <i class="fas fa-envelope"></i>
         </span>
@@ -74,7 +80,9 @@ const loginDemo = async () => {
         <p v-if="error" style="color: red; margin: 0">{{ error }}</p>
       </div>
       <button class="button is-link mt-6" @click="login">Se connecter</button>
-      <button class="button button-demo mt-4" @click="loginDemo">Démo visiteur</button>
+      <button class="button button-demo mt-4" @click="loginDemo">
+        Démo visiteur
+      </button>
     </div>
   </main>
 </template>

@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import administration from "../components/administration.vue";
 import NavigationSidebar from "./../components/NavigationSidebar.vue";
+import write from "../components/write.vue";
 </script>
 
 <template>
   <main class="columns">
-    <div class="left-part column is-one-quarter pr-2">
+    <div class="pr-2 column is-one-quarter left-part is-hidden-touch">
       <NavigationSidebar />
     </div>
-    <div class="right-part column p-4">
-      <administration />
+    <div class="column right-part">
+      <write class="m-4" />
     </div>
   </main>
 </template>
+
 <style scoped>
 .left-part {
   height: 100vh;

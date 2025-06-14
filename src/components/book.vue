@@ -26,9 +26,12 @@ onMounted(fetchActivitiesAndSet);
         >
           <div class="card my-4">
             <div class="card-header">
-              <p class="card-header-title">
-                {{ formattedDate(activity.date) }}
-              </p>
+              <div
+                class="card-header-title is-flex is-justify-content-space-between is-align-items-center"
+              >
+                <p>{{ formattedDate(activity.date) }}</p>
+                <p>#{{ activity.category }}</p>
+              </div>
             </div>
             <div class="card-content">
               <div class="content has-text-weight-semibold">

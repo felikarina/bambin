@@ -48,10 +48,25 @@ export interface Activity {
   date?: string;
   title?: string;
   description?: string;
+  category?: string;
+  userId?: string;
 }
 
 export async function fetchActivities(): Promise<Activity[]> {
   const response = await fetch("/api/activities");
   if (!response.ok) throw new Error("Erreur lors du fetch des activités");
+  return response.json();
+}
+
+export async function addActivityApi(newActivity: Partial<Activity>) {
+  const response = await fetch("/api/activities", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newActivity),
+  });
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.error || "Erreur lors de l'ajout de l'activité");
+  }
   return response.json();
 }
