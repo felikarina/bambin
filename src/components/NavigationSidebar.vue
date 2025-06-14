@@ -54,6 +54,34 @@ onMounted(() => {
             </span>
           </router-link>
         </li> -->
+        <li v-if="role === 'admin' || role === 'nurseryStaff'">
+          <router-link
+            to="/ajout-photo"
+            class="button is-fullwidth is-outlined is-danger my-4 p-3 has-background-white is-justify-content-space-between"
+          >
+            <span class="icon-danger">
+              <i class="fas fa-upload"></i>
+            </span>
+            Ajouter des photos
+            <span class="icon-danger">
+              <i class="fas fa-arrow-right"></i>
+            </span>
+          </router-link>
+        </li>
+        <li v-if="role === 'admin' || role === 'nurseryStaff'">
+          <router-link
+            to="/ajout-activite"
+            class="button is-fullwidth is-outlined is-danger my-4 p-3 has-background-white is-justify-content-space-between"
+          >
+            <span class="icon-danger">
+              <i class="fas fa-pen-fancy"></i>
+            </span>
+            Ecrire une activité
+            <span class="icon-danger">
+              <i class="fas fa-arrow-right"></i>
+            </span>
+          </router-link>
+        </li>
       </ul>
     </div>
     <div class="">
@@ -61,13 +89,13 @@ onMounted(() => {
         <li v-if="role === 'admin'">
           <router-link
             to="/administration"
-            class="button is-fullwidth is-outlined is-link my-4 p-3 has-background-white is-justify-content-space-between"
+            class="button is-fullwidth is-outlined is-danger my-4 p-3 has-background-white is-justify-content-space-between"
           >
-            <span class="icon">
+            <span class="icon-danger">
               <i class="fas fa-gear"></i>
             </span>
             Administration
-            <span class="icon">
+            <span class="icon-danger">
               <i class="fas fa-arrow-right"></i>
             </span>
           </router-link>
@@ -100,5 +128,8 @@ onMounted(() => {
 }
 .icon {
   color: #5a95f4;
+}
+.icon-danger {
+  color: red;
 }
 </style>

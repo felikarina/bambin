@@ -4,6 +4,8 @@ import HelloWorld from "../components/HelloWorld.vue";
 import activityBook from "../views/activityBook.vue";
 import login from "../views/login.vue";
 import adminPanel from "../views/adminPanel.vue";
+import uploadPhoto from "../views/uploadPhoto.vue";
+import WriteActivity from "../views/writeActivity.vue";
 
 const routes = [
   {
@@ -23,9 +25,19 @@ const routes = [
     component: PhotoGallery,
   },
   {
+    path: "/ajout-photo",
+    name: "uploadPhoto",
+    component: uploadPhoto,
+  },
+  {
     path: "/journal-activite",
     name: "activityBook",
     component: activityBook,
+  },
+  {
+    path: "/ajout-activite",
+    name: "writeActivity",
+    component: WriteActivity,
   },
   {
     path: "/administration",

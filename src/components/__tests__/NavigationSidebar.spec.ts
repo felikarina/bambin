@@ -67,7 +67,7 @@ describe("NavigationSidebar", () => {
     });
     await flushPromises();
     expect(wrapper.findAll("ul").length).toBe(2);
-    expect(wrapper.findAll("li").length).toBe(4);
+    expect(wrapper.findAll("li").length).toBe(6);
   });
 
   it("contient la classe Bulma .box", () => {

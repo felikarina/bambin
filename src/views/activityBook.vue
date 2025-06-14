@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import NavigationSidebar from './../components/NavigationSidebar.vue'
-import book from './../components/book.vue'
-import headerGallery from './../components/headerGallery.vue'
-import headerMobile from './../components/headerMobile.vue'
+import NavigationSidebar from "./../components/NavigationSidebar.vue";
+import book from "./../components/book.vue";
+import headerGallery from "./../components/headerGallery.vue";
+import headerMobile from "./../components/headerMobile.vue";
 </script>
 
 <template>
   <main class="columns">
     <div class="pr-2 column is-one-quarter left-part is-hidden-touch">
-      <NavigationSidebar class="" />
+      <NavigationSidebar />
     </div>
     <div class="column right-part">
       <div class="column">
