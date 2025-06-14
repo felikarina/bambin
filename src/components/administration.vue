@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-interface User {
-  idUser?: string;
-  firstname?: string;
-  lastname?: string;
-  role?: string;
-  email?: string;
-}
+import {
+  fetchUsers as fetchUsersApi,
+  addUserApi,
+  deleteUserApi,
+  User,
+} from "../utils/api";
+
 const users = ref<User[]>([]);
 
 const newUser = ref({
@@ -25,24 +25,18 @@ const showModal = ref(false);
 const userToDelete = ref<User | null>(null);
 
 const fetchUsers = async () => {
-  const response = await fetch("/api/users");
-  const data = await response.json();
-  users.value = data;
+  try {
+    users.value = await fetchUsersApi();
+  } catch (e: any) {
+    errorMsg.value = e.message;
+  }
 };
 
 const addUser = async () => {
   isLoading.value = true;
   errorMsg.value = "";
   try {
-    const response = await fetch("/api/users", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newUser.value),
-    });
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.error || "Erreur lors de l'ajout");
-    }
+    await addUserApi(newUser.value);
     newUser.value = {
       firstname: "",
       lastname: "",
@@ -70,13 +64,7 @@ const askDeleteUser = (user: User) => {
 const confirmDeleteUser = async () => {
   if (!userToDelete.value || !userToDelete.value.idUser) return;
   try {
-    const response = await fetch(`/api/users?id=${userToDelete.value.idUser}`, {
-      method: "DELETE",
-    });
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.error || "Erreur lors de la suppression");
-    }
+    await deleteUserApi(userToDelete.value.idUser);
     await fetchUsers();
     successMsg.value = "Utilisateur supprimé avec succès";
     setTimeout(() => {

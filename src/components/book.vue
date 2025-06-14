@@ -1,32 +1,34 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { formattedDate } from '../utils/formattedDate'
+import { ref, onMounted } from "vue";
+import { formattedDate } from "../utils/formattedDate";
+import { fetchActivities, Activity } from "../utils/api";
 
-interface Activity {
-  id_activity?: number
-  date?: string
-  title?: string
-  description?: string
-}
+const activities = ref<Activity[]>([]);
 
-const activities = ref<Activity[]>([])
+const fetchActivitiesAndSet = async () => {
+  try {
+    activities.value = await fetchActivities();
+  } catch (e: any) {
+    console.error("Error fetching activities:", e.message);
+  }
+};
 
-const fetchActivities = async () => {
-  const response = await fetch('/api/activities')
-  const data = await response.json()
-  activities.value = data
-}
-
-onMounted(fetchActivities)
+onMounted(fetchActivitiesAndSet);
 </script>
 <template>
   <div class="gallery">
     <div class="fixed-grid has-1-cols">
       <div class="grid">
-        <div class="cell" v-for="activity in activities" :key="activity.id_activity">
+        <div
+          class="cell"
+          v-for="activity in activities"
+          :key="activity.id_activity"
+        >
           <div class="card my-4">
             <div class="card-header">
-              <p class="card-header-title">{{ formattedDate(activity.date) }}</p>
+              <p class="card-header-title">
+                {{ formattedDate(activity.date) }}
+              </p>
             </div>
             <div class="card-content">
               <div class="content has-text-weight-semibold">
