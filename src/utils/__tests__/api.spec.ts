@@ -62,7 +62,7 @@ describe("API utils", () => {
 
   it("fetchActivities récupère les activités", async () => {
     const activities: Activity[] = [
-      { id_activity: 1, date: "2024-01-01", title: "t", description: "d" },
+      { idActivity: 1, date: "2024-01-01", title: "t", description: "d" },
     ];
     mockFetch.mockResolvedValueOnce({ ok: true, json: async () => activities });
     const result = await fetchActivities();
@@ -78,7 +78,7 @@ describe("API utils", () => {
       category: "c",
       userId: "u",
     };
-    const created = { ...newActivity, id_activity: 1 };
+    const created = { ...newActivity, idActivity: 1 };
     mockFetch.mockResolvedValueOnce({ ok: true, json: async () => created });
     const result = await addActivityApi(newActivity);
     expect(result).toEqual(created);

@@ -22,7 +22,7 @@ onMounted(fetchActivitiesAndSet);
         <div
           class="cell"
           v-for="activity in activities"
-          :key="activity.id_activity"
+          :key="activity.idActivity"
         >
           <div class="card my-4">
             <div class="card-header">
