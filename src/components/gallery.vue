@@ -2,6 +2,7 @@
 import { formattedDate } from "../utils/formattedDate";
 import { ref, onMounted } from "vue";
 import { fetchPictures, type Picture } from "../utils/api";
+import VueLazyload from "vue-lazyload";
 
 const pictures = ref<Picture[]>([]);
 
@@ -29,12 +30,7 @@ onMounted(fetchPicturesAndSet);
                 <p>{{ picture.title }}</p>
               </div>
               <figure>
-                <img
-                  :src="picture.media"
-                  class="image is-4by3"
-                  alt="photo"
-                  loading="lazy"
-                />
+                <img v-lazy="picture.media" class="image is-4by3" alt="photo" />
               </figure>
             </div>
             <div class="card-content">

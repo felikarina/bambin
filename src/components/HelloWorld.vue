@@ -2,10 +2,6 @@
 import { ref } from "vue";
 import { useRoute } from "vue-router";
 
-defineProps<{
-  msg: string;
-}>();
-
 interface Tab {
   name: string;
   icon: string;
