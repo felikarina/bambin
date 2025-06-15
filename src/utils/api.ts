@@ -87,3 +87,17 @@ export async function deleteActivityApi(idActivity: string) {
   }
   return;
 }
+
+export interface Picture {
+  idPicture?: string;
+  date?: string;
+  media?: string;
+  title?: string;
+  userId?: string;
+}
+
+export async function fetchPictures(): Promise<Picture[]> {
+  const response = await fetch("/api/pictures");
+  if (!response.ok) throw new Error("Erreur lors du fetch des images");
+  return response.json();
+}

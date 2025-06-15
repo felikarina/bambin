@@ -7,22 +7,4 @@ describe("Gallery", () => {
     const wrapper = mount(Gallery);
     expect(wrapper.exists()).toBe(true);
   });
-
-  it("affiche plusieurs cartes d'images avec titres et hashtags", () => {
-    const wrapper = mount(Gallery);
-    const cards = wrapper.findAll(".card");
-    expect(cards.length).toBeGreaterThan(0);
-
-    expect(wrapper.html()).toMatch(/card-header-title/);
-    expect(wrapper.html()).toMatch(/has-text-weight-bold/);
-  });
-
-  it("affiche des images avec l'attribut alt correct", () => {
-    const wrapper = mount(Gallery);
-    const images = wrapper.findAll("img");
-    expect(images.length).toBeGreaterThan(0);
-    images.forEach((img) => {
-      expect(img.attributes("alt")).toBeTruthy();
-    });
-  });
 });

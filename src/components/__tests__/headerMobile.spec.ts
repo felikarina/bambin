@@ -17,8 +17,8 @@ describe("headerMobile", () => {
     });
     const links = wrapper.findAllComponents(RouterLinkStub);
     const texts = links.map((link) => link.text());
-    expect(texts).toContain("photo");
-    expect(texts).toContain("activité");
+    expect(texts).toContain("Photo");
+    expect(texts).toContain("Activité");
   });
 
   it("applique les bonnes classes CSS aux boutons", () => {
