@@ -198,7 +198,7 @@ onMounted(fetchUsers);
 .user-form-container {
   background-color: var(--blue-light);
   border-radius: 12px;
-  border: 2px solid fuchsia;
+  border: 2px solid red;
 }
 
 .user-form {

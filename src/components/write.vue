@@ -223,6 +223,9 @@ const confirmDeleteActivity = async () => {
   <div class="gallery mt-4">
     <div class="fixed-grid has-1-cols">
       <div class="grid">
+        <p class="p-2 has-text-weight-bold has-text-centered">
+          Liste des activités inscrites dans le journal
+        </p>
         <div
           class="cell"
           v-for="activity in filteredActivities"

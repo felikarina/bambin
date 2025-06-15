@@ -102,7 +102,7 @@ onMounted(() => {
         </li>
         <li class="">
           <router-link
-            to="/"
+            to="/easter-egg"
             class="button is-fullwidth is-outlined is-link mt-4 p-3 has-background-white is-justify-content-space-between"
           >
             <span class="icon">
