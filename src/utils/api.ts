@@ -10,7 +10,7 @@ export interface User {
 export async function fetchUsers(): Promise<User[]> {
   const response = await fetch("/api/users");
   if (!response.ok) throw new Error("Erreur lors du fetch des utilisateurs");
-  return response.json();
+  return (await response.json()) as User[];
 }
 
 export async function addUserApi(newUser: Partial<User>) {
@@ -55,7 +55,7 @@ export interface Activity {
 export async function fetchActivities(): Promise<Activity[]> {
   const response = await fetch("/api/activities");
   if (!response.ok) throw new Error("Erreur lors du fetch des activités");
-  return response.json();
+  return (await response.json()) as Activity[];
 }
 
 export async function addActivityApi(newActivity: Partial<Activity>) {
@@ -99,5 +99,5 @@ export interface Picture {
 export async function fetchPictures(): Promise<Picture[]> {
   const response = await fetch("/api/pictures");
   if (!response.ok) throw new Error("Erreur lors du fetch des images");
-  return response.json();
+  return (await response.json()) as Picture[];
 }

@@ -71,7 +71,7 @@ const confirmDeleteUser = async () => {
       successMsg.value = "";
     }, 2000);
   } catch (e: any) {
-    alert(e.message);
+    console.error(e.message);
   } finally {
     showModal.value = false;
     userToDelete.value = null;

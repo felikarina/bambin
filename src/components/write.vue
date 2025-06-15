@@ -134,7 +134,7 @@ const confirmDeleteActivity = async () => {
       successMsg.value = "";
     }, 2000);
   } catch (e: any) {
-    alert(e.message);
+    console.error(e.message);
   } finally {
     showModalDelete.value = false;
     activityToDelete.value = null;
