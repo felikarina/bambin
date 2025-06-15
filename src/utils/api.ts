@@ -21,7 +21,12 @@ export async function addUserApi(newUser: Partial<User>) {
   });
   if (!response.ok) {
     const err = await response.json();
-    throw new Error(err.error || "Erreur lors de l'ajout");
+    if (typeof err === "object" && err && "error" in err) {
+      throw new Error(
+        (err as { error?: string }).error || "Erreur lors de l'ajout"
+      );
+    }
+    throw new Error("Erreur lors de l'ajout");
   }
   return response.json();
 }
@@ -38,7 +43,12 @@ export async function deleteUserApi(idUser: string) {
     } catch {
       err = {};
     }
-    throw new Error(err.error || "Erreur lors de la suppression");
+    if (typeof err === "object" && err && "error" in err) {
+      throw new Error(
+        (err as { error?: string }).error || "Erreur lors de la suppression"
+      );
+    }
+    throw new Error("Erreur lors de la suppression");
   }
   return;
 }
@@ -66,7 +76,13 @@ export async function addActivityApi(newActivity: Partial<Activity>) {
   });
   if (!response.ok) {
     const err = await response.json();
-    throw new Error(err.error || "Erreur lors de l'ajout de l'activité");
+    if (typeof err === "object" && err && "error" in err) {
+      throw new Error(
+        (err as { error?: string }).error ||
+          "Erreur lors de l'ajout de l'activité"
+      );
+    }
+    throw new Error("Erreur lors de l'ajout de l'activité");
   }
   return response.json();
 }
@@ -83,7 +99,12 @@ export async function deleteActivityApi(idActivity: string) {
     } catch {
       err = {};
     }
-    throw new Error(err.error || "Erreur lors de la suppression");
+    if (typeof err === "object" && err && "error" in err) {
+      throw new Error(
+        (err as { error?: string }).error || "Erreur lors de la suppression"
+      );
+    }
+    throw new Error("Erreur lors de la suppression");
   }
   return;
 }
