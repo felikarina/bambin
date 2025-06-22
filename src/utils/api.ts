@@ -122,3 +122,44 @@ export async function fetchPictures(): Promise<Picture[]> {
   if (!response.ok) throw new Error("Erreur lors du fetch des images");
   return (await response.json()) as Picture[];
 }
+
+export async function deletePictureApi(idPicture: string) {
+  const response = await fetch(`/api/pictures?id=${idPicture}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) {
+    const text = await response.text();
+    let err;
+    try {
+      err = text ? JSON.parse(text) : {};
+    } catch {
+      err = {};
+    }
+    if (typeof err === "object" && err && "error" in err) {
+      throw new Error(
+        (err as { error?: string }).error || "Erreur lors de la suppression"
+      );
+    }
+    throw new Error("Erreur lors de la suppression");
+  }
+  return;
+}
+
+export async function addPictureApi(newPicture: Partial<Picture>) {
+  const response = await fetch("/api/pictures", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newPicture),
+  });
+  if (!response.ok) {
+    const err = await response.json();
+    if (typeof err === "object" && err && "error" in err) {
+      throw new Error(
+        (err as { error?: string }).error ||
+          "Erreur lors de l'ajout de la photo"
+      );
+    }
+    throw new Error("Erreur lors de l'ajout de la photo");
+  }
+  return response.json();
+}

@@ -248,7 +248,7 @@ const confirmDeleteActivity = async () => {
                   <h1>{{ activity.title }}</h1>
                   <span
                     class="button is-danger is-outlined"
-                    title="Supprimer l'utilisateur"
+                    title="Supprimer l'activité"
                     @click="askDeleteActivity(activity)"
                     ><span class="icon"> <i class="fas fa-trash"></i></span>
                   </span>

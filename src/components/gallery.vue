@@ -2,7 +2,6 @@
 import { formattedDate } from "../utils/formattedDate";
 import { ref, onMounted } from "vue";
 import { fetchPictures, type Picture } from "../utils/api";
-import VueLazyload from "vue-lazyload";
 
 const pictures = ref<Picture[]>([]);
 
@@ -34,9 +33,7 @@ onMounted(fetchPicturesAndSet);
               </figure>
             </div>
             <div class="card-content">
-              <div class="content has-text-weight-bold">
-                #Omar #Léa #Bastien
-              </div>
+              <div class="content has-text-weight-bold">#tag</div>
             </div>
           </div>
         </div>
