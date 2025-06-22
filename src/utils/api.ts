@@ -14,15 +14,12 @@ export interface User {
 
 export async function fetchUsers(): Promise<User[]> {
   const role = localStorage.getItem("role");
-  const response = await fetch("/api/users", {
-    headers: {
-      ...getDemoRoleHeader(),
-    },
-  });
-  if (role === "demo") {
-    return [];
-  } else if (!response.ok)
-    throw new Error("Erreur lors du fetch des utilisateurs");
+  const headers = { ...getDemoRoleHeader() };
+  const hasHeaders = Object.keys(headers).length > 0;
+  const response = hasHeaders
+    ? await fetch("/api/users", { headers })
+    : await fetch("/api/users");
+  if (!response.ok) throw new Error("Erreur lors du fetch des utilisateurs");
   return (await response.json()) as User[];
 }
 
@@ -77,9 +74,11 @@ export interface Activity {
 }
 
 export async function fetchActivities(): Promise<Activity[]> {
-  const response = await fetch("/api/activities", {
-    headers: { ...getDemoRoleHeader() },
-  });
+  const headers = { ...getDemoRoleHeader() };
+  const hasHeaders = Object.keys(headers).length > 0;
+  const response = hasHeaders
+    ? await fetch("/api/activities", { headers })
+    : await fetch("/api/activities");
   if (!response.ok) throw new Error("Erreur lors du fetch des activités");
   return (await response.json()) as Activity[];
 }
