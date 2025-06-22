@@ -9,13 +9,13 @@ import WriteActivity from "../views/writeActivity.vue";
 
 const routes = [
   {
-    path: "/",
-    name: "Acceuil",
+    path: "/easter-egg",
+    name: "EasterEgg",
     component: HelloWorld,
     meta: { requiresAuth: true, role: "admin" },
   },
   {
-    path: "/connexion",
+    path: "/",
     name: "Login",
     component: login,
   },
@@ -58,16 +58,16 @@ export function authGuard(to: any, from: any, next: any) {
 
   if (to.meta.requiresAuth) {
     if (!token) {
-      next("/connexion");
+      next("/");
     } else {
       if (to.meta.role) {
         if (Array.isArray(to.meta.role)) {
           if (!to.meta.role.includes(role)) {
-            next("/connexion");
+            next("/");
             return;
           }
         } else if (to.meta.role !== role) {
-          next("/connexion");
+          next("/");
           return;
         }
       }

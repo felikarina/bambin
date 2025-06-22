@@ -16,14 +16,19 @@ const login = async () => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email: email.value, password: password.value }),
   });
-  const data = await res.json();
+  const data = (await res.json()) as {
+    error?: string;
+    token?: string;
+    role?: string;
+    userId?: string;
+  };
   if (!res.ok) {
     error.value = data.error || "Erreur";
     return;
   }
-  localStorage.setItem("token", data.token);
-  localStorage.setItem("role", data.role);
-  localStorage.setItem("userId", data.userId);
+  localStorage.setItem("token", data.token ?? "");
+  localStorage.setItem("role", data.role ?? "");
+  localStorage.setItem("userId", data.userId ?? "");
   if (data.role === "admin") router.push("/administration");
   else if (data.role === "parent") router.push("/galerie-photo");
   else if (data.role === "nurseryStaff") router.push("/ajout-activite");
@@ -36,13 +41,18 @@ const loginDemo = async () => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email: "demo@test.com", password: "test" }),
   });
-  const data = await res.json();
+  const data = (await res.json()) as {
+    error?: string;
+    token?: string;
+    role?: string;
+    userId?: string;
+  };
   if (!res.ok) {
     error.value = data.error || "Erreur";
     return;
   }
-  localStorage.setItem("token", data.token);
-  localStorage.setItem("role", data.role);
+  localStorage.setItem("token", data.token ?? "");
+  localStorage.setItem("role", data.role ?? "");
   router.push("/galerie-photo");
 };
 
@@ -167,3 +177,6 @@ const focusPassword = async () => {
   }
 }
 </style>
+
+///
+<reference lib="dom" />

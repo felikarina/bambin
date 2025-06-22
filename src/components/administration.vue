@@ -71,7 +71,7 @@ const confirmDeleteUser = async () => {
       successMsg.value = "";
     }, 2000);
   } catch (e: any) {
-    alert(e.message);
+    console.error(e.message);
   } finally {
     showModal.value = false;
     userToDelete.value = null;
@@ -198,7 +198,7 @@ onMounted(fetchUsers);
 .user-form-container {
   background-color: var(--blue-light);
   border-radius: 12px;
-  border: 2px solid fuchsia;
+  border: 2px solid red;
 }
 
 .user-form {

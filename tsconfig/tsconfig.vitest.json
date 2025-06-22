@@ -6,7 +6,7 @@
     "skipLibCheck": true,
     "tsBuildInfoFile": "../node_modules/.tmp/tsconfig.vitest.tsbuildinfo",
     "maxNodeModuleJsDepth": 0,
-    "lib": [],
+    "lib": ["dom"],
     "types": []
   }
 }

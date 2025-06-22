@@ -3,9 +3,15 @@
   <div
     class="header box p-0 is-flex is-flex-direction-row is-justify-content-space-between is-align-items-center"
   >
-    <div class="divMainButton is-flex is-justify-content-space-around is-flex-grow-1">
-      <router-link to="/galerie-photo" class="mainButton button is-large">photo</router-link>
-      <router-link to="/journal-activite" class="mainButton button is-large">activité</router-link>
+    <div
+      class="divMainButton is-flex is-justify-content-space-around is-flex-grow-1"
+    >
+      <router-link to="/galerie-photo" class="mainButton button is-large"
+        >Photo</router-link
+      >
+      <router-link to="/journal-activite" class="mainButton button is-large"
+        >Activité</router-link
+      >
     </div>
     <div class="is-flex is-flex-direction-column is-align-items-center">
       <!-- <button class="button barIcon mb-2 is-info" aria-label="Menu">

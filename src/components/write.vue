@@ -134,7 +134,7 @@ const confirmDeleteActivity = async () => {
       successMsg.value = "";
     }, 2000);
   } catch (e: any) {
-    alert(e.message);
+    console.error(e.message);
   } finally {
     showModalDelete.value = false;
     activityToDelete.value = null;
@@ -223,6 +223,9 @@ const confirmDeleteActivity = async () => {
   <div class="gallery mt-4">
     <div class="fixed-grid has-1-cols">
       <div class="grid">
+        <p class="p-2 has-text-weight-bold has-text-centered">
+          Liste des activités inscrites dans le journal
+        </p>
         <div
           class="cell"
           v-for="activity in filteredActivities"
@@ -245,7 +248,7 @@ const confirmDeleteActivity = async () => {
                   <h1>{{ activity.title }}</h1>
                   <span
                     class="button is-danger is-outlined"
-                    title="Supprimer l'utilisateur"
+                    title="Supprimer l'activité"
                     @click="askDeleteActivity(activity)"
                     ><span class="icon"> <i class="fas fa-trash"></i></span>
                   </span>
