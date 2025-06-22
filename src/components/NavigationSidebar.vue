@@ -54,7 +54,9 @@ onMounted(() => {
             </span>
           </router-link>
         </li> -->
-        <li v-if="role === 'admin' || role === 'nurseryStaff'">
+        <li
+          v-if="role === 'admin' || role === 'nurseryStaff' || role === 'demo'"
+        >
           <router-link
             to="/ajout-photo"
             class="button is-fullwidth is-outlined is-danger my-4 p-3 has-background-white is-justify-content-space-between"
@@ -68,7 +70,9 @@ onMounted(() => {
             </span>
           </router-link>
         </li>
-        <li v-if="role === 'admin' || role === 'nurseryStaff'">
+        <li
+          v-if="role === 'admin' || role === 'nurseryStaff' || role === 'demo'"
+        >
           <router-link
             to="/ajout-activite"
             class="button is-fullwidth is-outlined is-danger my-4 p-3 has-background-white is-justify-content-space-between"
@@ -86,7 +90,7 @@ onMounted(() => {
     </div>
     <div class="">
       <ul>
-        <li v-if="role === 'admin'">
+        <li v-if="role === 'admin' || role === 'demo'">
           <router-link
             to="/administration"
             class="button is-fullwidth is-outlined is-danger my-4 p-3 has-background-white is-justify-content-space-between"

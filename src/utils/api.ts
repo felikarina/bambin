@@ -1,3 +1,8 @@
+function getDemoRoleHeader(): HeadersInit {
+  const role = localStorage.getItem("role");
+  return role ? { "x-user-role": role } : ({} as HeadersInit);
+}
+
 export interface User {
   idUser?: string;
   firstname?: string;
@@ -8,15 +13,23 @@ export interface User {
 }
 
 export async function fetchUsers(): Promise<User[]> {
-  const response = await fetch("/api/users");
-  if (!response.ok) throw new Error("Erreur lors du fetch des utilisateurs");
+  const role = localStorage.getItem("role");
+  const response = await fetch("/api/users", {
+    headers: {
+      ...getDemoRoleHeader(),
+    },
+  });
+  if (role === "demo") {
+    return [];
+  } else if (!response.ok)
+    throw new Error("Erreur lors du fetch des utilisateurs");
   return (await response.json()) as User[];
 }
 
 export async function addUserApi(newUser: Partial<User>) {
   const response = await fetch("/api/users", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...getDemoRoleHeader() },
     body: JSON.stringify(newUser),
   });
   if (!response.ok) {
@@ -34,6 +47,7 @@ export async function addUserApi(newUser: Partial<User>) {
 export async function deleteUserApi(idUser: string) {
   const response = await fetch(`/api/users?id=${idUser}`, {
     method: "DELETE",
+    headers: { ...getDemoRoleHeader() },
   });
   if (!response.ok) {
     const text = await response.text();
@@ -63,7 +77,9 @@ export interface Activity {
 }
 
 export async function fetchActivities(): Promise<Activity[]> {
-  const response = await fetch("/api/activities");
+  const response = await fetch("/api/activities", {
+    headers: { ...getDemoRoleHeader() },
+  });
   if (!response.ok) throw new Error("Erreur lors du fetch des activités");
   return (await response.json()) as Activity[];
 }
@@ -71,7 +87,7 @@ export async function fetchActivities(): Promise<Activity[]> {
 export async function addActivityApi(newActivity: Partial<Activity>) {
   const response = await fetch("/api/activities", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...getDemoRoleHeader() },
     body: JSON.stringify(newActivity),
   });
   if (!response.ok) {
@@ -90,6 +106,7 @@ export async function addActivityApi(newActivity: Partial<Activity>) {
 export async function deleteActivityApi(idActivity: string) {
   const response = await fetch(`/api/activities?id=${idActivity}`, {
     method: "DELETE",
+    headers: { ...getDemoRoleHeader() },
   });
   if (!response.ok) {
     const text = await response.text();
@@ -118,7 +135,9 @@ export interface Picture {
 }
 
 export async function fetchPictures(): Promise<Picture[]> {
-  const response = await fetch("/api/pictures");
+  const response = await fetch("/api/pictures", {
+    headers: { ...getDemoRoleHeader() },
+  });
   if (!response.ok) throw new Error("Erreur lors du fetch des images");
   return (await response.json()) as Picture[];
 }
@@ -126,6 +145,7 @@ export async function fetchPictures(): Promise<Picture[]> {
 export async function deletePictureApi(idPicture: string) {
   const response = await fetch(`/api/pictures?id=${idPicture}`, {
     method: "DELETE",
+    headers: { ...getDemoRoleHeader() },
   });
   if (!response.ok) {
     const text = await response.text();
@@ -148,7 +168,7 @@ export async function deletePictureApi(idPicture: string) {
 export async function addPictureApi(newPicture: Partial<Picture>) {
   const response = await fetch("/api/pictures", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...getDemoRoleHeader() },
     body: JSON.stringify(newPicture),
   });
   if (!response.ok) {

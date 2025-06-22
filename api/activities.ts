@@ -3,7 +3,20 @@ import { db } from "../db";
 import { activity } from "../db/schema";
 import { eq } from "drizzle-orm";
 
+function isDemoRequest(req: VercelRequest): boolean {
+  const role = req.headers["x-user-role"] || req.query.role || req.body?.role;
+  return role === "demo";
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (
+    (req.method === "POST" || req.method === "DELETE") &&
+    isDemoRequest(req)
+  ) {
+    res.status(403).json({ error: "Accès interdit en mode démo" });
+    return;
+  }
+
   if (req.method === "POST") {
     try {
       const { date, title, description, category, userId } = req.body;

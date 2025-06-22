@@ -5,9 +5,19 @@ import { eq } from "drizzle-orm";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+function isDemoRequest(req: VercelRequest): boolean {
+  const role = req.headers["x-user-role"] || req.query.role || req.body?.role;
+  return role === "demo";
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Méthode non autorisée" });
+  }
+
+  if (isDemoRequest(req)) {
+    res.status(403).json({ error: "Accès interdit en mode démo" });
+    return;
   }
 
   const { email, password } = req.body;

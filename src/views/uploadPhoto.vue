@@ -8,7 +8,7 @@ import upload from "../components/upload.vue";
     <div class="pr-2 column is-one-quarter left-part is-hidden-touch">
       <NavigationSidebar />
     </div>
-    <div class="column right-part">
+    <div class="column right-part" v-disable-demo>
       <upload class="m-4" />
     </div>
   </main>

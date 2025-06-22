@@ -23,6 +23,46 @@ const createSuccessMsg = ref("");
 
 const showModal = ref(false);
 const userToDelete = ref<User | null>(null);
+const isDemo = ref(false);
+
+const fakeUsers = [
+  {
+    firstname: "Léa",
+    lastname: "Moreau",
+    email: "lea.moreau@email.com",
+    role: "parent",
+  },
+  {
+    firstname: "Yanis",
+    lastname: "Benali",
+    email: "yanis.benali@email.com",
+    role: "admin",
+  },
+  {
+    firstname: "Chloé",
+    lastname: "Nguyen",
+    email: "chloe.nguyen@email.com",
+    role: "nurseryStaff",
+  },
+  {
+    firstname: "Lucas",
+    lastname: "Dubois",
+    email: "lucas.dubois@email.com",
+    role: "parent",
+  },
+  {
+    firstname: "Fatou",
+    lastname: "Sow",
+    email: "fatou.sow@email.com",
+    role: "nurseryStaff",
+  },
+  {
+    firstname: "Enzo",
+    lastname: "Rossi",
+    email: "enzo.rossi@email.com",
+    role: "admin",
+  },
+];
 
 const fetchUsers = async () => {
   try {
@@ -83,10 +123,13 @@ const cancelDeleteUser = () => {
   userToDelete.value = null;
 };
 
-onMounted(fetchUsers);
+onMounted(() => {
+  isDemo.value = localStorage.getItem("role") === "demo";
+  fetchUsers();
+});
 </script>
 <template>
-  <div class="user-form-container p-4 mt-2">
+  <div class="user-form-container p-4 mt-2" v-disable-demo>
     <p class="mb-4 has-text-weight-bold">Création d'un nouvel utilisateur</p>
     <form
       class="user-form is-flex is-align-items-center mb-5"
@@ -116,10 +159,17 @@ onMounted(fetchUsers);
       <span v-if="errorMsg" class="error ml-3">{{ errorMsg }}</span>
     </form>
   </div>
-  <div class="main mt-4">
+  <div class="main mt-4" v-disable-demo>
+    <div v-if="isDemo" class="demo-info mb-3">
+      (liste d'utilisateurs factice)
+    </div>
     <div class="fixed-grid has-1-cols">
       <div class="grid">
-        <div class="cell" v-for="user in users" :key="user.idUser">
+        <div
+          class="cell"
+          v-for="(user, i) in isDemo ? fakeUsers : users"
+          :key="isDemo ? i : user.idUser"
+        >
           <div class="card">
             <div
               class="card-header is-flex is-align-items-center is-justify-content-space-between has-text-weight-semibold"
@@ -138,7 +188,7 @@ onMounted(fetchUsers);
                 <span
                   class="button is-danger is-outlined"
                   title="Supprimer l'utilisateur"
-                  @click="askDeleteUser(user)"
+                  @click="isDemo ? null : askDeleteUser(user)"
                   ><span class="icon"> <i class="fas fa-trash"></i></span>
                 </span>
               </div>
@@ -151,6 +201,7 @@ onMounted(fetchUsers);
   <div
     v-if="showModal"
     class="modal-overlay is-flex is-justify-content-center is-align-items-center"
+    v-disable-demo
   >
     <div class="modal-box has-text-centered py-6 px-5">
       <h3>Suppression d'utilisateur</h3>
@@ -169,6 +220,7 @@ onMounted(fetchUsers);
   <div
     v-if="successMsg"
     class="modal-overlay is-flex is-justify-content-center is-align-items-center"
+    v-disable-demo
   >
     <div
       class="modal-box success-modal has-text-centered has-text-weight-bold py-6 px-5"
@@ -179,6 +231,7 @@ onMounted(fetchUsers);
   <div
     v-if="createSuccessMsg"
     class="modal-overlay is-flex is-justify-content-center is-align-items-center"
+    v-disable-demo
   >
     <div
       class="modal-box success-modal has-text-centered has-text-weight-bold py-6 px-5"
@@ -301,5 +354,14 @@ p {
   min-width: 320px;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
   font-size: 1.1em;
+}
+.demo-info {
+  background: #e3f1ff;
+  color: #2563eb;
+  text-align: center;
+  border-radius: 12px;
+  padding: 8px 0;
+  font-weight: 500;
+  margin-bottom: 16px;
 }
 </style>
