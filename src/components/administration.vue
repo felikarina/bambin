@@ -167,8 +167,10 @@ onMounted(() => {
       <div class="grid">
         <div
           class="cell"
-          v-for="(user, i) in isDemo ? fakeUsers : users"
-          :key="isDemo ? i : user.idUser"
+          v-for="(user, i) in isDemo
+            ? fakeUsers.map((u, idx) => ({ ...u, idUser: `fake-${idx}` }))
+            : users"
+          :key="user.idUser"
         >
           <div class="card">
             <div
