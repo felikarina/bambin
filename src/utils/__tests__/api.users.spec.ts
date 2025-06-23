@@ -19,7 +19,7 @@ const mockUsers: User[] = [
 ];
 
 describe("api.ts - Users", () => {
-  let fetchSpy: ReturnType<typeof vi.spyOn>;
+  let fetchSpy: any;
 
   beforeEach(() => {
     fetchSpy = vi.spyOn(global, "fetch");
