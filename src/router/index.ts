@@ -6,6 +6,7 @@ import login from "../views/login.vue";
 import adminPanel from "../views/adminPanel.vue";
 import uploadPhoto from "../views/uploadPhoto.vue";
 import WriteActivity from "../views/writeActivity.vue";
+import MobileNavigation from "../views/mobileNavigation.vue";
 
 const routes = [
   {
@@ -18,6 +19,11 @@ const routes = [
     path: "/",
     name: "Login",
     component: login,
+  },
+  {
+    path: "/navigation",
+    name: "mobileNavigation",
+    component: MobileNavigation,
   },
   {
     path: "/galerie-photo",
@@ -43,7 +49,7 @@ const routes = [
     path: "/administration",
     name: "adminPanel",
     component: adminPanel,
-    meta: { requiresAuth: true, role: "admin" },
+    meta: { requiresAuth: true, role: ["admin", "demo"] },
   },
 ];
 
