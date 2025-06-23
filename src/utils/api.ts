@@ -1,4 +1,4 @@
-function getDemoRoleHeader(): HeadersInit {
+export function getDemoRoleHeader(): HeadersInit {
   const role = localStorage.getItem("role");
   return role ? { "x-user-role": role } : ({} as HeadersInit);
 }

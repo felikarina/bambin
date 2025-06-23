@@ -98,3 +98,65 @@ describe("disableDemo directive", () => {
     expect(el.readOnly).toBe(true);
   });
 });
+
+describe("disableDemo directive - couverture complète", () => {
+  let originalGetItem: typeof window.localStorage.getItem;
+
+  beforeEach(() => {
+    originalGetItem = window.localStorage.getItem;
+    window.localStorage.clear();
+  });
+
+  afterEach(() => {
+    window.localStorage.getItem = originalGetItem;
+    document.body.innerHTML = "";
+  });
+
+  it("should not disable element if role is null (mounted)", () => {
+    window.localStorage.removeItem("role");
+    const el = document.createElement("button") as HTMLButtonElement;
+    disableDemo.mounted(el, {} as any);
+    expect(el.disabled).toBe(false);
+  });
+
+  it("should disable a select element if role is demo", () => {
+    window.localStorage.setItem("role", "demo");
+    const el = document.createElement("select") as HTMLSelectElement;
+    disableDemo.mounted(el, {} as any);
+    expect(el.disabled).toBe(true);
+  });
+
+  it("should disable a textarea and set readOnly if role is demo", () => {
+    window.localStorage.setItem("role", "demo");
+    const el = document.createElement("textarea") as HTMLTextAreaElement;
+    disableDemo.mounted(el, {} as any);
+    expect(el.disabled).toBe(true);
+    expect(el.readOnly).toBe(true);
+  });
+
+  it("should enable a textarea and remove readOnly if role is not demo (updated)", () => {
+    window.localStorage.setItem("role", "admin");
+    const el = document.createElement("textarea") as HTMLTextAreaElement;
+    el.disabled = true;
+    el.readOnly = true;
+    disableDemo.updated(el, {} as any);
+    expect(el.disabled).toBe(false);
+    expect(el.readOnly).toBe(false);
+  });
+
+  it("should set and remove attributes for a div (demo/non-demo)", () => {
+    const el = document.createElement("div");
+    window.localStorage.setItem("role", "demo");
+    disableDemo.updated(el, {} as any);
+    expect(el.getAttribute("data-demo-disabled")).toBe("true");
+    expect(el.style.pointerEvents).toBe("none");
+    expect(el.style.userSelect).toBe("none");
+    expect(el.style.opacity).toBe("0.7");
+    window.localStorage.setItem("role", "admin");
+    disableDemo.updated(el, {} as any);
+    expect(el.getAttribute("data-demo-disabled")).toBeNull();
+    expect(el.style.pointerEvents).toBe("");
+    expect(el.style.userSelect).toBe("");
+    expect(el.style.opacity).toBe("");
+  });
+});
