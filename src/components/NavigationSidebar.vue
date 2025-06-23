@@ -40,20 +40,6 @@ onMounted(() => {
             </span>
           </router-link>
         </li>
-        <!-- <li>
-          <router-link
-            to="/galerie-photo"
-            class="button is-fullwidth is-outlined is-link my-4 p-3 has-background-white is-justify-content-space-between"
-          >
-            <span class="icon">
-              <i class="fas fa-envelope"></i>
-            </span>
-            Messagerie
-            <span class="icon">
-              <i class="fas fa-arrow-right"></i>
-            </span>
-          </router-link>
-        </li> -->
         <li
           v-if="role === 'admin' || role === 'nurseryStaff' || role === 'demo'"
         >
@@ -135,5 +121,29 @@ onMounted(() => {
 }
 .icon-danger {
   color: red;
+}
+.button.is-fullwidth {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  min-width: 0;
+  overflow: hidden;
+}
+.button.is-fullwidth span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width: 500px) {
+  .box {
+    max-width: 100vw;
+    height: auto;
+  }
+  .button.is-fullwidth {
+    font-size: 0.95em;
+    padding: 0.5em 0.7em;
+  }
 }
 </style>

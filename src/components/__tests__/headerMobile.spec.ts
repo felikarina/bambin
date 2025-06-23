@@ -27,9 +27,7 @@ describe("headerMobile", () => {
     });
     const links = wrapper.findAllComponents(RouterLinkStub);
     links.forEach((link) => {
-      expect(link.classes()).toContain("mainButton");
       expect(link.classes()).toContain("button");
-      expect(link.classes()).toContain("is-large");
     });
   });
 

@@ -7,15 +7,15 @@ import headerMobile from "./../components/headerMobile.vue";
 
 <template>
   <main class="columns">
-    <div class="pr-2 column is-one-quarter left-part is-hidden-touch">
+    <div class="pr-2 column is-one-quarter left-part is-hidden-mobile">
       <NavigationSidebar />
     </div>
     <div class="column right-part">
       <div class="column">
-        <headerGallery class="mx-4 is-hidden-touch" />
+        <headerGallery class="mx-4 is-hidden-mobile" />
       </div>
       <div class="column">
-        <headerMobile class="mx-4 is-hidden-desktop" />
+        <headerMobile class="mx-4 is-hidden-tablet" />
       </div>
       <div class="column">
         <book class="mt-2 mx-4" />
