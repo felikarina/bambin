@@ -3,7 +3,7 @@ import {
   fetchPictures,
   deletePictureApi,
   addPictureApi,
-  Picture,
+  type Picture,
 } from "../api";
 
 const mockPictures: Picture[] = [
@@ -24,7 +24,7 @@ const mockPictures: Picture[] = [
 ];
 
 describe("api.ts - Pictures", () => {
-  let fetchSpy: ReturnType<typeof vi.spyOn>;
+  let fetchSpy: any;
 
   beforeEach(() => {
     fetchSpy = vi.spyOn(global, "fetch");
