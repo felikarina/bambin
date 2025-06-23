@@ -14,6 +14,7 @@ export interface User {
 
 export async function fetchUsers(): Promise<User[]> {
   const role = localStorage.getItem("role");
+  if (role === "demo") return [];
   const headers = { ...getDemoRoleHeader() };
   const hasHeaders = Object.keys(headers).length > 0;
   const response = hasHeaders

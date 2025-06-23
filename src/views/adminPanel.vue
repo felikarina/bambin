@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import administration from "../components/administration.vue";
 import NavigationSidebar from "./../components/NavigationSidebar.vue";
-import headerGallery from "./../components/headerGallery.vue";
 import headerAdmin from "./../components/headerAdmin.vue";
 </script>
 

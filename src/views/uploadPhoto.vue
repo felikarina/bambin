@@ -10,11 +10,11 @@ import headerAdmin from "./../components/headerAdmin.vue";
     <div class="pr-2 column is-one-quarter left-part is-hidden-mobile">
       <NavigationSidebar />
     </div>
-    <div class="column right-part" v-disable-demo>
+    <div class="column right-part">
       <div class="column">
         <headerAdmin class="mx-4 is-hidden-tablet" />
       </div>
-      <div class="column">
+      <div class="column" v-disable-demo>
         <upload class="m-4" />
       </div>
     </div>
