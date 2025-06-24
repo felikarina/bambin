@@ -84,4 +84,39 @@ describe("login.vue", () => {
     await wrapper.vm.$nextTick();
     expect(push).toHaveBeenCalledWith("/galerie-photo");
   });
+
+  it("affiche une erreur si la connexion démo échoue", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      json: async () => ({ error: "Erreur démo" }),
+    });
+    const wrapper = mount(login);
+    await wrapper.findAll("button")[1].trigger("click");
+    await wrapper.vm.$nextTick();
+    expect(wrapper.html()).toContain("Erreur démo");
+  });
+
+  it("ne redirige pas si le rôle est inconnu", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ token: "tok", role: "autre" }),
+    });
+    const wrapper = mount(login);
+    await wrapper.find('input[type="email"]').setValue("autre@test.com");
+    await wrapper.find('input[type="password"]').setValue("test");
+    await wrapper.find("button").trigger("click");
+    await wrapper.vm.$nextTick();
+    expect(push).not.toHaveBeenCalled();
+  });
+
+  it("focus sur le champ mot de passe après entrée sur l'email", async () => {
+    const wrapper = mount(login, {
+      attachTo: document.body,
+    });
+    const emailInput = wrapper.find('input[type="email"]');
+    const passwordInput = wrapper.find('input[type="password"]');
+    await emailInput.trigger("keyup.enter");
+    // Vérifie que le champ mot de passe a le focus
+    expect(document.activeElement).toBe(passwordInput.element);
+  });
 });
