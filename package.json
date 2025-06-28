@@ -16,7 +16,8 @@
     "db:migrate": "drizzle-kit migrate --config tsconfig/drizzle.config.ts",
     "db:push": "drizzle-kit push --config tsconfig/drizzle.config.ts",
     "db:studio": "drizzle-kit studio --config tsconfig/drizzle.config.ts",
-    "db:pull": "drizzle-kit introspect --config tsconfig/drizzle.config.ts"
+    "db:pull": "drizzle-kit introspect --config tsconfig/drizzle.config.ts",
+    "start": "tsx start.ts"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
@@ -52,6 +53,7 @@
     "jsdom": "^26.0.0",
     "npm-run-all2": "^7.0.2",
     "prettier": "3.5.3",
+    "tsx": "^4.19.2",
     "typescript": "^5.8.3",
     "vite": "^6.2.4",
     "vite-plugin-vue-devtools": "^7.7.2",
