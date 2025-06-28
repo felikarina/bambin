@@ -165,16 +165,30 @@ const cancelDeleteChild = () => {
 };
 
 const getUserChildren = (userId: string) => {
+  if (isDemo.value) {
+    return fakeChildren.filter(
+      (child) => child.userId === userId || child.userId2 === userId
+    );
+  }
   return children.value.filter(
     (child) => child.userId === userId || child.userId2 === userId
   );
 };
 
 const getChildParents = (child: Child) => {
-  const parent1 = users.value.find((u) => u.idUser === child.userId);
-  const parent2 = child.userId2
-    ? users.value.find((u) => u.idUser === child.userId2)
-    : null;
+  let parent1, parent2;
+
+  if (isDemo.value) {
+    parent1 = fakeUsers.find((u) => u.idUser === child.userId);
+    parent2 = child.userId2
+      ? fakeUsers.find((u) => u.idUser === child.userId2)
+      : null;
+  } else {
+    parent1 = users.value.find((u) => u.idUser === child.userId);
+    parent2 = child.userId2
+      ? users.value.find((u) => u.idUser === child.userId2)
+      : null;
+  }
 
   if (parent1 && parent2) {
     return `${parent1.firstname} ${parent1.lastname} et ${parent2.firstname} ${parent2.lastname}`;
@@ -277,9 +291,7 @@ onMounted(() => {
       <div class="grid">
         <div
           class="cell"
-          v-for="user in isDemo
-            ? fakeUsers.map((u, idx) => ({ ...u, idUser: `fake-${idx}` }))
-            : users"
+          v-for="user in isDemo ? fakeUsers : users"
           :key="user.idUser"
         >
           <div class="card">
@@ -345,9 +357,7 @@ onMounted(() => {
       <div class="grid">
         <div
           class="cell"
-          v-for="child in isDemo
-            ? fakeChildren.map((c, idx) => ({ ...c, idChild: `fake-${idx}` }))
-            : children"
+          v-for="child in isDemo ? fakeChildren : children"
           :key="child.idChild"
         >
           <div class="card">
