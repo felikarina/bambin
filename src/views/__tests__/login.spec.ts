@@ -116,7 +116,7 @@ describe("login.vue", () => {
     const emailInput = wrapper.find('input[type="email"]');
     const passwordInput = wrapper.find('input[type="password"]');
     await emailInput.trigger("keyup.enter");
-    // Vérifie que le champ mot de passe a le focus
+    // Check that the password field has focus
     expect(document.activeElement).toBe(passwordInput.element);
   });
 });

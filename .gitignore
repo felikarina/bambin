@@ -37,3 +37,6 @@ playwright-report/
 .vercel
 
 docker-compose.yml
+
+# Development guidelines (local documentation)
+DEVELOPMENT_GUIDELINES.md

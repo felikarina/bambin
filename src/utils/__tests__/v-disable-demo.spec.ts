@@ -28,7 +28,7 @@ describe("disableDemo directive", () => {
 
   beforeEach(() => {
     originalGetItem = window.localStorage.getItem;
-    // Nettoyage du localStorage pour éviter les effets de bord
+    // Clean up localStorage to avoid side effects
     window.localStorage.clear();
   });
 
