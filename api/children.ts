@@ -21,9 +21,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
     try {
+      const userId2Value = userId2 === "" ? null : userId2;
+
       const [newChild] = await db
         .insert(child)
-        .values({ firstname, lastname, birthDate, userId, userId2 })
+        .values({
+          firstname,
+          lastname,
+          birthDate,
+          userId,
+          userId2: userId2Value,
+        })
         .returning();
       res.status(201).json(newChild);
     } catch (error) {

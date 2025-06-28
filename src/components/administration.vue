@@ -23,12 +23,12 @@ const newUser = ref({
   password: "",
 });
 
-const newChild = ref({
+const newChild = ref<Child>({
   firstname: "",
   lastname: "",
   birthDate: "",
   userId: "",
-  userId2: "",
+  userId2: undefined,
 });
 
 const isLoading = ref(false);
@@ -123,7 +123,7 @@ const addChild = async () => {
       lastname: "",
       birthDate: "",
       userId: "",
-      userId2: "",
+      userId2: undefined,
     };
     await fetchChildren();
     createSuccessMsgChild.value = "Enfant créé avec succès";
@@ -172,10 +172,12 @@ const getUserChildren = (userId: string) => {
 
 const getChildParents = (child: Child) => {
   const parent1 = users.value.find((u) => u.idUser === child.userId);
-  const parent2 = users.value.find((u) => u.idUser === child.userId2);
+  const parent2 = child.userId2
+    ? users.value.find((u) => u.idUser === child.userId2)
+    : null;
 
   if (parent1 && parent2) {
-    return `${parent1.firstname} ${parent1.lastname} & ${parent2.firstname} ${parent2.lastname}`;
+    return `${parent1.firstname} ${parent1.lastname} et ${parent2.firstname} ${parent2.lastname}`;
   } else if (parent1) {
     return `${parent1.firstname} ${parent1.lastname}`;
   } else if (parent2) {
@@ -308,9 +310,8 @@ onMounted(() => {
                   user.role === 'parent' &&
                   getUserChildren(user.idUser || '').length > 0
                 "
-                class="mt-3"
               >
-                <p class="has-text-weight-bold mb-2">
+                <p class="has-text-weight-bold blue-dark mb-2">
                   {{
                     getUserChildren(user.idUser || "").length === 1
                       ? "Enfant :"
@@ -322,13 +323,13 @@ onMounted(() => {
                   :key="child.idChild"
                   class="ml-3 mb-1"
                 >
-                  <p class="is-size-7">
+                  <p class="is-size-6 blue-dark has-text-weight-bold">
                     {{ child.firstname }} {{ child.lastname }} -
                     {{ child.birthDate }}
                   </p>
                 </div>
               </div>
-              <div v-else-if="user.role === 'parent'" class="mt-3">
+              <div v-else-if="user.role === 'parent'">
                 <p class="is-size-7 has-text-grey">Aucun enfant enregistré</p>
               </div>
             </div>
@@ -372,8 +373,10 @@ onMounted(() => {
                 </span>
               </div>
               <div class="mt-2">
-                <p class="is-size-7 has-text-grey">
-                  <strong>Parents :</strong> {{ getChildParents(child) }}
+                <p class="is-size-6">
+                  <strong class="blue-dark"
+                    >Parents : {{ getChildParents(child) }}</strong
+                  >
                 </p>
               </div>
             </div>
@@ -591,6 +594,10 @@ p {
   padding: 8px 0;
   font-weight: 500;
   margin-bottom: 16px;
+}
+
+.blue-dark {
+  color: var(--primary);
 }
 
 .child-form-container {
