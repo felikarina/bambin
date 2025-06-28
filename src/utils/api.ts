@@ -134,6 +134,15 @@ export interface Picture {
   userId?: string;
 }
 
+export interface Child {
+  idChild?: string;
+  firstname?: string;
+  lastname?: string;
+  birthDate?: string;
+  userId?: string;
+  userId2?: string;
+}
+
 export async function fetchPictures(): Promise<Picture[]> {
   const response = await fetch("/api/pictures", {
     headers: { ...getDemoRoleHeader() },
@@ -182,4 +191,58 @@ export async function addPictureApi(newPicture: Partial<Picture>) {
     throw new Error("Erreur lors de l'ajout de la photo");
   }
   return response.json();
+}
+
+export async function fetchChildren(): Promise<Child[]> {
+  const role = localStorage.getItem("role");
+  if (role === "demo") return [];
+  const headers = { ...getDemoRoleHeader() };
+  const hasHeaders = Object.keys(headers).length > 0;
+  const response = hasHeaders
+    ? await fetch("/api/children", { headers })
+    : await fetch("/api/children");
+  if (!response.ok) throw new Error("Erreur lors du fetch des enfants");
+  return (await response.json()) as Child[];
+}
+
+export async function addChildApi(newChild: Partial<Child>) {
+  const response = await fetch("/api/children", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...getDemoRoleHeader() },
+    body: JSON.stringify(newChild),
+  });
+  if (!response.ok) {
+    const err = await response.json();
+    if (typeof err === "object" && err && "error" in err) {
+      throw new Error(
+        (err as { error?: string }).error ||
+          "Erreur lors de l'ajout de l'enfant"
+      );
+    }
+    throw new Error("Erreur lors de l'ajout de l'enfant");
+  }
+  return response.json();
+}
+
+export async function deleteChildApi(idChild: string) {
+  const response = await fetch(`/api/children?id=${idChild}`, {
+    method: "DELETE",
+    headers: { ...getDemoRoleHeader() },
+  });
+  if (!response.ok) {
+    const text = await response.text();
+    let err;
+    try {
+      err = text ? JSON.parse(text) : {};
+    } catch {
+      err = {};
+    }
+    if (typeof err === "object" && err && "error" in err) {
+      throw new Error(
+        (err as { error?: string }).error || "Erreur lors de la suppression"
+      );
+    }
+    throw new Error("Erreur lors de la suppression");
+  }
+  return;
 }

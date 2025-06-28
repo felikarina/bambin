@@ -62,23 +62,23 @@ async function submitPicture() {
   if (hasError) return;
   loading.value = true;
   try {
-    // Upload dans Supabase Storage
+    // Upload to Supabase Storage
     const fileName = `${Date.now()}_${file.value!.name}`;
     const { data, error } = await supabase.storage
       .from("picture")
       .upload(fileName, file.value!);
     if (error) throw new Error("Erreur upload Supabase: " + error.message);
-    // Récupérer l'URL publique
+    // Get public URL
     const { data: publicUrlData } = supabase.storage
       .from("picture")
       .getPublicUrl(fileName);
     const publicUrl = publicUrlData.publicUrl;
-    // Envoi à l'API avec l'URL
+    // Send to API with URL
     await addPictureApi({
       date: date.value,
       title: title.value,
       media: publicUrl,
-      userId: userId.value, // Remplacer par l'ID utilisateur approprié
+      userId: userId.value, // Replace with appropriate user ID
     });
     await fetchPicturesAndSet();
     message.value = "Photo ajoutée avec succès";
