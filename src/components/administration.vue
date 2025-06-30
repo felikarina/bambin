@@ -9,11 +9,24 @@ import {
   addChildApi,
   deleteChildApi,
   type Child,
+  fetchSections as fetchSectionsApi,
+  addChildSectionApi,
+  fetchChildSections as fetchChildSectionsApi,
+  type Section,
+  type ChildSection,
 } from "../utils/api";
-import { fakeUsers, fakeChildren } from "../utils/mockData";
+import {
+  fakeUsers,
+  fakeChildren,
+  fakeSections,
+  fakeChildSections,
+} from "../utils/mockData";
 
 const users = ref<User[]>([]);
 const children = ref<Child[]>([]);
+const sections = ref<Section[]>([]);
+const childSections = ref<ChildSection[]>([]);
+const selectedSectionId = ref<string>("");
 
 const newUser = ref({
   firstname: "",
@@ -113,11 +126,33 @@ const fetchChildren = async () => {
   }
 };
 
+const fetchSections = async () => {
+  try {
+    sections.value = await fetchSectionsApi();
+  } catch (e: any) {
+    console.error("Erreur lors du fetch des sections:", e);
+  }
+};
+
+const fetchChildSections = async () => {
+  try {
+    childSections.value = await fetchChildSectionsApi();
+  } catch (e: any) {
+    console.error("Erreur lors du fetch des associations enfant-section:", e);
+  }
+};
+
 const addChild = async () => {
   isLoadingChild.value = true;
   errorMsgChild.value = "";
   try {
-    await addChildApi(newChild.value);
+    const createdChild = await addChildApi(newChild.value);
+    if (selectedSectionId.value) {
+      await addChildSectionApi({
+        childId: createdChild.idChild,
+        sectionName: selectedSectionId.value,
+      });
+    }
     newChild.value = {
       firstname: "",
       lastname: "",
@@ -125,6 +160,7 @@ const addChild = async () => {
       userId: "",
       userId2: undefined,
     };
+    selectedSectionId.value = "";
     await fetchChildren();
     createSuccessMsgChild.value = "Enfant créé avec succès";
     setTimeout(() => {
@@ -162,6 +198,23 @@ const confirmDeleteChild = async () => {
 const cancelDeleteChild = () => {
   showModalChild.value = false;
   childToDelete.value = null;
+};
+
+const getChildSection = (childId: string) => {
+  if (isDemo.value) {
+    const childSection = fakeChildSections.find((cs) => cs.childId === childId);
+    if (childSection) {
+      return { name: childSection.sectionName };
+    }
+  } else {
+    const childSection = childSections.value.find(
+      (cs) => cs.childId === childId
+    );
+    if (childSection) {
+      return { name: childSection.sectionId };
+    }
+  }
+  return null;
 };
 
 const getUserChildren = (userId: string) => {
@@ -205,6 +258,8 @@ onMounted(() => {
   newChild.value.userId = localStorage.getItem("userId") || "";
   fetchUsers();
   fetchChildren();
+  fetchSections();
+  fetchChildSections();
 });
 </script>
 <template>
@@ -276,6 +331,12 @@ onMounted(() => {
         >
           {{ user.firstname }} {{ user.lastname }}
         </option>
+      </select>
+      <select v-model="selectedSectionId">
+        <option value="" disabled selected>Sélectionner une section</option>
+        <option value="petit">Petit</option>
+        <option value="moyen">Moyen</option>
+        <option value="grand">Grand</option>
       </select>
       <button type="submit" :disabled="isLoadingChild">Ajouter</button>
       <span v-if="errorMsgChild" class="error ml-3">{{ errorMsgChild }}</span>
@@ -388,6 +449,15 @@ onMounted(() => {
                     >Parents : {{ getChildParents(child) }}</strong
                   >
                 </p>
+                <p class="is-size-6">
+                  <strong class="blue-dark"
+                    >Section :
+                    {{
+                      getChildSection(child.idChild || "")?.name ||
+                      "Non assignée"
+                    }}</strong
+                  >
+                </p>
               </div>
             </div>
           </div>
@@ -395,6 +465,7 @@ onMounted(() => {
       </div>
     </div>
   </div>
+
   <!-- User modals -->
   <div
     v-if="showModal"
@@ -642,9 +713,5 @@ p {
 }
 .child-form .error {
   color: red;
-}
-
-.cell {
-  padding: 1%;
 }
 </style>

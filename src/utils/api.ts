@@ -246,3 +246,63 @@ export async function deleteChildApi(idChild: string) {
   }
   return;
 }
+
+export interface Section {
+  idSection?: string;
+  name?: string;
+  year?: number;
+  numberOfChild?: number;
+}
+
+export interface ChildSection {
+  idChildSection?: string;
+  childId?: string;
+  sectionId?: string;
+  sectionName?: string; // For demo data only
+}
+
+export async function fetchSections(): Promise<Section[]> {
+  const role = localStorage.getItem("role");
+  if (role === "demo") return [];
+  const headers = { ...getDemoRoleHeader() };
+  const hasHeaders = Object.keys(headers).length > 0;
+  const response = hasHeaders
+    ? await fetch("/api/sections", { headers })
+    : await fetch("/api/sections");
+  if (!response.ok) throw new Error("Erreur lors du fetch des sections");
+  return (await response.json()) as Section[];
+}
+
+export async function addChildSectionApi(
+  newChildSection: Partial<ChildSection>
+) {
+  const response = await fetch("/api/child-sections", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...getDemoRoleHeader() },
+    body: JSON.stringify(newChildSection),
+  });
+  if (!response.ok) {
+    const err = await response.json();
+    if (typeof err === "object" && err && "error" in err) {
+      throw new Error(
+        (err as { error?: string }).error ||
+          "Erreur lors de l'association enfant-section"
+      );
+    }
+    throw new Error("Erreur lors de l'association enfant-section");
+  }
+  return response.json();
+}
+
+export async function fetchChildSections(): Promise<ChildSection[]> {
+  const role = localStorage.getItem("role");
+  if (role === "demo") return [];
+  const headers = { ...getDemoRoleHeader() };
+  const hasHeaders = Object.keys(headers).length > 0;
+  const response = hasHeaders
+    ? await fetch("/api/child-sections", { headers })
+    : await fetch("/api/child-sections");
+  if (!response.ok)
+    throw new Error("Erreur lors du fetch des associations enfant-section");
+  return (await response.json()) as ChildSection[];
+}
