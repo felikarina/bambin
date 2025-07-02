@@ -279,7 +279,10 @@ export async function addChildSectionApi(
   const response = await fetch("/api/child-sections", {
     method: "POST",
     headers: { "Content-Type": "application/json", ...getDemoRoleHeader() },
-    body: JSON.stringify(newChildSection),
+    body: JSON.stringify({
+      childId: newChildSection.childId,
+      sectionName: newChildSection.sectionName,
+    }),
   });
   if (!response.ok) {
     const err = await response.json();

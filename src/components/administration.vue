@@ -166,6 +166,7 @@ const addChild = async () => {
     };
     selectedSectionId.value = "";
     await fetchChildren();
+    await fetchChildSections();
     createSuccessMsgChild.value = "Enfant créé avec succès";
     setTimeout(() => {
       createSuccessMsgChild.value = "";
@@ -282,6 +283,7 @@ onMounted(() => {
     :users="users"
     :selectedSectionId="selectedSectionId"
     @addChild="addChild"
+    @update:selectedSectionId="selectedSectionId = $event"
   />
   <UserListSection
     :users="users"

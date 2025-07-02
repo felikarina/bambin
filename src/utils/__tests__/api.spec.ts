@@ -331,7 +331,7 @@ describe("API utils", () => {
     it("addChildSectionApi ajoute une association enfant-section", async () => {
       const newChildSection = {
         childId: "child1",
-        sectionId: "section1",
+        sectionName: "petit",
       };
       const created = { ...newChildSection, idChildSection: "1" };
       mockFetch.mockResolvedValueOnce({ ok: true, json: async () => created });
@@ -344,7 +344,10 @@ describe("API utils", () => {
           headers: expect.objectContaining({
             "Content-Type": "application/json",
           }),
-          body: JSON.stringify(newChildSection),
+          body: JSON.stringify({
+            childId: "child1",
+            sectionName: "petit",
+          }),
         })
       );
     });

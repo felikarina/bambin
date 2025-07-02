@@ -15,6 +15,13 @@ const emit = defineEmits([
   "addChild",
   "update:selectedSectionId",
 ]);
+
+const handleSectionChange = (event: Event) => {
+  const target = event.target as HTMLSelectElement;
+  if (target) {
+    emit("update:selectedSectionId", target.value);
+  }
+};
 </script>
 <template>
   <div class="child-form-container p-4 mt-4" v-disable-demo>
@@ -53,7 +60,7 @@ const emit = defineEmits([
           {{ user.firstname }} {{ user.lastname }}
         </option>
       </select>
-      <select v-model="props.selectedSectionId">
+      <select :value="props.selectedSectionId" @change="handleSectionChange">
         <option value="" disabled selected>Sélectionner une section</option>
         <option value="petit">Petit</option>
         <option value="moyen">Moyen</option>
