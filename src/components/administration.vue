@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
+import UserFormSection from "./UserFormSection.vue";
+import ChildFormSection from "./ChildFormSection.vue";
+import UserListSection from "./UserListSection.vue";
+import ChildListSection from "./ChildListSection.vue";
 import {
   fetchUsers as fetchUsersApi,
   addUserApi,
@@ -9,11 +13,24 @@ import {
   addChildApi,
   deleteChildApi,
   type Child,
+  fetchSections as fetchSectionsApi,
+  addChildSectionApi,
+  fetchChildSections as fetchChildSectionsApi,
+  type Section,
+  type ChildSection,
 } from "../utils/api";
-import { fakeUsers, fakeChildren } from "../utils/mockData";
+import {
+  fakeUsers,
+  fakeChildren,
+  fakeSections,
+  fakeChildSections,
+} from "../utils/mockData";
 
 const users = ref<User[]>([]);
 const children = ref<Child[]>([]);
+const sections = ref<Section[]>([]);
+const childSections = ref<ChildSection[]>([]);
+const selectedSectionId = ref<string>("");
 
 const newUser = ref({
   firstname: "",
@@ -113,11 +130,33 @@ const fetchChildren = async () => {
   }
 };
 
+const fetchSections = async () => {
+  try {
+    sections.value = await fetchSectionsApi();
+  } catch (e: any) {
+    console.error("Erreur lors du fetch des sections:", e);
+  }
+};
+
+const fetchChildSections = async () => {
+  try {
+    childSections.value = await fetchChildSectionsApi();
+  } catch (e: any) {
+    console.error("Erreur lors du fetch des associations enfant-section:", e);
+  }
+};
+
 const addChild = async () => {
   isLoadingChild.value = true;
   errorMsgChild.value = "";
   try {
-    await addChildApi(newChild.value);
+    const createdChild = await addChildApi(newChild.value);
+    if (selectedSectionId.value) {
+      await addChildSectionApi({
+        childId: createdChild.idChild,
+        sectionName: selectedSectionId.value,
+      });
+    }
     newChild.value = {
       firstname: "",
       lastname: "",
@@ -125,7 +164,9 @@ const addChild = async () => {
       userId: "",
       userId2: undefined,
     };
+    selectedSectionId.value = "";
     await fetchChildren();
+    await fetchChildSections();
     createSuccessMsgChild.value = "Enfant créé avec succès";
     setTimeout(() => {
       createSuccessMsgChild.value = "";
@@ -162,6 +203,23 @@ const confirmDeleteChild = async () => {
 const cancelDeleteChild = () => {
   showModalChild.value = false;
   childToDelete.value = null;
+};
+
+const getChildSection = (childId: string) => {
+  if (isDemo.value) {
+    const childSection = fakeChildSections.find((cs) => cs.childId === childId);
+    if (childSection && childSection.sectionName) {
+      return { name: childSection.sectionName };
+    }
+  } else {
+    const childSection = childSections.value.find(
+      (cs) => cs.childId === childId
+    );
+    if (childSection && childSection.sectionId) {
+      return { name: childSection.sectionId };
+    }
+  }
+  return { name: "" };
 };
 
 const getUserChildren = (userId: string) => {
@@ -205,196 +263,43 @@ onMounted(() => {
   newChild.value.userId = localStorage.getItem("userId") || "";
   fetchUsers();
   fetchChildren();
+  fetchSections();
+  fetchChildSections();
 });
 </script>
 <template>
-  <!-- User section -->
-  <div class="user-form-container p-4 mt-2" v-disable-demo>
-    <p class="mb-4 has-text-weight-bold">Création d'un nouvel utilisateur</p>
-    <form
-      class="user-form is-flex is-align-items-center mb-5"
-      @submit.prevent="addUser"
-    >
-      <input v-model="newUser.firstname" placeholder="Prénom" required />
-      <input v-model="newUser.lastname" placeholder="Nom" required />
-      <input
-        v-model="newUser.email"
-        placeholder="Email"
-        type="email"
-        required
-      />
-      <select v-model="newUser.role" required>
-        <option value="" disabled selected>Sélectionner un rôle</option>
-        <option value="parent">Parent</option>
-        <option value="admin">Admin</option>
-        <option value="nurseryStaff">Personnel</option>
-      </select>
-      <input
-        v-model="newUser.password"
-        placeholder="Mot de passe"
-        type="password"
-        required
-      />
-      <button type="submit" :disabled="isLoading">Ajouter</button>
-      <span v-if="errorMsg" class="error ml-3">{{ errorMsg }}</span>
-    </form>
-  </div>
-
-  <!-- Children section -->
-  <div class="child-form-container p-4 mt-4" v-disable-demo>
-    <p class="mb-4 has-text-weight-bold">Création d'un nouvel enfant</p>
-    <form
-      class="child-form is-flex is-align-items-center mb-5"
-      @submit.prevent="addChild"
-    >
-      <input v-model="newChild.firstname" placeholder="Prénom" required />
-      <input v-model="newChild.lastname" placeholder="Nom" required />
-      <input
-        v-model="newChild.birthDate"
-        placeholder="Date de naissance"
-        type="date"
-        required
-      />
-      <select v-model="newChild.userId" required>
-        <option value="" disabled selected>Parent 1</option>
-        <option
-          v-for="user in users.filter((u) => u.role === 'parent')"
-          :key="user.idUser"
-          :value="user.idUser"
-        >
-          {{ user.firstname }} {{ user.lastname }}
-        </option>
-      </select>
-      <select v-model="newChild.userId2">
-        <option value="">Parent 2</option>
-        <option
-          v-for="user in users.filter(
-            (u) => u.role === 'parent' && u.idUser !== newChild.userId
-          )"
-          :key="user.idUser"
-          :value="user.idUser"
-        >
-          {{ user.firstname }} {{ user.lastname }}
-        </option>
-      </select>
-      <button type="submit" :disabled="isLoadingChild">Ajouter</button>
-      <span v-if="errorMsgChild" class="error ml-3">{{ errorMsgChild }}</span>
-    </form>
-  </div>
-
-  <!-- User section -->
-  <div class="main mt-4" v-disable-demo>
-    <div v-if="isDemo" class="demo-info mb-3">
-      (liste d'utilisateurs factice)
-    </div>
-    <div class="fixed-grid has-1-cols">
-      <div class="grid">
-        <div
-          class="cell"
-          v-for="user in isDemo ? fakeUsers : users"
-          :key="user.idUser"
-        >
-          <div class="card">
-            <div
-              class="card-header is-flex is-align-items-center is-justify-content-space-between has-text-weight-semibold"
-            >
-              <div class="card-header-title pl-4">
-                <p class="firstname pr-4">{{ user.firstname }}</p>
-                <p>{{ user.lastname }}</p>
-              </div>
-              <p class="role pr-4">{{ user.role }}</p>
-            </div>
-            <div class="card-content">
-              <div
-                class="content has-text-weight-semibold is-flex is-align-items-center is-justify-content-space-between"
-              >
-                <p class="mr-2">{{ user.email }}</p>
-                <span
-                  class="button is-danger is-outlined"
-                  title="Supprimer l'utilisateur"
-                  @click="isDemo ? null : askDeleteUser(user)"
-                  ><span class="icon"> <i class="fas fa-trash"></i></span>
-                </span>
-              </div>
-              <!-- Display children for parents -->
-              <div
-                v-if="
-                  user.role === 'parent' &&
-                  getUserChildren(user.idUser || '').length > 0
-                "
-              >
-                <p class="has-text-weight-bold blue-dark mb-2">
-                  {{
-                    getUserChildren(user.idUser || "").length === 1
-                      ? "Enfant :"
-                      : "Enfants :"
-                  }}
-                </p>
-                <div
-                  v-for="child in getUserChildren(user.idUser || '')"
-                  :key="child.idChild"
-                  class="ml-3 mb-1"
-                >
-                  <p class="is-size-6 blue-dark has-text-weight-bold">
-                    {{ child.firstname }} {{ child.lastname }} -
-                    {{ child.birthDate }}
-                  </p>
-                </div>
-              </div>
-              <div v-else-if="user.role === 'parent'">
-                <p class="is-size-7 has-text-grey">Aucun enfant enregistré</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Children section -->
-  <div class="main mt-4" v-disable-demo>
-    <div v-if="isDemo" class="demo-info mb-3">(liste d'enfants factice)</div>
-    <div class="fixed-grid has-1-cols">
-      <div class="grid">
-        <div
-          class="cell"
-          v-for="child in isDemo ? fakeChildren : children"
-          :key="child.idChild"
-        >
-          <div class="card">
-            <div
-              class="card-header is-flex is-align-items-center is-justify-content-space-between has-text-weight-semibold"
-            >
-              <div class="card-header-title pl-4">
-                <p class="firstname pr-4">{{ child.firstname }}</p>
-                <p>{{ child.lastname }}</p>
-              </div>
-              <p class="birth-date pr-4">{{ child.birthDate }}</p>
-            </div>
-            <div class="card-content">
-              <div
-                class="content has-text-weight-semibold is-flex is-align-items-center is-justify-content-space-between"
-              >
-                <p class="mr-2">{{ child.firstname }} {{ child.lastname }}</p>
-                <span
-                  class="button is-danger is-outlined"
-                  title="Supprimer l'enfant"
-                  @click="isDemo ? null : askDeleteChild(child)"
-                  ><span class="icon"> <i class="fas fa-trash"></i></span>
-                </span>
-              </div>
-              <div class="mt-2">
-                <p class="is-size-6">
-                  <strong class="blue-dark"
-                    >Parents : {{ getChildParents(child) }}</strong
-                  >
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <UserFormSection
+    :newUser="newUser"
+    :isLoading="isLoading"
+    :errorMsg="errorMsg"
+    :createSuccessMsg="createSuccessMsg"
+    @addUser="addUser"
+  />
+  <ChildFormSection
+    :newChild="newChild"
+    :isLoadingChild="isLoadingChild"
+    :errorMsgChild="errorMsgChild"
+    :createSuccessMsgChild="createSuccessMsgChild"
+    :users="users"
+    :selectedSectionId="selectedSectionId"
+    @addChild="addChild"
+    @update:selectedSectionId="selectedSectionId = $event"
+  />
+  <UserListSection
+    :users="users"
+    :isDemo="isDemo"
+    :fakeUsers="fakeUsers"
+    :getUserChildren="getUserChildren"
+    :askDeleteUser="askDeleteUser"
+  />
+  <ChildListSection
+    :children="children"
+    :isDemo="isDemo"
+    :fakeChildren="fakeChildren"
+    :getChildParents="getChildParents"
+    :getChildSection="getChildSection"
+    :askDeleteChild="askDeleteChild"
+  />
   <!-- User modals -->
   <div
     v-if="showModal"
@@ -426,18 +331,6 @@ onMounted(() => {
       {{ successMsg }}
     </div>
   </div>
-  <div
-    v-if="createSuccessMsg"
-    class="modal-overlay is-flex is-justify-content-center is-align-items-center"
-    v-disable-demo
-  >
-    <div
-      class="modal-box success-modal has-text-centered has-text-weight-bold py-6 px-5"
-    >
-      {{ createSuccessMsg }}
-    </div>
-  </div>
-
   <!-- Children modals -->
   <div
     v-if="showModalChild"
@@ -467,17 +360,6 @@ onMounted(() => {
       class="modal-box success-modal has-text-centered has-text-weight-bold py-6 px-5"
     >
       {{ successMsgChild }}
-    </div>
-  </div>
-  <div
-    v-if="createSuccessMsgChild"
-    class="modal-overlay is-flex is-justify-content-center is-align-items-center"
-    v-disable-demo
-  >
-    <div
-      class="modal-box success-modal has-text-centered has-text-weight-bold py-6 px-5"
-    >
-      {{ createSuccessMsgChild }}
     </div>
   </div>
 </template>
@@ -642,9 +524,5 @@ p {
 }
 .child-form .error {
   color: red;
-}
-
-.cell {
-  padding: 1%;
 }
 </style>

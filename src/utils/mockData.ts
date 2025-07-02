@@ -98,3 +98,52 @@ export const fakeChildren = [
     userId2: "user-2",
   },
 ];
+
+export const fakeSections = [
+  {
+    idSection: "section-1",
+    name: "Petit",
+    year: 2024,
+    numberOfChild: 15,
+  },
+  {
+    idSection: "section-2",
+    name: "Moyen",
+    year: 2024,
+    numberOfChild: 18,
+  },
+  {
+    idSection: "section-3",
+    name: "Grand",
+    year: 2024,
+    numberOfChild: 20,
+  },
+];
+
+export const fakeChildSections = [
+  {
+    idChildSection: "child-section-1",
+    childId: "child-1",
+    sectionName: "petit",
+  },
+  {
+    idChildSection: "child-section-2",
+    childId: "child-2",
+    sectionName: "moyen",
+  },
+  {
+    idChildSection: "child-section-3",
+    childId: "child-3",
+    sectionName: "petit",
+  },
+  {
+    idChildSection: "child-section-4",
+    childId: "child-4",
+    sectionName: "grand",
+  },
+  {
+    idChildSection: "child-section-5",
+    childId: "child-5",
+    sectionName: "petit",
+  },
+];

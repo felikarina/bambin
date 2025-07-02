@@ -65,18 +65,13 @@ export const childSection = pgTable(
       .primaryKey()
       .notNull(),
     childId: uuid("child_id").defaultRandom().notNull(),
-    sectionId: uuid("section_id").defaultRandom(),
+    sectionId: text("section_id"),
   },
   (table) => [
     foreignKey({
       columns: [table.childId],
       foreignColumns: [child.idChild],
       name: "child_section_child_id_fkey",
-    }),
-    foreignKey({
-      columns: [table.sectionId],
-      foreignColumns: [section.idSection],
-      name: "child_section_section_id_fkey",
     }),
   ]
 );
