@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { db } from "../db";
-import { section } from "../db/schema";
+import { db } from "./db";
+import { section } from "./db/schema";
 
 function isDemoRequest(req: VercelRequest): boolean {
   const role = req.headers["x-user-role"] || req.query.role || req.body?.role;

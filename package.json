@@ -9,7 +9,7 @@
     "test:unit": "vitest --config tsconfig/vitest.config.ts --coverage",
     "test:e2e": "playwright test --config=tsconfig/playwright.config.ts",
     "build-only": "vite build",
-    "type-check": "vue-tsc --build",
+    "type-check": "vue-tsc --build tsconfig/tsconfig.app.json",
     "lint": "eslint . --fix",
     "format": "prettier --write src/",
     "db:generate": "drizzle-kit generate --config tsconfig/drizzle.config.ts",

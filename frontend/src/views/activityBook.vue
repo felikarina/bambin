@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import NavigationSidebar from "./../components/NavigationSidebar.vue";
-import gallery from "./../components/gallery.vue";
-import headerGallery from "./../components/headerGallery.vue";
-import headerMobile from "./../components/headerMobile.vue";
+import NavigationSidebar from "../components/NavigationSidebar.vue";
+import book from "../components/book.vue";
+import headerGallery from "../components/headerGallery.vue";
+import headerMobile from "../components/headerMobile.vue";
 </script>
 
 <template>
   <main class="columns">
     <div class="pr-2 column is-one-quarter left-part is-hidden-mobile">
-      <NavigationSidebar class="" />
+      <NavigationSidebar />
     </div>
     <div class="column right-part">
       <div class="column">
@@ -18,7 +18,7 @@ import headerMobile from "./../components/headerMobile.vue";
         <headerMobile class="mx-4 is-hidden-tablet" />
       </div>
       <div class="column">
-        <gallery class="mt-2 mx-4" />
+        <book class="mt-2 mx-4" />
       </div>
     </div>
   </main>
@@ -26,10 +26,10 @@ import headerMobile from "./../components/headerMobile.vue";
 
 <style scoped>
 .left-part {
-  height: 100vh;
+  height: 102vh;
 }
 .right-part {
-  height: 100vh;
+  height: 102vh;
   overflow: auto;
 }
 </style>

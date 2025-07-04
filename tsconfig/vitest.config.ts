@@ -8,18 +8,18 @@ export default mergeConfig(
     test: {
       environment: "jsdom",
       exclude: [...configDefaults.exclude, "e2e/**"],
-      include: ["src/**/*.spec.ts", "src/**/*.test.ts"],
+      include: ["frontend/src/**/*.spec.ts", "frontend/src/**/*.test.ts"],
       root: fileURLToPath(new URL("../", import.meta.url)),
       coverage: {
         all: true,
         reporter: ["text", "html"],
         reportsDirectory: "coverage",
-        include: ["src/**/*"],
+        include: ["frontend/src/**/*"],
         exclude: [
-          "src/components/icons/**",
+          "frontend/src/components/icons/**",
           "**/*.spec.ts",
           "**/*.test.ts",
-          "src/main.ts",
+          "frontend/src/main.ts",
           "src/env.d.ts",
         ],
       },

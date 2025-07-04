@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import NavigationSidebar from "./../components/NavigationSidebar.vue";
-import write from "../components/write.vue";
-import headerGallery from "./../components/headerGallery.vue";
-import headerAdmin from "./../components/headerAdmin.vue";
+import NavigationSidebar from "../components/NavigationSidebar.vue";
+import upload from "../components/upload.vue";
+import headerGallery from "../components/headerGallery.vue";
+import headerAdmin from "../components/headerAdmin.vue";
 </script>
 
 <template>
@@ -15,7 +15,7 @@ import headerAdmin from "./../components/headerAdmin.vue";
         <headerAdmin class="mx-4 is-hidden-tablet" />
       </div>
       <div class="column" v-disable-demo>
-        <write class="m-4" />
+        <upload class="m-4" />
       </div>
     </div>
   </main>

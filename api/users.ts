@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { db } from "../db";
-import { user } from "../db/schema";
+import { db } from "./db";
+import { user } from "./db/schema";
 import { hashPassword } from "./utils/auth";
 import { eq } from "drizzle-orm";
 
