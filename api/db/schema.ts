@@ -147,7 +147,7 @@ export const sectionActivity = pgTable(
       .defaultRandom()
       .primaryKey()
       .notNull(),
-    sectionId: uuid("section_id").defaultRandom().notNull(),
+    sectionId: text("section_id"),
     activityId: uuid("activity_id").defaultRandom(),
   },
   (table) => [

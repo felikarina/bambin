@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, defineEmits } from "vue";
+import { defineProps } from "vue";
 import type { Child, User } from "../utils/api";
 
 const props = defineProps<{
