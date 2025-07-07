@@ -156,11 +156,6 @@ export const sectionActivity = pgTable(
       foreignColumns: [activity.idActivity],
       name: "section_activity_activity_id_fkey",
     }),
-    foreignKey({
-      columns: [table.sectionId],
-      foreignColumns: [section.idSection],
-      name: "section_activity_section_id_fkey",
-    }),
   ]
 );
 

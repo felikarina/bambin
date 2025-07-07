@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  db_test:
+    image: postgres:17
+    container_name: bambin_db_test
+    environment:
+      POSTGRES_DB: bambin_test
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+    ports:
+      - "5435:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test"]
+      interval: 2s
+      timeout: 2s
+      retries: 10

@@ -8,6 +8,20 @@ on:
 jobs:
   trigger-vercel-deploy:
     runs-on: ubuntu-latest
+    services:
+      db_test:
+        image: postgres:17
+        env:
+          POSTGRES_DB: bambin_test
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+        ports:
+          - 5435:5432
+        options: >-
+          --health-cmd="pg_isready -U test"
+          --health-interval=2s
+          --health-timeout=2s
+          --health-retries=10
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -19,6 +33,15 @@ jobs:
         run: npm ci
       - name: Run unit tests
         run: npm run test:unit -- --run
+      - name: Wait for DB to be ready
+        run: |
+          until pg_isready -h localhost -p 5435 -U test; do
+            sleep 1
+          done
+      - name: Run DB orchestration and tests
+        env:
+          DATABASE_URL_TEST: postgres://test:test@localhost:5435/bambin_test
+        run: ./test-with-db.sh
       - name: Trigger Vercel Deploy Hook
         if: success()
         run: |
