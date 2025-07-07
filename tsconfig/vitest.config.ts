@@ -9,7 +9,7 @@ export default mergeConfig(
       environment: "jsdom",
       exclude: [...configDefaults.exclude, "e2e/**"],
       include: [
-        "api/db/__tests__/**/*.test.ts",
+        "backend/db/__tests__/**/*.test.ts",
         "frontend/src/**/*.spec.ts",
         "frontend/src/**/*.test.ts",
       ],

@@ -16,7 +16,7 @@ echo "Application des migrations Drizzle..."
 DATABASE_URL="$DATABASE_URL_TEST" npx drizzle-kit push --config=tsconfig/drizzle.config.ts
 
 echo "Seeding the test database with seed..."
-DATABASE_URL="$DATABASE_URL_TEST" npx ts-node api/db/seed.ts
+DATABASE_URL="$DATABASE_URL_TEST" npx ts-node backend/db/seed.ts
 
 echo "La base de test est prête et peuplée..."
 
