@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { db } from "./db";
-import { user } from "./db/schema";
-import { hashPassword } from "./utils/auth";
+import { db } from "../backend/db";
+import { user } from "../backend/db/schema";
+import { hashPassword } from "../backend/utils/auth";
 import { eq } from "drizzle-orm";
 
 function isDemoRequest(req: VercelRequest): boolean {

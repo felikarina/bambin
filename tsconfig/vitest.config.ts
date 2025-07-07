@@ -8,7 +8,11 @@ export default mergeConfig(
     test: {
       environment: "jsdom",
       exclude: [...configDefaults.exclude, "e2e/**"],
-      include: ["frontend/src/**/*.spec.ts", "frontend/src/**/*.test.ts"],
+      include: [
+        "backend/db/__tests__/**/*.test.ts",
+        "frontend/src/**/*.spec.ts",
+        "frontend/src/**/*.test.ts",
+      ],
       root: fileURLToPath(new URL("../", import.meta.url)),
       coverage: {
         all: true,

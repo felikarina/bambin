@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { db } from "./db";
-import { picture } from "./db/schema";
+import { db } from "../backend/db";
+import { picture } from "../backend/db/schema";
 import { eq } from "drizzle-orm";
 
 function isDemoRequest(req: VercelRequest): boolean {

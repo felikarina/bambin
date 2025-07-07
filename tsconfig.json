@@ -2,7 +2,8 @@
   "compilerOptions": {
     "skipLibCheck": true,
     "strict": false,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "esModuleInterop": true
   },
   "exclude": ["node_modules/**/*"],
   "files": [],
