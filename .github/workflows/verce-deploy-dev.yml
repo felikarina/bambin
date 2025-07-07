@@ -38,6 +38,8 @@ jobs:
           until pg_isready -h localhost -p 5435 -U test; do
             sleep 1
           done
+      - name: user rights
+        run: chmod +x test-with-db.sh
       - name: Run DB orchestration and tests
         env:
           DATABASE_URL_TEST: postgres://test:test@localhost:5435/bambin_test
