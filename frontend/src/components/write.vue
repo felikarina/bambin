@@ -106,7 +106,7 @@ async function submitActivity() {
 }
 
 const filteredActivities = computed(() => {
-  if (userRole.value === "admin") {
+  if (userRole.value === "admin" || userRole.value === "demo") {
     return activities.value;
   }
   return activities.value.filter(
