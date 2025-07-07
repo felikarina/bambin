@@ -5,7 +5,7 @@ echo "Chargement des variables d'environnement de test..."
 export $(grep -v '^#' .env.test | xargs)
 
 echo "Démarrage de la base de test Docker..."
-docker-compose -f docker-compose.test.yml up -d
+docker compose -f docker-compose.test.yml up -d
 
 echo "Attente de la disponibilité de la base..."
 until docker exec bambin_db_test pg_isready -U test; do
@@ -24,4 +24,4 @@ echo "Lancement des tests..."
 npm run test:db
 
 echo "Arrêt et suppression du conteneur de test..."
-docker-compose -f docker-compose.test.yml down -v
+docker compose -f docker-compose.test.yml down -v
