@@ -12,11 +12,14 @@ until docker exec bambin_db_test pg_isready -U test; do
   sleep 1
 done
 
+echo "Dropping all tables in the test database..."
+docker exec bambin_db_test psql -U test -d bambin_test -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+
 echo "Applying Drizzle migrations..."
-DATABASE_URL="$DATABASE_URL_TEST" npx drizzle-kit push --config=tsconfig/drizzle.config.ts
+npx drizzle-kit push --config=tsconfig/drizzle.config.ts
 
 echo "Seeding the test database with seed..."
-DATABASE_URL="$DATABASE_URL_TEST" npx ts-node backend/db/seed.ts
+npx ts-node backend/db/seed.ts
 
 echo "The test database is ready and seeded..."
 

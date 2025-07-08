@@ -18,7 +18,7 @@
     "db:studio": "drizzle-kit studio --config tsconfig/drizzle.config.ts",
     "db:pull": "drizzle-kit introspect --config tsconfig/drizzle.config.ts",
     "start": "tsx start.ts",
-    "test:db": "cross-env DATABASE_URL=$DATABASE_URL_TEST vitest run --config tsconfig/vitest.config.ts --run backend/db/__tests__"
+    "test:db": "vitest run --config tsconfig/vitest.config.ts --run backend/db/__tests__"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
