@@ -1,27 +1,27 @@
 #!/bin/bash
 set -e
 
-echo "Chargement des variables d'environnement de test..."
+echo "Loading test environment variables..."
 export $(grep -v '^#' .env.test | xargs)
 
-echo "Démarrage de la base de test Docker..."
+echo "Starting the test Docker database..."
 docker compose -f docker-compose.test.yml up -d
 
-echo "Attente de la disponibilité de la base..."
+echo "Waiting for the database to be available..."
 until docker exec bambin_db_test pg_isready -U test; do
   sleep 1
 done
 
-echo "Application des migrations Drizzle..."
+echo "Applying Drizzle migrations..."
 DATABASE_URL="$DATABASE_URL_TEST" npx drizzle-kit push --config=tsconfig/drizzle.config.ts
 
 echo "Seeding the test database with seed..."
 DATABASE_URL="$DATABASE_URL_TEST" npx ts-node backend/db/seed.ts
 
-echo "La base de test est prête et peuplée..."
+echo "The test database is ready and seeded..."
 
-echo "Lancement des tests..."
+echo "Running tests..."
 npm run test:db
 
-echo "Arrêt et suppression du conteneur de test..."
+echo "Stopping and removing the test container..."
 docker compose -f docker-compose.test.yml down -v
