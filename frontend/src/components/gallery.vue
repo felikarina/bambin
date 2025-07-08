@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formattedDate } from "../utils/formattedDate";
+import { formattedDate } from "../utils/formatted-date";
 import { ref, onMounted } from "vue";
 import { fetchPictures, type Picture } from "../utils/api";
 

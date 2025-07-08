@@ -24,7 +24,7 @@ import {
   fakeChildren,
   fakeSections,
   fakeChildSections,
-} from "../utils/mockData";
+} from "../utils/mock-data";
 
 const users = ref<User[]>([]);
 const children = ref<Child[]>([]);
