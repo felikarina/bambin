@@ -41,7 +41,7 @@ jobs:
             sleep 1
           done
       - name: Start server
-        run: vercel dev --listen 3000 --token ${{ secrets.VERCEL_TOKEN }} &
+        run: vercel dev --listen 3000 --token ${{ secrets.VERCEL_TOKEN }} --yes &
       - name: Wait for server to be ready
         run: |
           for i in {1..20}; do
