@@ -45,6 +45,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: "ID utilisateur manquant" });
     }
     try {
+      await db
+        .delete(sectionActivity)
+        .where(eq(sectionActivity.activityId, id as string));
       await db.delete(activity).where(eq(activity.idActivity, id as string));
       return res.status(204).end();
     } catch (error) {
