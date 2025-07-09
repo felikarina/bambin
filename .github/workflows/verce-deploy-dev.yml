@@ -44,7 +44,7 @@ jobs:
         run: vercel dev --listen 3000 --token ${{ secrets.VERCEL_TOKEN }} --yes &
       - name: Wait for server to be ready
         run: |
-          for i in {1..20}; do
+          for i in {1..40}; do
             if curl -s http://localhost:3000/api/users | grep -q "^\["; then
               echo "API ready !"
               exit 0
@@ -52,7 +52,7 @@ jobs:
             echo "Waiting for API..."
             sleep 2
           done
-          echo "API not ready after 40s"
+          echo "API not ready after 80s"
           exit 1
       - name: User rights
         run: chmod +x test-with-db.sh

@@ -23,8 +23,14 @@ npx ts-node backend/db/seed.ts
 
 echo "The test database is ready and seeded..."
 
-echo "Running tests..."
+echo "Running db tests..."
 npm run test:db
+
+echo "Installing Playwright browsers..."
+npx playwright install chromium
+
+echo "Running Playwright E2E tests..."
+npm run test:e2e
 
 echo "Stopping and removing the test container..."
 docker compose -f docker-compose.test.yml down -v

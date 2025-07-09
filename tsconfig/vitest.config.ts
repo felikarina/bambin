@@ -27,6 +27,7 @@ export default mergeConfig(
           "src/env.d.ts",
         ],
       },
+      testTimeout: 20000,
     },
   })
 );
