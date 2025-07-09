@@ -157,6 +157,7 @@ const confirmDeleteActivity = async () => {
                   {{ errors.date }}
                 </span>
                 <input
+                  name="date"
                   id="date"
                   type="date"
                   v-model="date"
@@ -167,6 +168,7 @@ const confirmDeleteActivity = async () => {
                   {{ errors.titre }}
                 </span>
                 <input
+                  name="titre"
                   id="titre"
                   type="text"
                   v-model="titre"
@@ -178,6 +180,7 @@ const confirmDeleteActivity = async () => {
                   {{ errors.description }}
                 </span>
                 <textarea
+                  name="description"
                   id="description"
                   v-model="description"
                   class="textarea mb-2"
@@ -187,7 +190,12 @@ const confirmDeleteActivity = async () => {
                 <span v-if="errors.category" class="error-message">
                   {{ errors.category }}
                 </span>
-                <select id="category" v-model="category" class="input mb-2">
+                <select
+                  name="categorie"
+                  id="category"
+                  v-model="category"
+                  class="input mb-2"
+                >
                   <option value="">Sélectionner une catégorie</option>
                   <option value="motricité">Motricité</option>
                   <option value="artistique">Artistique</option>
