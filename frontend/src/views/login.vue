@@ -177,6 +177,3 @@ const focusPassword = async () => {
   }
 }
 </style>
-
-///
-<reference lib="dom" />
