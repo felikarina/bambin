@@ -57,6 +57,7 @@ describe("Activity API integration", () => {
       description: "Ceci est une activité de test.",
       category: "test",
       userId,
+      section: "petit",
     };
     const res = await createActivity(activityData);
     expect(res.status).toBe(201);
