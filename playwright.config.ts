@@ -103,7 +103,7 @@ export default defineConfig({
       ? "vercel dev --listen 3000 --token ${{ secrets.VERCEL_TOKEN }} --yes"
       : "npm run dev:api",
     port: 3000,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: true, // <-- doit être à true
     // cwd: './', // inutile, on lance à la racine
   },
 });
