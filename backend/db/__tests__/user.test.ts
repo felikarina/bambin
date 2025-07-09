@@ -1,41 +1,62 @@
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
-import { user } from "../schema";
-import { eq } from "drizzle-orm";
+import { describe, it, expect } from "vitest";
 
-let client: ReturnType<typeof postgres>;
-let db: ReturnType<typeof drizzle>;
+const API_URL = "http://localhost:3000/api/users";
 
-beforeAll(() => {
-  client = postgres(process.env.DATABASE_URL!, { prepare: false });
-  db = drizzle(client);
-});
+async function createUser(userData) {
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(userData),
+  });
+  return res;
+}
 
-afterAll(async () => {
-  await client.end();
-});
+async function getUsers() {
+  const res = await fetch(API_URL);
+  return res;
+}
 
-describe("User integration", () => {
-  it("should insert and fetch a user", async () => {
-    // Insert
-    const [inserted] = await db
-      .insert(user)
-      .values({
-        firstname: "Test",
-        lastname: "User",
-        email: "testuser@example.com",
-        password: "testpass",
-        role: "parent",
-      })
-      .returning();
+async function deleteUser(id) {
+  const url = `${API_URL}?id=${id}`;
+  const res = await fetch(url, { method: "DELETE" });
+  return res;
+}
 
-    // Fetch
-    const users = await db
-      .select()
-      .from(user)
-      .where(eq(user.idUser, inserted.idUser));
-    expect(users.length).toBe(1);
-    expect(users[0].email).toBe("testuser@example.com");
+describe("User API integration", () => {
+  let createdUserId: string;
+
+  it("should insert a user via API", async () => {
+    const userData = {
+      firstname: "Test",
+      lastname: "User",
+      email: `testuser_${Date.now()}@example.com`,
+      password: "testpass",
+      role: "parent",
+    };
+    const res = await createUser(userData);
+    expect(res.status).toBe(201);
+    const user = await res.json();
+    expect(user.email).toBe(userData.email);
+    createdUserId = user.idUser;
+  });
+
+  it("should fetch all users via API", async () => {
+    const res = await getUsers();
+    expect(res.status).toBe(200);
+    const users = await res.json();
+    expect(Array.isArray(users)).toBe(true);
+  });
+
+  it("should delete a user via API", async () => {
+    expect(createdUserId).toBeDefined();
+    const res = await deleteUser(createdUserId);
+    expect(res.status).toBe(204);
+  });
+
+  it("should not delete a user with missing id", async () => {
+    const res = await fetch(API_URL, { method: "DELETE" });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toBe("ID utilisateur manquant");
   });
 });

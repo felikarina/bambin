@@ -31,6 +31,8 @@ jobs:
           node-version: 20
       - name: Install dependencies
         run: npm ci
+      - name: Install Vercel CLI
+        run: npm install -g vercel
       - name: Run unit tests
         run: npm run test:unit -- --run
       - name: Wait for DB to be ready
@@ -38,7 +40,21 @@ jobs:
           until pg_isready -h localhost -p 5435 -U test; do
             sleep 1
           done
-      - name: user rights
+      - name: Start server
+        run: vercel dev --listen 3000 --token ${{ secrets.VERCEL_TOKEN }} --yes &
+      - name: Wait for server to be ready
+        run: |
+          for i in {1..20}; do
+            if curl -s http://localhost:3000/api/users | grep -q "^\["; then
+              echo "API ready !"
+              exit 0
+            fi
+            echo "Waiting for API..."
+            sleep 2
+          done
+          echo "API not ready after 40s"
+          exit 1
+      - name: User rights
         run: chmod +x test-with-db.sh
       - name: Run DB orchestration and tests
         env:
