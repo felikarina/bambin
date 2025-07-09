@@ -41,7 +41,7 @@ jobs:
             sleep 1
           done
       - name: Start server
-        run: npm run dev:api &
+        run: vercel dev --listen 3000 --token ${{ secrets.VERCEL_TOKEN }} &
       - name: Wait for server to be ready
         run: |
           for i in {1..20}; do

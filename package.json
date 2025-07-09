@@ -19,8 +19,7 @@
     "db:pull": "drizzle-kit introspect --config tsconfig/drizzle.config.ts",
     "start": "tsx start.ts",
     "test:db": "vitest run --config tsconfig/vitest.config.ts --run backend/db/__tests__",
-    "test:api": "start-server-and-test 'vercel dev --listen 3000' http://localhost:3000 'npm run test:db'",
-    "dev:api": "vercel dev --listen 3000"
+    "test:api": "start-server-and-test 'vercel dev --listen 3000' http://localhost:3000 'npm run test:db'"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
