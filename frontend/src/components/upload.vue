@@ -207,18 +207,21 @@ async function confirmDeletePhoto() {
                   @change="handleFileChange"
                   class="input mb-2"
                 />
-                <label for="section-filter">Filtrer par section :</label>
+                <label for="section-filter"
+                  >Enfants visibles s'il y en a :</label
+                >
                 <select
                   id="section-filter"
                   v-model="sectionFilter"
                   class="input mb-2"
                 >
-                  <option value="">Toutes les sections</option>
+                  <option value="">
+                    Sélectionner une section pour filtrer
+                  </option>
                   <option value="petit">petit</option>
                   <option value="moyen">moyen</option>
                   <option value="grand">grand</option>
                 </select>
-                <label>Enfants associés :</label>
                 <div class="tag-list mb-2">
                   <span
                     v-for="child in filteredChildren"

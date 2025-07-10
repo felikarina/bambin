@@ -20,17 +20,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === "POST") {
     try {
       const { date, title, description, category, userId, section } = req.body;
-      if (!date || !title || !description || !category || !userId || !section) {
+      if (!date || !title || !description || !category || !userId) {
         return res.status(400).json({ error: "Champs manquants" });
       }
       const [newActivity] = await db
         .insert(activity)
         .values({ date, title, description, category, userId })
         .returning();
-      await db.insert(sectionActivity).values({
-        activityId: newActivity.idActivity,
-        sectionId: section,
-      });
+      if (section) {
+        await db.insert(sectionActivity).values({
+          activityId: newActivity.idActivity,
+          sectionId: section,
+        });
+      }
       return res.status(201).json({ ...newActivity, section });
     } catch (error) {
       console.error("Erreur lors de la création de l'activité:", error);
