@@ -2,7 +2,15 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { db } from "../backend/db";
 import { user } from "../backend/db/schema";
 import { hashPassword } from "../backend/utils/auth";
-import { eq } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
+import {
+  child,
+  activity,
+  picture,
+  message,
+  childSection,
+  pictureTag,
+} from "../backend/db/schema";
 
 function isDemoRequest(req: VercelRequest): boolean {
   const role = req.headers["x-user-role"] || req.query.role || req.body?.role;
@@ -42,6 +50,28 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
     try {
+      // 1. Delete messages sent by this user
+      await db.delete(message).where(eq(message.senderId, id as string));
+      // 2. Delete activities created by this user
+      await db.delete(activity).where(eq(activity.userId, id as string));
+      // 3. Delete pictures created by this user
+      await db.delete(picture).where(eq(picture.userId, id as string));
+      // 4. Find all children where user is parent
+      const childrenToDelete = await db
+        .select()
+        .from(child)
+        .where(
+          or(eq(child.userId, id as string), eq(child.userId2, id as string))
+        );
+      // 5. For each child, delete dependencies then the child
+      for (const c of childrenToDelete) {
+        await db
+          .delete(childSection)
+          .where(eq(childSection.childId, c.idChild));
+        await db.delete(pictureTag).where(eq(pictureTag.childId, c.idChild));
+        await db.delete(child).where(eq(child.idChild, c.idChild));
+      }
+      // 6. Delete the user
       await db.delete(user).where(eq(user.idUser, id as string));
       res.status(204).end();
     } catch (error) {

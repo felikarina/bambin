@@ -33,10 +33,6 @@ const fetchAllAndFilter = async () => {
       if (sa.activityId)
         activityToSection.value[String(sa.activityId)] = sa.sectionId;
     });
-    console.log("activities", allActivities);
-    console.log("sections", allSections);
-    console.log("section-activities", allSectionActivities);
-    console.log("activityToSection", activityToSection.value);
     if (role === "parent" && userId) {
       const allChildren: Child[] = await fetchChildren();
       const myChildrenIds = allChildren
