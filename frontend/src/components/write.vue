@@ -31,11 +31,13 @@ const showModal = ref(false);
 const showModalDelete = ref(false);
 const activityToDelete = ref<Activity | null>(null);
 const successMsg = ref("");
+const section = ref("");
 const errors = ref({
   date: "",
   titre: "",
   description: "",
   category: "",
+  section: "",
 });
 
 onMounted(() => {
@@ -60,9 +62,18 @@ watch(description, (val) => {
 watch(category, (val) => {
   if (val && errors.value.category) errors.value.category = "";
 });
+watch(section, (val) => {
+  if (val && errors.value.section) errors.value.section = "";
+});
 
 async function submitActivity() {
-  errors.value = { date: "", titre: "", description: "", category: "" };
+  errors.value = {
+    date: "",
+    titre: "",
+    description: "",
+    category: "",
+    section: "",
+  };
   let hasError = false;
   if (!date.value) {
     errors.value.date = "Veuillez choisir une date";
@@ -80,6 +91,10 @@ async function submitActivity() {
     errors.value.category = "Veuillez choisir une catégorie";
     hasError = true;
   }
+  if (!section.value) {
+    errors.value.section = "Veuillez choisir une section";
+    hasError = true;
+  }
   if (hasError) return;
   loading.value = true;
   try {
@@ -88,13 +103,15 @@ async function submitActivity() {
       title: titre.value,
       description: description.value,
       category: category.value,
+      section: section.value,
       userId: userId.value,
-    });
+    } as any);
     showModal.value = true;
     date.value = "";
     titre.value = "";
     description.value = "";
     category.value = "";
+    section.value = "";
     setTimeout(() => {
       showModal.value = false;
     }, 2000);
@@ -202,6 +219,21 @@ const confirmDeleteActivity = async () => {
                   <option value="lecture">Lecture</option>
                   <option value="sortie">Sortie</option>
                   <option value="autre">Autre</option>
+                </select>
+                <label for="section">Section :</label>
+                <span v-if="errors.section" class="error-message">
+                  {{ errors.section }}
+                </span>
+                <select
+                  name="section"
+                  id="section"
+                  v-model="section"
+                  class="input mb-2"
+                >
+                  <option value="">Sélectionner une section</option>
+                  <option value="petit">Petit</option>
+                  <option value="moyen">Moyen</option>
+                  <option value="grand">Grand</option>
                 </select>
                 <button
                   class="button is-primary mt-2"
@@ -350,7 +382,8 @@ textarea {
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
   font-size: 1.1em;
 }
-#category {
+#category,
+#section {
   background-color: var(--blue-light);
   color: black;
   border-radius: 5px;

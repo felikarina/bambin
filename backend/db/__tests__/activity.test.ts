@@ -42,7 +42,7 @@ describe("Activity API integration", () => {
       lastname: "Test",
       email: `activityuser_${Date.now()}@example.com`,
       password: "testpass",
-      role: "parent",
+      role: "admin",
     };
     const res = await createUser(userData);
     expect(res.status).toBe(201);
@@ -57,6 +57,7 @@ describe("Activity API integration", () => {
       description: "Ceci est une activité de test.",
       category: "test",
       userId,
+      section: "petit",
     };
     const res = await createActivity(activityData);
     expect(res.status).toBe(201);

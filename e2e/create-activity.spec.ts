@@ -30,6 +30,7 @@ test("create an activity via the form", async ({ page, request }) => {
   await page.fill('textarea[name="description"]', "E2E test with Playwright");
   await page.fill('input[name="date"]', "2024-07-09");
   await page.selectOption('select[name="categorie"]', "Sortie");
+  await page.selectOption('select[name="section"]', "petit");
   // Select a user if necessary, or fill a hidden field
   // await page.selectOption('select[name="userId"]', '...');
 
