@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { formattedDate } from "../utils/formatted-date";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import {
   fetchPictures,
   deletePictureApi,
   addPictureApi,
+  fetchChildren,
+  fetchChildSections,
+  addPictureTagsApi,
   type Picture,
+  type Child,
+  type ChildSection,
 } from "../utils/api";
 import { supabase } from "../utils/supabase";
 
@@ -20,6 +25,23 @@ const loading = ref(false);
 const message = ref("");
 const userId = ref("");
 const errors = ref({ date: "", title: "", file: "" });
+const children = ref<Child[]>([]);
+const selectedChildIds = ref<string[]>([]);
+const sectionFilter = ref("");
+const childSections = ref<ChildSection[]>([]);
+
+function onSelectChildren(e: Event) {
+  const target = e.target as HTMLSelectElement;
+  selectedChildIds.value = Array.from(target.selectedOptions).map(
+    (opt) => opt.value
+  );
+}
+
+function toggleChildSelection(id: string) {
+  const idx = selectedChildIds.value.indexOf(id);
+  if (idx === -1) selectedChildIds.value.push(id);
+  else selectedChildIds.value.splice(idx, 1);
+}
 
 const fetchPicturesAndSet = async () => {
   try {
@@ -29,9 +51,24 @@ const fetchPicturesAndSet = async () => {
   }
 };
 
+const filteredChildren = computed(() => {
+  let arr = children.value.slice();
+  if (sectionFilter.value) {
+    const ids = childSections.value
+      .filter((cs) => cs.sectionId === sectionFilter.value)
+      .map((cs) => cs.childId);
+    arr = arr.filter((child) => ids.includes(child.idChild));
+  }
+  return arr.sort((a, b) =>
+    (a.firstname || "").localeCompare(b.firstname || "")
+  );
+});
+
 onMounted(() => {
   userId.value = localStorage.getItem("userId") || "";
   fetchPicturesAndSet();
+  fetchChildren().then((res) => (children.value = res));
+  fetchChildSections().then((res) => (childSections.value = res));
   const today = new Date();
   const yyyy = today.getFullYear();
   const mm = String(today.getMonth() + 1).padStart(2, "0");
@@ -74,17 +111,22 @@ async function submitPicture() {
       .getPublicUrl(fileName);
     const publicUrl = publicUrlData.publicUrl;
     // Send to API with URL
-    await addPictureApi({
+    const created = await addPictureApi({
       date: date.value,
       title: title.value,
       media: publicUrl,
-      userId: userId.value, // Replace with appropriate user ID
+      userId: userId.value,
     });
+    // Add picture tags if children are selected
+    if (selectedChildIds.value.length > 0 && created.idPicture) {
+      await addPictureTagsApi(created.idPicture, selectedChildIds.value);
+    }
     await fetchPicturesAndSet();
     message.value = "Photo ajoutée avec succès";
     date.value = "";
     title.value = "";
     file.value = null;
+    selectedChildIds.value = [];
     setTimeout(() => {
       message.value = "";
     }, 2000);
@@ -165,6 +207,33 @@ async function confirmDeletePhoto() {
                   @change="handleFileChange"
                   class="input mb-2"
                 />
+                <label for="section-filter">Filtrer par section :</label>
+                <select
+                  id="section-filter"
+                  v-model="sectionFilter"
+                  class="input mb-2"
+                >
+                  <option value="">Toutes les sections</option>
+                  <option value="petit">petit</option>
+                  <option value="moyen">moyen</option>
+                  <option value="grand">grand</option>
+                </select>
+                <label>Enfants associés :</label>
+                <div class="tag-list mb-2">
+                  <span
+                    v-for="child in filteredChildren"
+                    :key="child.idChild"
+                    class="child-tag"
+                    :class="{
+                      selected: selectedChildIds.includes(
+                        String(child.idChild)
+                      ),
+                    }"
+                    @click="toggleChildSelection(String(child.idChild))"
+                  >
+                    {{ child.firstname }} {{ child.lastname }}
+                  </span>
+                </div>
                 <button
                   class="button is-primary mt-2"
                   :disabled="loading"
@@ -321,5 +390,37 @@ p {
   font-size: 0.9em;
   margin-top: -5px;
   margin-bottom: 10px;
+}
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.child-tag {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 16px;
+  background: #b3d4fc;
+  color: #155fa0;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 500;
+  transition:
+    background 0.2s,
+    color 0.2s;
+  border: 1px solid #1976d2;
+}
+.child-tag.selected {
+  background: #1976d2;
+  color: #fff;
+  border: 1px solid #1976d2;
+}
+#section-filter {
+  background-color: var(--blue-light);
+  color: black;
+  border-radius: 5px;
+}
+label[for="section-filter"] {
+  color: black;
 }
 </style>

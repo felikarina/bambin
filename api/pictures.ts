@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { db } from "../backend/db";
 import { picture } from "../backend/db/schema";
 import { eq } from "drizzle-orm";
+import { pictureTag, child } from "../backend/db/schema";
 
 function isDemoRequest(req: VercelRequest): boolean {
   const role = req.headers["x-user-role"] || req.query.role || req.body?.role;
@@ -15,6 +16,37 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   ) {
     res.status(403).json({ error: "Accès interdit en mode démo" });
     return;
+  }
+  // Endpoint to link children to a picture
+  if (req.method === "POST" && req.url?.endsWith("/tags")) {
+    try {
+      let body = req.body;
+      if (typeof body === "string") {
+        try {
+          body = JSON.parse(body);
+        } catch {
+          return res.status(400).json({ error: "Invalid JSON body" });
+        }
+      }
+      const { idPicture, childIds } = body;
+      if (!idPicture || !Array.isArray(childIds)) {
+        return res.status(400).json({ error: "Missing or invalid fields" });
+      }
+      // Insert associations
+      const values = childIds.map((childId: string) => ({
+        pictureId: idPicture,
+        childId,
+      }));
+      await db.insert(pictureTag).values(values);
+      return res
+        .status(201)
+        .json({ message: "Associations created", count: values.length });
+    } catch (error) {
+      console.error("Error while creating picture_tag associations:", error);
+      return res
+        .status(500)
+        .json({ error: "Error while creating associations" });
+    }
   }
   if (req.method === "POST") {
     try {
@@ -58,8 +90,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
   try {
-    const data = await db.select().from(picture);
-    return res.status(200).json(data);
+    // Get all pictures
+    const picturesData = await db.select().from(picture);
+    // Get all picture_tag associations
+    const tags = await db.select().from(pictureTag);
+    // Get all children (for names)
+    const childrenData = await db.select().from(child);
+    // Build a map of childId -> child
+    const childMap = Object.fromEntries(
+      childrenData.map((c) => [c.idChild, c])
+    );
+    // For each picture, add an 'children' field with associated children (firstname, lastname)
+    const result = picturesData.map((pic) => {
+      const associated = tags.filter((t) => t.pictureId === pic.idPicture);
+      const children = associated
+        .map((t) => {
+          const c = childMap[t.childId];
+          return c
+            ? {
+                idChild: c.idChild,
+                firstname: c.firstname,
+                lastname: c.lastname,
+              }
+            : null;
+        })
+        .filter(Boolean);
+      return { ...pic, children };
+    });
+    return res.status(200).json(result);
   } catch (error) {
     console.error("Database error:", error);
     return res.status(500).json({ error: "Database connection failed" });

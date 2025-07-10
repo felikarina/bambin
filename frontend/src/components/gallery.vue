@@ -2,8 +2,11 @@
 import { formattedDate } from "../utils/formatted-date";
 import { ref, onMounted } from "vue";
 import { fetchPictures, type Picture } from "../utils/api";
+type PictureWithChildren = Picture & {
+  children?: { idChild: string; firstname: string; lastname: string }[];
+};
 
-const pictures = ref<Picture[]>([]);
+const pictures = ref<PictureWithChildren[]>([]);
 
 const fetchPicturesAndSet = async () => {
   try {
@@ -33,7 +36,21 @@ onMounted(fetchPicturesAndSet);
               </figure>
             </div>
             <div class="card-content">
-              <div class="content has-text-weight-bold">#tag</div>
+              <div class="content has-text-weight-bold">
+                <!-- Display associated children if any -->
+                <div
+                  v-if="picture.children && picture.children.length > 0"
+                  class="children-list mt-2"
+                >
+                  <span
+                    v-for="child in picture.children"
+                    :key="child.idChild"
+                    class="child-name-tag"
+                  >
+                    {{ child.firstname }} {{ child.lastname }}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -61,5 +78,21 @@ onMounted(fetchPicturesAndSet);
 
 p {
   color: black;
+}
+.children-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.child-name-tag {
+  background: #b3d4fc;
+  color: #155fa0;
+  border-radius: 12px;
+  padding: 4px 12px;
+  margin-left: 4px;
+  font-size: 0.98em;
+  font-weight: 500;
+  border: 1px solid #1976d2;
 }
 </style>
