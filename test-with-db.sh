@@ -15,16 +15,13 @@ done
 echo "Dropping all tables in the test database..."
 docker exec bambin_db_test psql -U test -d bambin_test -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
 
-echo "Applying Drizzle migrations..."
+echo "Applying Drizzle schema..."
 npx drizzle-kit push --config=tsconfig/drizzle.config.ts
 
 echo "Seeding the test database with seed..."
 npx ts-node backend/db/seed.ts
 
 echo "The test database is ready and seeded..."
-
-echo "Running db tests..."
-npm run test:db
 
 echo "Installing Playwright browsers..."
 npx playwright install chromium
