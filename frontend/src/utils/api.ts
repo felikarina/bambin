@@ -193,6 +193,24 @@ export async function addPictureApi(newPicture: Partial<Picture>) {
   return response.json();
 }
 
+export async function addPictureTagsApi(idPicture: string, childIds: string[]) {
+  const response = await fetch("/api/picture-tags", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...getDemoRoleHeader() },
+    body: JSON.stringify({ idPicture, childIds }),
+  });
+  if (!response.ok) {
+    const err = await response.json();
+    if (typeof err === "object" && err && "error" in err) {
+      throw new Error(
+        (err as { error?: string }).error || "Error while creating picture tags"
+      );
+    }
+    throw new Error("Error while creating picture tags");
+  }
+  return response.json();
+}
+
 export async function fetchChildren(): Promise<Child[]> {
   const role = localStorage.getItem("role");
   if (role === "demo") return [];
@@ -308,4 +326,23 @@ export async function fetchChildSections(): Promise<ChildSection[]> {
   if (!response.ok)
     throw new Error("Erreur lors du fetch des associations enfant-section");
   return (await response.json()) as ChildSection[];
+}
+
+export interface SectionActivity {
+  idSectionActivity?: string;
+  sectionId?: string;
+  activityId?: string;
+}
+
+export async function fetchSectionActivities(): Promise<SectionActivity[]> {
+  const role = localStorage.getItem("role");
+  if (role === "demo") return [];
+  const headers = { ...getDemoRoleHeader() };
+  const hasHeaders = Object.keys(headers).length > 0;
+  const response = hasHeaders
+    ? await fetch("/api/section-activities", { headers })
+    : await fetch("/api/section-activities");
+  if (!response.ok)
+    throw new Error("Erreur lors du fetch des associations activité-section");
+  return (await response.json()) as SectionActivity[];
 }

@@ -57,8 +57,6 @@ jobs:
       - name: User rights
         run: chmod +x test-with-db.sh
       - name: Run DB orchestration and tests
-        env:
-          DATABASE_URL_TEST: postgres://test:test@localhost:5435/bambin_test
         run: ./test-with-db.sh
       - name: Trigger Vercel Deploy Hook
         if: success()

@@ -91,10 +91,6 @@ async function submitActivity() {
     errors.value.category = "Veuillez choisir une catégorie";
     hasError = true;
   }
-  if (!section.value) {
-    errors.value.section = "Veuillez choisir une section";
-    hasError = true;
-  }
   if (hasError) return;
   loading.value = true;
   try {
@@ -103,7 +99,7 @@ async function submitActivity() {
       title: titre.value,
       description: description.value,
       category: category.value,
-      section: section.value,
+      section: section.value || undefined,
       userId: userId.value,
     } as any);
     showModal.value = true;
@@ -220,17 +216,14 @@ const confirmDeleteActivity = async () => {
                   <option value="sortie">Sortie</option>
                   <option value="autre">Autre</option>
                 </select>
-                <label for="section">Section :</label>
-                <span v-if="errors.section" class="error-message">
-                  {{ errors.section }}
-                </span>
+                <label for="section">Section (optionnel) :</label>
                 <select
                   name="section"
                   id="section"
                   v-model="section"
                   class="input mb-2"
                 >
-                  <option value="">Sélectionner une section</option>
+                  <option value="">Aucune section</option>
                   <option value="petit">Petit</option>
                   <option value="moyen">Moyen</option>
                   <option value="grand">Grand</option>
