@@ -2,18 +2,55 @@
 import { ref, onMounted } from "vue";
 import { formattedDate } from "../utils/formatted-date";
 import { fetchActivities, type Activity } from "../utils/api";
+import {
+  fetchChildren,
+  fetchChildSections,
+  fetchSectionActivities,
+  type Child,
+  type ChildSection,
+  type SectionActivity,
+} from "../utils/api";
 
 const activities = ref<Activity[]>([]);
+const filteredActivities = ref<Activity[]>([]);
 
-const fetchActivitiesAndSet = async () => {
+const role = localStorage.getItem("role");
+const userId = localStorage.getItem("userId");
+
+const fetchAllAndFilter = async () => {
   try {
-    activities.value = await fetchActivities();
+    const allActivities = await fetchActivities();
+    if (role === "parent" && userId) {
+      const allChildren: Child[] = await fetchChildren();
+      const myChildrenIds = allChildren
+        .filter((c) => c.userId === userId || c.userId2 === userId)
+        .map((c) => c.idChild as string);
+      const allChildSections: ChildSection[] = await fetchChildSections();
+      const mySectionIds = allChildSections
+        .filter((cs) => cs.childId && myChildrenIds.includes(cs.childId))
+        .map((cs) => cs.sectionId)
+        .filter((id): id is string => !!id);
+      const allSectionActivities: SectionActivity[] =
+        await fetchSectionActivities();
+      const activityToSection: Record<string, string | undefined> = {};
+      allSectionActivities.forEach((sa) => {
+        if (sa.activityId) activityToSection[sa.activityId] = sa.sectionId;
+      });
+      filteredActivities.value = allActivities.filter((act) => {
+        if (!act.idActivity) return true;
+        const sectionId = activityToSection[act.idActivity];
+        return !sectionId || mySectionIds.includes(sectionId);
+      });
+    } else {
+      filteredActivities.value = allActivities;
+    }
+    activities.value = allActivities;
   } catch (e: any) {
     console.error("Error fetching activities:", e.message);
   }
 };
 
-onMounted(fetchActivitiesAndSet);
+onMounted(fetchAllAndFilter);
 </script>
 <template>
   <div class="gallery">
@@ -21,7 +58,7 @@ onMounted(fetchActivitiesAndSet);
       <div class="grid">
         <div
           class="cell"
-          v-for="activity in activities"
+          v-for="activity in filteredActivities"
           :key="activity.idActivity"
         >
           <div class="card my-4">

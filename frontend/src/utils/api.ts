@@ -327,3 +327,22 @@ export async function fetchChildSections(): Promise<ChildSection[]> {
     throw new Error("Erreur lors du fetch des associations enfant-section");
   return (await response.json()) as ChildSection[];
 }
+
+export interface SectionActivity {
+  idSectionActivity?: string;
+  sectionId?: string;
+  activityId?: string;
+}
+
+export async function fetchSectionActivities(): Promise<SectionActivity[]> {
+  const role = localStorage.getItem("role");
+  if (role === "demo") return [];
+  const headers = { ...getDemoRoleHeader() };
+  const hasHeaders = Object.keys(headers).length > 0;
+  const response = hasHeaders
+    ? await fetch("/api/section-activities", { headers })
+    : await fetch("/api/section-activities");
+  if (!response.ok)
+    throw new Error("Erreur lors du fetch des associations activité-section");
+  return (await response.json()) as SectionActivity[];
+}
