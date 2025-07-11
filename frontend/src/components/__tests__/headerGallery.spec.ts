@@ -16,7 +16,7 @@ describe("headerGallery", () => {
     const options = { weekday: "long" as const };
     const dayName = today.toLocaleDateString("fr-FR", options).toLowerCase();
     expect(buttons[0].text().toLowerCase()).toContain(dayName);
-    expect(buttons[1].text().toLowerCase()).toContain("Bambin");
+    expect(buttons[1].text().toLowerCase()).toContain("bambin");
   });
 
   it("applique les bonnes classes CSS aux boutons", () => {
