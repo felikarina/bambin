@@ -119,12 +119,18 @@ async function submitActivity() {
 }
 
 const filteredActivities = computed(() => {
-  if (userRole.value === "admin" || userRole.value === "demo") {
-    return activities.value;
-  }
-  return activities.value.filter(
-    (activity) => activity.userId === userId.value
-  );
+  let arr =
+    userRole.value === "admin" || userRole.value === "demo"
+      ? activities.value
+      : activities.value.filter((activity) => activity.userId === userId.value);
+  // Sort activities from most recent to oldest
+  return arr
+    .slice()
+    .sort(
+      (a, b) =>
+        new Date(b.date ?? "1970-01-01").getTime() -
+        new Date(a.date ?? "1970-01-01").getTime()
+    );
 });
 
 const askDeleteActivity = (activity: Activity) => {

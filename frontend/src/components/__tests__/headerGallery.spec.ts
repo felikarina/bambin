@@ -12,8 +12,11 @@ describe("headerGallery", () => {
     const wrapper = mount(headerGallery);
     const buttons = wrapper.findAll("button");
     expect(buttons.length).toBe(2);
-    expect(buttons[0].text().toLowerCase()).toContain("vendredi");
-    expect(buttons[1].text().toLowerCase()).toContain("calendrier");
+    const today = new Date();
+    const options = { weekday: "long" as const };
+    const dayName = today.toLocaleDateString("fr-FR", options).toLowerCase();
+    expect(buttons[0].text().toLowerCase()).toContain(dayName);
+    expect(buttons[1].text().toLowerCase()).toContain("Bambin");
   });
 
   it("applique les bonnes classes CSS aux boutons", () => {

@@ -1,8 +1,14 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const today = new Date();
+const options: Intl.DateTimeFormatOptions = { weekday: "long", day: "numeric" };
+const formattedDate = today.toLocaleDateString("fr-FR", options);
+</script>
 <template>
-  <div class="header box is-flex is-flex-direction-row is-justify-content-space-evenly">
-    <button class="button is-large is-focused">vendredi 16</button>
-    <button class="button is-large">calendrier</button>
+  <div
+    class="header box is-flex is-flex-direction-row is-justify-content-space-evenly"
+  >
+    <button class="button is-large is-focused">{{ formattedDate }}</button>
+    <button class="button is-large">Bambin</button>
   </div>
 </template>
 <style scoped>
