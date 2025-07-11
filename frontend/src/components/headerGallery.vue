@@ -21,5 +21,6 @@ const formattedDate = today.toLocaleDateString("fr-FR", options);
   width: 240px;
   background-color: var(--blue-lighter);
   color: var(--primary);
+  cursor: default;
 }
 </style>
