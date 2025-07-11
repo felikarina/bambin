@@ -276,7 +276,7 @@ export interface ChildSection {
   idChildSection?: string;
   childId?: string;
   sectionId?: string;
-  sectionName?: string; // For demo data only
+  sectionName?: string;
 }
 
 export async function fetchSections(): Promise<Section[]> {
@@ -335,8 +335,6 @@ export interface SectionActivity {
 }
 
 export async function fetchSectionActivities(): Promise<SectionActivity[]> {
-  const role = localStorage.getItem("role");
-  if (role === "demo") return [];
   const headers = { ...getDemoRoleHeader() };
   const hasHeaders = Object.keys(headers).length > 0;
   const response = hasHeaders
