@@ -25,6 +25,7 @@ import {
   fakeSections,
   fakeChildSections,
 } from "../utils/mock-data";
+import { capitalizeFirstLetter } from "../utils/capitalize";
 
 const users = ref<User[]>([]);
 const children = ref<Child[]>([]);
@@ -75,6 +76,12 @@ const addUser = async () => {
   isLoading.value = true;
   errorMsg.value = "";
   try {
+    newUser.value.firstname = capitalizeFirstLetter(
+      newUser.value.firstname || ""
+    );
+    newUser.value.lastname = capitalizeFirstLetter(
+      newUser.value.lastname || ""
+    );
     await addUserApi(newUser.value);
     newUser.value = {
       firstname: "",
@@ -150,6 +157,12 @@ const addChild = async () => {
   isLoadingChild.value = true;
   errorMsgChild.value = "";
   try {
+    newChild.value.firstname = capitalizeFirstLetter(
+      newChild.value.firstname || ""
+    );
+    newChild.value.lastname = capitalizeFirstLetter(
+      newChild.value.lastname || ""
+    );
     const createdChild = await addChildApi(newChild.value);
     if (selectedSectionId.value) {
       await addChildSectionApi({

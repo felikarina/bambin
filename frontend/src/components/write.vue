@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from "vue";
 import { formattedDate } from "../utils/formatted-date";
+import { capitalizeFirstLetter } from "../utils/capitalize";
 import {
   fetchActivities,
   addActivityApi,
@@ -94,6 +95,8 @@ async function submitActivity() {
   if (hasError) return;
   loading.value = true;
   try {
+    // Capitalize the first letter of the title before sending
+    titre.value = capitalizeFirstLetter(titre.value);
     await addActivityApi({
       date: date.value,
       title: titre.value,
