@@ -8,11 +8,6 @@ function isDemoRequest(req: VercelRequest): boolean {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (isDemoRequest(req)) {
-    res.status(403).json({ error: "Accès interdit en mode démo" });
-    return;
-  }
-
   // GET - Get all sections
   try {
     const data = await db.select().from(section);
