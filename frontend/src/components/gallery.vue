@@ -19,7 +19,12 @@ const userId = localStorage.getItem("userId");
 
 const fetchPicturesAndSet = async () => {
   try {
-    const allPictures = await fetchPictures();
+    let allPictures = await fetchPictures();
+    // Sort by date descending (most recent first)
+    allPictures = allPictures.sort(
+      (a: any, b: any) =>
+        new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
     if (role === "parent" && userId) {
       // Fetch all children and keep only those belonging to the parent
       const allChildren: Child[] = await fetchChildren();

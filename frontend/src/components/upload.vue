@@ -64,6 +64,17 @@ const filteredChildren = computed(() => {
   );
 });
 
+const sortedPictures = computed(() => {
+  // Sort pictures from most recent to oldest
+  return pictures.value
+    .slice()
+    .sort(
+      (a, b) =>
+        new Date(b.date ?? "1970-01-01").getTime() -
+        new Date(a.date ?? "1970-01-01").getTime()
+    );
+});
+
 onMounted(() => {
   userId.value = localStorage.getItem("userId") || "";
   fetchPicturesAndSet();
@@ -283,7 +294,11 @@ async function confirmDeletePhoto() {
         Liste des photos de la galerie
       </p>
       <div class="grid">
-        <div class="cell" v-for="picture in pictures" :key="picture.idPicture">
+        <div
+          class="cell"
+          v-for="picture in sortedPictures"
+          :key="picture.idPicture"
+        >
           <span
             class="button is-danger is-outlined is-centered"
             title="Supprimer la photo"

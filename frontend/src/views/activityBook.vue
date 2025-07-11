@@ -11,10 +11,8 @@ import headerMobile from "../components/headerMobile.vue";
       <NavigationSidebar />
     </div>
     <div class="column right-part">
-      <div class="column">
+      <div class="column sticky-header">
         <headerGallery class="mx-4 is-hidden-mobile" />
-      </div>
-      <div class="column">
         <headerMobile class="mx-4 is-hidden-tablet" />
       </div>
       <div class="column">
@@ -31,5 +29,11 @@ import headerMobile from "../components/headerMobile.vue";
 .right-part {
   height: 102vh;
   overflow: auto;
+}
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: white;
 }
 </style>

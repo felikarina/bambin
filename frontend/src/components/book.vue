@@ -33,10 +33,6 @@ const fetchAllAndFilter = async () => {
       if (sa.activityId)
         activityToSection.value[String(sa.activityId)] = sa.sectionId;
     });
-    console.log("activities", allActivities);
-    console.log("sections", allSections);
-    console.log("section-activities", allSectionActivities);
-    console.log("activityToSection", activityToSection.value);
     if (role === "parent" && userId) {
       const allChildren: Child[] = await fetchChildren();
       const myChildrenIds = allChildren
@@ -47,13 +43,25 @@ const fetchAllAndFilter = async () => {
         .filter((cs) => cs.childId && myChildrenIds.includes(cs.childId))
         .map((cs) => cs.sectionId)
         .filter((id): id is string => !!id);
-      filteredActivities.value = allActivities.filter((act) => {
-        if (!act.idActivity) return true;
-        const sectionId = activityToSection.value[String(act.idActivity)];
-        return !sectionId || mySectionIds.includes(String(sectionId));
-      });
+      // Sort activities from most recent to oldest
+      filteredActivities.value = allActivities
+        .filter((act) => {
+          if (!act.idActivity) return true;
+          const sectionId = activityToSection.value[String(act.idActivity)];
+          return !sectionId || mySectionIds.includes(String(sectionId));
+        })
+        .sort(
+          (a, b) =>
+            new Date(b.date ?? "1970-01-01").getTime() -
+            new Date(a.date ?? "1970-01-01").getTime()
+        );
     } else {
-      filteredActivities.value = allActivities;
+      // Sort activities from most recent to oldest
+      filteredActivities.value = allActivities.sort(
+        (a, b) =>
+          new Date(b.date ?? "1970-01-01").getTime() -
+          new Date(a.date ?? "1970-01-01").getTime()
+      );
     }
     activities.value = allActivities;
   } catch (e: any) {

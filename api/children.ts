@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { db } from "../backend/db";
-import { child } from "../backend/db/schema";
-import { eq } from "drizzle-orm";
+import { child, childSection, pictureTag } from "../backend/db/schema";
+import { and, eq } from "drizzle-orm";
 
 function isDemoRequest(req: VercelRequest): boolean {
   const role = req.headers["x-user-role"] || req.query.role || req.body?.role;
@@ -48,6 +48,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
     try {
+      // Delete dependencies first
+      await db
+        .delete(childSection)
+        .where(eq(childSection.childId, id as string));
+      await db.delete(pictureTag).where(eq(pictureTag.childId, id as string));
+      // Delete the child
       await db.delete(child).where(eq(child.idChild, id as string));
       res.status(204).end();
     } catch (error) {
