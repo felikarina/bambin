@@ -6,18 +6,43 @@ import {
   fetchActivities,
   addActivityApi,
   deleteActivityApi,
+  updateActivityApi,
+  fetchSections,
+  fetchSectionActivities,
   type Activity,
+  type Section,
+  type SectionActivity,
 } from "../utils/api";
 
 const activities = ref<Activity[]>([]);
+const sections = ref<Section[]>([]);
+const activityToSection = ref<Record<string, string | undefined>>({});
 
 const fetchActivitiesAndSet = async () => {
   try {
     activities.value = await fetchActivities();
+    sections.value = await fetchSections();
+    const allSectionActivities: SectionActivity[] =
+      await fetchSectionActivities();
+    activityToSection.value = {};
+    allSectionActivities.forEach((sa) => {
+      if (sa.activityId)
+        activityToSection.value[String(sa.activityId)] = sa.sectionId;
+    });
   } catch (e: any) {
     console.error("Error fetching activities:", e.message);
   }
 };
+
+function getSectionNameForActivity(activityId?: string | number) {
+  if (!activityId) return null;
+  const sectionId = activityToSection.value[String(activityId)];
+  if (!sectionId) return "aucun";
+  const section = sections.value.find(
+    (s) => String(s.idSection) === String(sectionId)
+  );
+  return section?.name || sectionId;
+}
 
 onMounted(fetchActivitiesAndSet);
 const date = ref("");
@@ -33,6 +58,64 @@ const showModalDelete = ref(false);
 const activityToDelete = ref<Activity | null>(null);
 const successMsg = ref("");
 const section = ref("");
+const editingActivityId = ref<string | number | null>(null);
+const editFields = ref({
+  date: "",
+  titre: "",
+  description: "",
+  category: "",
+  section: "",
+});
+
+function editActivity(activity: Activity) {
+  editingActivityId.value = activity.idActivity ?? null;
+  editFields.value = {
+    date: activity.date || "",
+    titre: activity.title || "",
+    description: activity.description || "",
+    category: activity.category || "",
+    section: activityToSection.value[String(activity.idActivity)] || "",
+  };
+}
+
+async function saveEditActivity(activity: Activity) {
+  if (!editingActivityId.value) return;
+  if (
+    !editFields.value.titre ||
+    !editFields.value.date ||
+    !editFields.value.description ||
+    !editFields.value.category
+  ) {
+    message.value = "Tous les champs obligatoires doivent être remplis.";
+    return;
+  }
+  loading.value = true;
+  try {
+    await updateActivityApi(editingActivityId.value, {
+      title: capitalizeFirstLetter(editFields.value.titre),
+      date: editFields.value.date,
+      description: editFields.value.description,
+      category: editFields.value.category,
+      section: editFields.value.section || undefined,
+      userId: activity.userId,
+    });
+    await fetchActivitiesAndSet();
+    editingActivityId.value = null;
+    message.value = "";
+    successMsg.value = "Activité modifiée avec succès";
+    setTimeout(() => {
+      successMsg.value = "";
+    }, 2000);
+  } catch (err: any) {
+    message.value = err.message || "Erreur lors de la modification.";
+  } finally {
+    loading.value = false;
+  }
+}
+
+function cancelEditActivity() {
+  editingActivityId.value = null;
+}
 const errors = ref({
   date: "",
   titre: "",
@@ -287,15 +370,96 @@ const confirmDeleteActivity = async () => {
                 <div
                   class="is-flex is-justify-content-space-between is-align-items-center"
                 >
-                  <h1>{{ activity.title }}</h1>
-                  <span
-                    class="button is-danger is-outlined"
-                    title="Supprimer l'activité"
-                    @click="askDeleteActivity(activity)"
-                    ><span class="icon"> <i class="fas fa-trash"></i></span>
-                  </span>
+                  <template v-if="editingActivityId === activity.idActivity">
+                    <input
+                      class="input mr-2"
+                      v-model="editFields.titre"
+                      type="text"
+                      style="max-width: 220px"
+                    />
+                  </template>
+                  <template v-else>
+                    <h1>{{ activity.title }}</h1>
+                  </template>
+                  <div class="is-flex is-align-items-center">
+                    <template v-if="editingActivityId === activity.idActivity">
+                      <span
+                        class="button is-success is-outlined mr-2"
+                        title="Valider la modification"
+                        @click="saveEditActivity(activity)"
+                      >
+                        <span class="icon"> <i class="fas fa-check"></i></span>
+                      </span>
+                      <span
+                        class="button is-warning is-outlined mr-2"
+                        title="Annuler"
+                        @click="cancelEditActivity"
+                      >
+                        <span class="icon"> <i class="fas fa-times"></i></span>
+                      </span>
+                    </template>
+                    <template v-else>
+                      <span
+                        class="button is-info is-outlined mr-2"
+                        title="Éditer l'activité"
+                        @click="editActivity(activity)"
+                      >
+                        <span class="icon"> <i class="fas fa-edit"></i></span>
+                      </span>
+                    </template>
+                    <span
+                      class="button is-danger is-outlined"
+                      title="Supprimer l'activité"
+                      @click="askDeleteActivity(activity)"
+                    >
+                      <span class="icon"> <i class="fas fa-trash"></i></span>
+                    </span>
+                  </div>
                 </div>
-                <p>{{ activity.description }}</p>
+                <template v-if="editingActivityId === activity.idActivity">
+                  <textarea
+                    class="textarea mb-2 mt-2"
+                    v-model="editFields.description"
+                    style="min-height: 60px"
+                  ></textarea>
+                  <div class="is-flex mb-2 mt-2" style="gap: 10px">
+                    <input
+                      class="input"
+                      v-model="editFields.date"
+                      type="date"
+                      style="max-width: 140px"
+                    />
+                    <select
+                      class="input"
+                      v-model="editFields.category"
+                      style="max-width: 140px"
+                    >
+                      <option value="">Catégorie</option>
+                      <option value="motricité">Motricité</option>
+                      <option value="artistique">Artistique</option>
+                      <option value="lecture">Lecture</option>
+                      <option value="sortie">Sortie</option>
+                      <option value="autre">Autre</option>
+                    </select>
+                    <select
+                      class="input"
+                      v-model="editFields.section"
+                      style="max-width: 140px"
+                    >
+                      <option value="">Aucune section</option>
+                      <option value="petit">Petit</option>
+                      <option value="moyen">Moyen</option>
+                      <option value="grand">Grand</option>
+                    </select>
+                  </div>
+                </template>
+                <template v-else>
+                  <p>{{ activity.description }}</p>
+                  <div class="section-tag-bottom">
+                    Section :
+                    {{ getSectionNameForActivity(activity.idActivity) }}
+                  </div>
+                </template>
               </div>
             </div>
           </div>
@@ -410,5 +574,19 @@ textarea {
   border-radius: 6px;
   padding: 8px 18px;
   cursor: pointer;
+}
+
+.section-tag-bottom {
+  background: #b3d4fc;
+  color: #155fa0;
+  border-radius: 12px;
+  padding: 4px 12px;
+  font-size: 0.98em;
+  font-weight: 500;
+  border: 1px solid #1976d2;
+  display: inline-block;
+  white-space: nowrap;
+  align-self: flex-end;
+  margin-top: 12px;
 }
 </style>

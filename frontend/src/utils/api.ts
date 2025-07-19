@@ -126,6 +126,33 @@ export async function deleteActivityApi(idActivity: string) {
   return;
 }
 
+export async function updateActivityApi(
+  idActivity: string | number,
+  updated: Partial<Activity> & { section?: string }
+) {
+  const response = await fetch(`/api/activities?id=${idActivity}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...getDemoRoleHeader() },
+    body: JSON.stringify(updated),
+  });
+  if (!response.ok) {
+    let err;
+    try {
+      err = await response.json();
+    } catch {
+      err = {};
+    }
+    if (typeof err === "object" && err && "error" in err) {
+      throw new Error(
+        (err as { error?: string }).error ||
+          "Erreur lors de la modification de l'activité"
+      );
+    }
+    throw new Error("Erreur lors de la modification de l'activité");
+  }
+  return response.json();
+}
+
 export interface Picture {
   idPicture?: string;
   date?: string;
