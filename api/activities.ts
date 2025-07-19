@@ -59,6 +59,47 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         .json({ error: "Erreur lors de la suppression de l'activité" });
     }
   }
+  if (req.method === "PUT") {
+    if (isDemoRequest(req)) {
+      res.status(403).json({ error: "Accès interdit en mode démo" });
+      return;
+    }
+    const id = req.query.id;
+    if (!id) {
+      return res.status(400).json({ error: "ID activité manquant" });
+    }
+    try {
+      const { date, title, description, category, userId, section } = req.body;
+      const updateFields: any = {};
+      if (date !== undefined) updateFields.date = date;
+      if (title !== undefined) updateFields.title = title;
+      if (description !== undefined) updateFields.description = description;
+      if (category !== undefined) updateFields.category = category;
+      if (userId !== undefined) updateFields.userId = userId;
+      const [updatedActivity] = await db
+        .update(activity)
+        .set(updateFields)
+        .where(eq(activity.idActivity, id as string))
+        .returning();
+      if (section !== undefined) {
+        await db
+          .delete(sectionActivity)
+          .where(eq(sectionActivity.activityId, id as string));
+        if (section) {
+          await db.insert(sectionActivity).values({
+            activityId: id as string,
+            sectionId: section,
+          });
+        }
+      }
+      return res.status(200).json({ ...updatedActivity, section });
+    } catch (error) {
+      console.error("Erreur lors de la modification de l'activité:", error);
+      return res
+        .status(500)
+        .json({ error: "Erreur lors de la modification de l'activité" });
+    }
+  }
   try {
     const data = await db.select().from(activity);
     return res.status(200).json(data);
