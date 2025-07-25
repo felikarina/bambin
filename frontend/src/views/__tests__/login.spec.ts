@@ -198,4 +198,57 @@ describe("login.vue", () => {
       })
     );
   });
+
+  it("shows generic error if API returns error without error field (login)", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      json: async () => ({}),
+    });
+    const wrapper = mount(login);
+    await wrapper.find('input[type="email"]').setValue("test@test.com");
+    await wrapper.find('input[type="password"]').setValue("wrong");
+    await wrapper.find("button").trigger("click");
+    await wrapper.vm.$nextTick();
+    expect(wrapper.html()).toContain("Erreur");
+  });
+
+  it("shows generic error if API returns error without error field (loginDemo)", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      json: async () => ({}),
+    });
+    const wrapper = mount(login);
+    await wrapper.findAll("button")[1].trigger("click");
+    await wrapper.vm.$nextTick();
+    expect(wrapper.html()).toContain("Erreur");
+  });
+
+  it("sets empty string in localStorage if token/role/userId are missing (login)", async () => {
+    const setItemSpy = vi.spyOn(window.localStorage.__proto__, "setItem");
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({}),
+    });
+    const wrapper = mount(login);
+    await wrapper.find('input[type="email"]').setValue("parent@test.com");
+    await wrapper.find('input[type="password"]').setValue("test");
+    await wrapper.find("button").trigger("click");
+    await wrapper.vm.$nextTick();
+    expect(setItemSpy).toHaveBeenCalledWith("token", "");
+    expect(setItemSpy).toHaveBeenCalledWith("role", "");
+    expect(setItemSpy).toHaveBeenCalledWith("userId", "");
+  });
+
+  it("sets empty string in localStorage if token/role are missing (loginDemo)", async () => {
+    const setItemSpy = vi.spyOn(window.localStorage.__proto__, "setItem");
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({}),
+    });
+    const wrapper = mount(login);
+    await wrapper.findAll("button")[1].trigger("click");
+    await wrapper.vm.$nextTick();
+    expect(setItemSpy).toHaveBeenCalledWith("token", "");
+    expect(setItemSpy).toHaveBeenCalledWith("role", "");
+  });
 });
