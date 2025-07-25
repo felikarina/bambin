@@ -427,12 +427,11 @@ const confirmDeleteActivity = async () => {
                       class="input"
                       v-model="editFields.date"
                       type="date"
-                      style="max-width: 140px"
                     />
                     <select
+                      id="category"
                       class="input"
                       v-model="editFields.category"
-                      style="max-width: 140px"
                     >
                       <option value="">Catégorie</option>
                       <option value="motricité">Motricité</option>
@@ -442,9 +441,9 @@ const confirmDeleteActivity = async () => {
                       <option value="autre">Autre</option>
                     </select>
                     <select
+                      id="section"
                       class="input"
                       v-model="editFields.section"
-                      style="max-width: 140px"
                     >
                       <option value="">Aucune section</option>
                       <option value="petit">Petit</option>
@@ -523,6 +522,11 @@ textarea {
   background-color: var(--blue-light);
   color: black;
   border-radius: 5px;
+}
+input::placeholder,
+textarea::placeholder {
+  color: white;
+  opacity: 0.7;
 }
 .modal-overlay {
   position: fixed;
