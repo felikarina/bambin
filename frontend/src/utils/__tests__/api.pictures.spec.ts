@@ -4,6 +4,7 @@ import {
   deletePictureApi,
   addPictureApi,
   type Picture,
+  addPictureTagsApi,
 } from "../api";
 
 const mockPictures: Picture[] = [
@@ -116,6 +117,48 @@ describe("api.ts - Pictures", () => {
     } as any);
     await expect(addPictureApi({})).rejects.toThrow(
       "Erreur lors de l'ajout de la photo"
+    );
+  });
+
+  it("addPictureTagsApi fait un fetch POST et retourne la réponse JSON si ok", async () => {
+    const idPicture = "1";
+    const childIds = ["c1", "c2"];
+    const response = { success: true };
+    fetchSpy.mockResolvedValueOnce({
+      ok: true,
+      json: async () => response,
+    } as any);
+    const result = await addPictureTagsApi(idPicture, childIds);
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "/api/picture-tags",
+      expect.objectContaining({
+        method: "POST",
+        headers: expect.objectContaining({
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify({ idPicture, childIds }),
+      })
+    );
+    expect(result).toEqual(response);
+  });
+
+  it("addPictureTagsApi lève une erreur si !ok avec message d'erreur JSON", async () => {
+    fetchSpy.mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({ error: "Erreur d'association" }),
+    } as any);
+    await expect(addPictureTagsApi("1", ["c1"])).rejects.toThrow(
+      "Erreur d'association"
+    );
+  });
+
+  it("addPictureTagsApi lève une erreur générique si !ok sans message d'erreur", async () => {
+    fetchSpy.mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({}),
+    } as any);
+    await expect(addPictureTagsApi("1", ["c1"])).rejects.toThrow(
+      "Error while creating picture tags"
     );
   });
 });

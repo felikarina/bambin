@@ -119,4 +119,83 @@ describe("login.vue", () => {
     // Check that the password field has focus
     expect(document.activeElement).toBe(passwordInput.element);
   });
+
+  it("saves token, role, userId in localStorage on successful login", async () => {
+    const setItemSpy = vi.spyOn(window.localStorage.__proto__, "setItem");
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ token: "tok", role: "parent", userId: "u1" }),
+    });
+    const wrapper = mount(login);
+    await wrapper.find('input[type="email"]').setValue("parent@test.com");
+    await wrapper.find('input[type="password"]').setValue("test");
+    await wrapper.find("button").trigger("click");
+    await wrapper.vm.$nextTick();
+    expect(setItemSpy).toHaveBeenCalledWith("token", "tok");
+    expect(setItemSpy).toHaveBeenCalledWith("role", "parent");
+    expect(setItemSpy).toHaveBeenCalledWith("userId", "u1");
+  });
+
+  it("resets error message on new login attempt", async () => {
+    global.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({ error: "Erreur" }),
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({ error: "Erreur2" }),
+      });
+    const wrapper = mount(login);
+    await wrapper.find('input[type="email"]').setValue("test@test.com");
+    await wrapper.find('input[type="password"]').setValue("wrong");
+    await wrapper.find("button").trigger("click");
+    await wrapper.vm.$nextTick();
+    expect(wrapper.html()).toContain("Erreur");
+    // New attempt
+    await wrapper.find("button").trigger("click");
+    await wrapper.vm.$nextTick();
+    expect(wrapper.html()).toContain("Erreur2");
+  });
+
+  it("calls login even if fields are empty", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      json: async () => ({ error: "Erreur" }),
+    });
+    const wrapper = mount(login);
+    await wrapper.find("button").trigger("click");
+    await wrapper.vm.$nextTick();
+    expect(global.fetch).toHaveBeenCalledWith(
+      "/api/login",
+      expect.objectContaining({
+        method: "POST",
+        headers: expect.objectContaining({
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify({ email: "", password: "" }),
+      })
+    );
+  });
+
+  it("calls loginDemo with demo credentials", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ token: "tok", role: "parent" }),
+    });
+    const wrapper = mount(login);
+    await wrapper.findAll("button")[1].trigger("click");
+    await wrapper.vm.$nextTick();
+    expect(global.fetch).toHaveBeenCalledWith(
+      "/api/login",
+      expect.objectContaining({
+        method: "POST",
+        headers: expect.objectContaining({
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify({ email: "demo@test.com", password: "test" }),
+      })
+    );
+  });
 });

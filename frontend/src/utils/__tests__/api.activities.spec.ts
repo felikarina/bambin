@@ -5,6 +5,8 @@ import {
   deleteActivityApi,
   type Activity,
   getDemoRoleHeader,
+  updateActivityApi,
+  fetchSectionActivities,
 } from "../api";
 
 describe("api.ts - Activities", () => {
@@ -89,6 +91,68 @@ describe("api.ts - Activities", () => {
     } as any);
     await expect(deleteActivityApi("1")).rejects.toThrow(
       "Erreur lors de la suppression"
+    );
+  });
+
+  it("updateActivityApi fait un fetch PUT et retourne la réponse JSON si ok", async () => {
+    const updated = { title: "Activité modifiée", section: "S1" };
+    fetchSpy.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ success: true }),
+    } as any);
+    const result = await updateActivityApi("1", updated);
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "/api/activities?id=1",
+      expect.objectContaining({
+        method: "PUT",
+        headers: expect.objectContaining({
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify(updated),
+      })
+    );
+    expect(result).toEqual({ success: true });
+  });
+
+  it("updateActivityApi lève une erreur si !ok avec message d'erreur JSON", async () => {
+    fetchSpy.mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({ error: "Modification impossible" }),
+    } as any);
+    await expect(updateActivityApi("1", { title: "X" })).rejects.toThrow(
+      "Modification impossible"
+    );
+  });
+
+  it("updateActivityApi lève une erreur générique si !ok sans message d'erreur", async () => {
+    fetchSpy.mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({}),
+    } as any);
+    await expect(updateActivityApi("1", { title: "X" })).rejects.toThrow(
+      "Erreur lors de la modification de l'activité"
+    );
+  });
+
+  it("fetchSectionActivities retourne les associations si ok", async () => {
+    const mockSectionActivities = [
+      { idSectionActivity: "1", sectionId: "s1", activityId: "a1" },
+      { idSectionActivity: "2", sectionId: "s2", activityId: "a2" },
+    ];
+    fetchSpy.mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockSectionActivities,
+    } as any);
+    const result = await fetchSectionActivities();
+    const lastCall = fetchSpy.mock.calls[0];
+    expect(lastCall[0]).toBe("/api/section-activities");
+    expect(result).toEqual(mockSectionActivities);
+  });
+
+  it("fetchSectionActivities lève une erreur si !ok", async () => {
+    fetchSpy.mockResolvedValueOnce({ ok: false } as any);
+    await expect(fetchSectionActivities()).rejects.toThrow(
+      "Erreur lors du fetch des associations activité-section"
     );
   });
 
