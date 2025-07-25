@@ -347,6 +347,10 @@ input {
   color: black;
   border-radius: 5px;
 }
+input::placeholder {
+  color: white;
+  opacity: 0.7;
+}
 
 .card {
   background-color: var(--blue-light);
