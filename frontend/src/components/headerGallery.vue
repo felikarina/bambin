@@ -17,7 +17,7 @@ const formattedDate = today.toLocaleDateString("fr-FR", options);
 }
 
 .button {
-  height: 120px;
+  height: 60px;
   width: 240px;
   background-color: var(--blue-lighter);
   color: var(--primary);
