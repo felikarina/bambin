@@ -14,6 +14,15 @@ type PictureWithChildren = Picture & {
 const pictures = ref<PictureWithChildren[]>([]);
 const filteredPictures = ref<PictureWithChildren[]>([]);
 
+// For the enlarged image modal
+const selectedPicture = ref<PictureWithChildren | null>(null);
+const openModal = (picture: PictureWithChildren) => {
+  selectedPicture.value = picture;
+};
+const closeModal = () => {
+  selectedPicture.value = null;
+};
+
 const role = localStorage.getItem("role");
 const userId = localStorage.getItem("userId");
 
@@ -67,7 +76,13 @@ onMounted(fetchPicturesAndSet);
                 <p>{{ picture.title }}</p>
               </div>
               <figure>
-                <img v-lazy="picture.media" class="image is-4by3" alt="photo" />
+                <img
+                  v-lazy="picture.media"
+                  class="image is-4by3"
+                  alt="photo"
+                  @click="openModal(picture)"
+                  style="cursor: zoom-in"
+                />
               </figure>
             </div>
             <div class="card-content">
@@ -88,6 +103,21 @@ onMounted(fetchPicturesAndSet);
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+    <!-- Enlarged image modal -->
+    <div v-if="selectedPicture" class="modal-overlay" @click.self="closeModal">
+      <div class="modal-content">
+        <button class="modal-close" @click="closeModal">&times;</button>
+        <img
+          :src="selectedPicture.media"
+          :alt="selectedPicture.title"
+          class="modal-image"
+        />
+        <div class="modal-caption">
+          <p>{{ selectedPicture.title }}</p>
+          <p>{{ formattedDate(selectedPicture.date) }}</p>
         </div>
       </div>
     </div>
@@ -129,5 +159,50 @@ p {
   font-size: 0.98em;
   font-weight: 500;
   border: 1px solid #1976d2;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-content {
+  position: relative;
+  background: white;
+  border-radius: 12px;
+  padding: 24px 24px 12px 24px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.modal-image {
+  max-width: 80vw;
+  max-height: 70vh;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+.modal-caption {
+  text-align: center;
+  color: #155fa0;
+  font-weight: 500;
+}
+.modal-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #1976d2;
+  cursor: pointer;
 }
 </style>

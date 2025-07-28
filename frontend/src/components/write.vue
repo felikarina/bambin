@@ -453,7 +453,7 @@ const confirmDeleteActivity = async () => {
                   </div>
                 </template>
                 <template v-else>
-                  <p>{{ activity.description }}</p>
+                  <p class="description-text">{{ activity.description }}</p>
                   <div class="section-tag-bottom">
                     Section :
                     {{ getSectionNameForActivity(activity.idActivity) }}
@@ -592,5 +592,10 @@ textarea::placeholder {
   white-space: nowrap;
   align-self: flex-end;
   margin-top: 12px;
+}
+
+.description-text {
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 </style>
