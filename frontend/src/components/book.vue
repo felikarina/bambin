@@ -102,7 +102,7 @@ function getSectionNameForActivity(activityId?: string | number) {
             <div class="card-content">
               <div class="content has-text-weight-semibold">
                 <h1>{{ activity.title }}</h1>
-                {{ activity.description }}
+                <p class="description-text">{{ activity.description }}</p>
               </div>
               <div
                 v-if="getSectionNameForActivity(activity.idActivity)"
@@ -173,5 +173,10 @@ p {
   white-space: nowrap;
   align-self: flex-end;
   margin-top: 12px;
+}
+
+.description-text {
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 </style>
