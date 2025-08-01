@@ -8,7 +8,15 @@ const formattedDate = today.toLocaleDateString("fr-FR", options);
     class="header box is-flex is-flex-direction-row is-justify-content-space-evenly"
   >
     <button class="button is-large is-focused">{{ formattedDate }}</button>
-    <button class="button is-large">Bambin</button>
+    <button class="button is-large">
+      Bambin
+      <img
+        src="@/assets/logo-blue.svg"
+        alt="logo de Bambin"
+        class="logo"
+        width="60"
+      />
+    </button>
   </div>
 </template>
 <style scoped>

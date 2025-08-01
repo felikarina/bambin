@@ -43,7 +43,7 @@ const route = useRoute();
       <div class="card-image">
         <p class="card-header-title">chat poulpe</p>
         <figure class="image is-16by9">
-          <img src="@/assets/chatpoulpe.jpg" alt="Placeholder image" />
+          <img src="@/assets/chatpoulpe.jpg" alt="image de chat poulpe" />
         </figure>
       </div>
       <div class="card-content">
