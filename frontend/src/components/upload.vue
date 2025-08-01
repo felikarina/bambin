@@ -30,13 +30,6 @@ const selectedChildIds = ref<string[]>([]);
 const sectionFilter = ref("");
 const childSections = ref<ChildSection[]>([]);
 
-function onSelectChildren(e: Event) {
-  const target = e.target as HTMLSelectElement;
-  selectedChildIds.value = Array.from(target.selectedOptions).map(
-    (opt) => opt.value
-  );
-}
-
 function toggleChildSelection(id: string) {
   const idx = selectedChildIds.value.indexOf(id);
   if (idx === -1) selectedChildIds.value.push(id);
@@ -112,7 +105,7 @@ async function submitPicture() {
   try {
     // Upload to Supabase Storage
     const fileName = `${Date.now()}_${file.value!.name}`;
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from("picture")
       .upload(fileName, file.value!);
     if (error) throw new Error("Erreur upload Supabase: " + error.message);
@@ -134,7 +127,12 @@ async function submitPicture() {
     }
     await fetchPicturesAndSet();
     message.value = "Photo ajoutée avec succès";
-    date.value = "";
+    // Reset form but keep today's date
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
+    date.value = `${yyyy}-${mm}-${dd}`;
     title.value = "";
     file.value = null;
     selectedChildIds.value = [];
@@ -187,9 +185,9 @@ async function confirmDeletePhoto() {
             <div class="card-content-panel card-content">
               <div class="content has-text-weight-semibold">
                 <label for="date">Date :</label>
-                <span v-if="errors.date" class="error-message">{{
-                  errors.date
-                }}</span>
+                <span v-if="errors.date" class="error-message">
+                  {{ errors.date }}
+                </span>
                 <input
                   id="date"
                   type="date"
@@ -197,9 +195,9 @@ async function confirmDeletePhoto() {
                   class="input mb-2"
                 />
                 <label for="title">Titre :</label>
-                <span v-if="errors.title" class="error-message">{{
-                  errors.title
-                }}</span>
+                <span v-if="errors.title" class="error-message">
+                  {{ errors.title }}
+                </span>
                 <input
                   id="title"
                   type="text"
@@ -208,9 +206,9 @@ async function confirmDeletePhoto() {
                   placeholder="Titre de la photo"
                 />
                 <label for="file">Photo :</label>
-                <span v-if="errors.file" class="error-message">{{
-                  errors.file
-                }}</span>
+                <span v-if="errors.file" class="error-message">
+                  {{ errors.file }}
+                </span>
                 <input
                   id="file"
                   type="file"
