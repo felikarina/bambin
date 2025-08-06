@@ -41,7 +41,10 @@ jobs:
             sleep 1
           done
       - name: Set DATABASE_URL from GitHub secrets
-        run: echo "DATABASE_URL=${{ secrets.DATABASE_URL_TEST }}" > .env
+        run: |
+          grep -v '^DATABASE_URL=' .env 2>/dev/null > .env.tmp || true
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL_TEST }}" >> .env.tmp
+          mv .env.tmp .env
       - name: Start server
         run: vercel dev --listen 3000 --token ${{ secrets.VERCEL_TOKEN }} --yes &
       - name: Wait for server to be ready
