@@ -5,7 +5,7 @@ echo "Loading test environment variables..."
 export $(grep -v '^#' .env.test | xargs)
 
 echo "Starting the test Docker database..."
-docker compose -f docker-compose.test.yml up -d
+docker compose -f docker-compose.test.yml -p test up -d
 
 echo "Waiting for the database to be available..."
 until docker exec bambin_db_test pg_isready -U test; do
@@ -30,4 +30,4 @@ echo "Running Playwright E2E tests..."
 npm run test:e2e
 
 echo "Stopping and removing the test container..."
-docker compose -f docker-compose.test.yml down -v
+docker compose -f docker-compose.test.yml -p test down -v
