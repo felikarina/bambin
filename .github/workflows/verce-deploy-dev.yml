@@ -40,6 +40,10 @@ jobs:
           until pg_isready -h localhost -p 6544 -U test; do
             sleep 1
           done
+      - name: Test DB connection
+        run: |
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+          PGPASSWORD=test psql -h localhost -p 6544 -U test -d bambin_test -c '\dt'
       - name: Set DATABASE_URL from GitHub secrets
         run: |
           grep -v '^DATABASE_URL=' .env 2>/dev/null > .env.tmp || true
