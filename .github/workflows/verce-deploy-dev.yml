@@ -40,14 +40,6 @@ jobs:
           until pg_isready -h localhost -p 5435 -U test; do
             sleep 1
           done
-      - name: Generate .env from GitHub secrets
-        run: |
-          echo "VITE_SUPABASE_URL=https://dummy.supabase.co" >> .env
-          echo "VITE_SUPABASE_KEY=dummy-key" >> .env
-          echo "DATABASE_URL=$DATABASE_URL" >> .env
-          echo "NODE_ENV=test" >> .env
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
       - name: Start server
         run: vercel dev --listen 3000 --token ${{ secrets.VERCEL_TOKEN }} --yes &
       - name: Wait for server to be ready
