@@ -188,6 +188,7 @@ async function submitActivity() {
       section: section.value || undefined,
       userId: userId.value,
     } as any);
+    await fetchActivitiesAndSet();
     showModal.value = true;
     date.value = "";
     titre.value = "";
