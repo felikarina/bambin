@@ -42,8 +42,11 @@ jobs:
           done
       - name: Test DB connection
         run: |
+          set -x
+          echo '--- Début test connexion DB ---'
           sudo apt-get update && sudo apt-get install -y postgresql-client
-          PGPASSWORD=test psql -h localhost -p 6544 -U test -d bambin_test -c '\dt'
+          PGPASSWORD=test psql -h localhost -p 6544 -U test -d bambin_test -c '\dt' || exit 1
+          echo '--- Fin test connexion DB ---'
       - name: Set DATABASE_URL from GitHub secrets
         run: |
           grep -v '^DATABASE_URL=' .env 2>/dev/null > .env.tmp || true
