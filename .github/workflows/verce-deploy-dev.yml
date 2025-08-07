@@ -40,11 +40,6 @@ jobs:
           until pg_isready -h localhost -p 6544 -U test; do
             sleep 1
           done
-      - name: Set DATABASE_URL from GitHub secrets
-        run: |
-          grep -v '^DATABASE_URL=' .env 2>/dev/null > .env.tmp || true
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL_TEST }}" >> .env.tmp
-          mv .env.tmp .env
       - name: Start server
         run: vercel dev --listen 3000 --token ${{ secrets.VERCEL_TOKEN }} --yes &
       - name: User rights

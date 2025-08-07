@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-echo "Loading test environment variables..."
-export $(grep -v '^#' .env.test | xargs)
+echo "Setting up test environment..."
+export DATABASE_URL="postgresql://test:test@localhost:6540/bambin_test"
 
 echo "Starting the test Docker database..."
 docker compose -f docker-compose.test.yml -p test up -d
