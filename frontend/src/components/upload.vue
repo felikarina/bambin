@@ -139,6 +139,7 @@ async function submitPicture() {
     setTimeout(() => {
       message.value = "";
     }, 2000);
+    fetchPicturesAndSet();
   } catch (err: any) {
     message.value = err.message || "Erreur lors de l'ajout de la photo.";
   } finally {

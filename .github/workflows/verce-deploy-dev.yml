@@ -16,7 +16,7 @@ jobs:
           POSTGRES_USER: test
           POSTGRES_PASSWORD: test
         ports:
-          - 5435:5432
+          - 6544:5432
         options: >-
           --health-cmd="pg_isready -U test"
           --health-interval=2s
@@ -37,23 +37,11 @@ jobs:
         run: npm run test:unit -- --run
       - name: Wait for DB to be ready
         run: |
-          until pg_isready -h localhost -p 5435 -U test; do
+          until pg_isready -h localhost -p 6544 -U test; do
             sleep 1
           done
       - name: Start server
         run: vercel dev --listen 3000 --token ${{ secrets.VERCEL_TOKEN }} --yes &
-      - name: Wait for server to be ready
-        run: |
-          for i in {1..40}; do
-            if curl -s http://localhost:3000/api/users | grep -q "^\["; then
-              echo "API ready !"
-              exit 0
-            fi
-            echo "Waiting for API..."
-            sleep 2
-          done
-          echo "API not ready after 80s"
-          exit 1
       - name: User rights
         run: chmod +x test-with-db.sh
       - name: Run DB orchestration and tests
