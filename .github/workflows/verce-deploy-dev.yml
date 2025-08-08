@@ -45,6 +45,8 @@ jobs:
       - name: User rights
         run: chmod +x test-with-db.sh
       - name: Run DB orchestration and tests
+        env:
+          DATABASE_URL_TEST: ${{ secrets.DATABASE_URL_TEST }}
         run: ./test-with-db.sh
       - name: Trigger Vercel Deploy Hook
         if: success()
