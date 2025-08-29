@@ -2,7 +2,7 @@
 set -e
 
 echo "Setting up test environment..."
-export DATABASE_URL="postgresql://test:test@localhost:6540/bambin_test"
+export DATABASE_URL="$DATABASE_URL_TEST"
 
 echo "Starting the test Docker database..."
 docker compose -f docker-compose.test.yml -p test up -d
