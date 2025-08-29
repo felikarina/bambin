@@ -123,7 +123,7 @@ const focusPassword = async () => {
         <div class="error-space">
           <p v-if="error" style="color: red; margin: 0">{{ error }}</p>
         </div>
-        <button class="button is-link mt-5" @click="login">Se connecter</button>
+        <button class="button is-link mt-6" @click="login">Se connecter</button>
         <button class="button button-demo mt-4" @click="loginDemo">
           Démo visiteur
         </button>
