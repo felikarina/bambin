@@ -7,6 +7,7 @@ const props = defineProps<{
   fakeUsers: User[];
   getUserChildren: (userId: string) => Child[];
   askDeleteUser: (user: User) => void;
+  onResetPassword?: (user: User) => void;
 }>();
 </script>
 <template>
@@ -36,12 +37,24 @@ const props = defineProps<{
                 class="content has-text-weight-semibold is-flex is-align-items-center is-justify-content-space-between"
               >
                 <p class="mr-2">{{ user.email }}</p>
-                <span
-                  class="button is-danger is-outlined"
-                  title="Supprimer l'utilisateur"
-                  @click="props.isDemo ? null : props.askDeleteUser(user)"
-                  ><span class="icon"> <i class="fas fa-trash"></i></span>
-                </span>
+                <div class="is-flex is-align-items-center">
+                  <span
+                    class="button is-link is-outlined mr-2"
+                    title="Réinitialiser le mot de passe"
+                    @click="
+                      props.isDemo
+                        ? null
+                        : props.onResetPassword && props.onResetPassword(user)
+                    "
+                    ><span class="icon"><i class="fas fa-key"></i></span>
+                  </span>
+                  <span
+                    class="button is-danger is-outlined"
+                    title="Supprimer l'utilisateur"
+                    @click="props.isDemo ? null : props.askDeleteUser(user)"
+                    ><span class="icon"> <i class="fas fa-trash"></i></span>
+                  </span>
+                </div>
               </div>
               <div
                 v-if="

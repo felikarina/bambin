@@ -30,12 +30,7 @@ const emit = defineEmits(["update:newUser", "addUser"]);
         <option value="admin">Admin</option>
         <option value="nurseryStaff">Personnel</option>
       </select>
-      <input
-        v-model="props.newUser.password"
-        placeholder="Mot de passe"
-        type="password"
-        required
-      />
+      <!-- Mot de passe généré côté serveur : champ retiré -->
       <button type="submit" :disabled="props.isLoading">Ajouter</button>
       <span v-if="props.errorMsg" class="error ml-3">{{ props.errorMsg }}</span>
     </form>
