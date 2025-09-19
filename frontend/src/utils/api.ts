@@ -9,7 +9,6 @@ export interface User {
   lastname?: string;
   role?: string;
   email?: string;
-  password?: string;
 }
 
 export async function fetchUsers(): Promise<User[]> {
@@ -63,6 +62,30 @@ export async function deleteUserApi(idUser: string) {
     throw new Error("Erreur lors de la suppression");
   }
   return;
+}
+
+export async function resetUserPasswordApi(idUser: string) {
+  const response = await fetch(`/api/users?id=${idUser}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...getDemoRoleHeader() },
+    body: JSON.stringify({ action: "resetPassword" }),
+  });
+  if (!response.ok) {
+    let err;
+    try {
+      err = await response.json();
+    } catch {
+      err = {};
+    }
+    if (typeof err === "object" && err && "error" in err) {
+      throw new Error(
+        (err as { error?: string }).error ||
+          "Erreur lors de la réinitialisation du mot de passe"
+      );
+    }
+    throw new Error("Erreur lors de la réinitialisation du mot de passe");
+  }
+  return response.json() as Promise<{ initialPassword: string }>;
 }
 
 export interface Activity {

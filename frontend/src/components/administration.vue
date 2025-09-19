@@ -8,6 +8,7 @@ import {
   fetchUsers as fetchUsersApi,
   addUserApi,
   deleteUserApi,
+  resetUserPasswordApi,
   type User,
   fetchChildren as fetchChildrenApi,
   addChildApi,
@@ -38,7 +39,6 @@ const newUser = ref({
   lastname: "",
   email: "",
   role: "parent",
-  password: "",
 });
 
 const newChild = ref<Child>({
@@ -56,11 +56,14 @@ const errorMsgChild = ref("");
 const successMsg = ref("");
 const successMsgChild = ref("");
 const createSuccessMsg = ref("");
+const generatedPassword = ref("");
 const createSuccessMsgChild = ref("");
 
 const showModal = ref(false);
 const showModalChild = ref(false);
+const showResetModal = ref(false);
 const userToDelete = ref<User | null>(null);
+const userToReset = ref<User | null>(null);
 const childToDelete = ref<Child | null>(null);
 const isDemo = ref(false);
 
@@ -82,13 +85,13 @@ const addUser = async () => {
     newUser.value.lastname = capitalizeFirstLetter(
       newUser.value.lastname || ""
     );
-    await addUserApi(newUser.value);
+    const result = await addUserApi(newUser.value);
+    generatedPassword.value = result?.initialPassword || "";
     newUser.value = {
       firstname: "",
       lastname: "",
       email: "",
       role: "parent",
-      password: "",
     };
     await fetchUsers();
     createSuccessMsg.value = "Utilisateur créé avec succès";
@@ -127,6 +130,32 @@ const confirmDeleteUser = async () => {
 const cancelDeleteUser = () => {
   showModal.value = false;
   userToDelete.value = null;
+};
+
+const onResetPassword = async (user: User) => {
+  if (!user.idUser) return;
+  try {
+    const { initialPassword } = await resetUserPasswordApi(user.idUser);
+    generatedPassword.value = initialPassword;
+    userToReset.value = user;
+    showResetModal.value = true;
+  } catch (e: any) {
+    errorMsg.value = e.message || "Erreur lors de la réinitialisation";
+  }
+};
+
+const closeResetModal = () => {
+  showResetModal.value = false;
+  generatedPassword.value = "";
+  userToReset.value = null;
+};
+
+const copyPassword = async () => {
+  try {
+    await navigator.clipboard.writeText(generatedPassword.value);
+    successMsg.value = "Mot de passe copié";
+    setTimeout(() => (successMsg.value = ""), 1500);
+  } catch {}
 };
 
 const fetchChildren = async () => {
@@ -304,6 +333,7 @@ onMounted(() => {
     :fakeUsers="fakeUsers"
     :getUserChildren="getUserChildren"
     :askDeleteUser="askDeleteUser"
+    :onResetPassword="onResetPassword"
   />
   <ChildListSection
     :children="children"
@@ -342,6 +372,27 @@ onMounted(() => {
       class="modal-box success-modal has-text-centered has-text-weight-bold py-6 px-5"
     >
       {{ successMsg }}
+    </div>
+  </div>
+  <!-- Reset password modal -->
+  <div
+    v-if="showResetModal"
+    class="modal-overlay is-flex is-justify-content-center is-align-items-center"
+    v-disable-demo
+  >
+    <div class="modal-box has-text-centered py-6 px-5">
+      <h3>Mot de passe réinitialisé</h3>
+      <p class="mt-3">
+        Utilisateur: <b>{{ userToReset?.email }}</b>
+      </p>
+      <p class="mt-2">
+        Nouveau mot de passe:
+        <code style="user-select: all">{{ generatedPassword }}</code>
+      </p>
+      <div class="is-flex is-justify-content-space-between mt-5 gap-4">
+        <button class="btn-cancel" @click="closeResetModal">Fermer</button>
+        <button class="btn-confirm" @click="copyPassword">Copier</button>
+      </div>
     </div>
   </div>
   <!-- Children modals -->
