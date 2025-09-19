@@ -1,0 +1,21 @@
+{
+  "name": "Bambin",
+  "short_name": "Bambin",
+  "description": "Journal d'activités, galerie photo et administration pour crèche.",
+  "lang": "fr-FR",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#5a95f4",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "/pictures/logoBambin.png",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ]
+}
