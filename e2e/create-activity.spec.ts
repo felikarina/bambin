@@ -7,15 +7,16 @@ test("create an activity via the form", async ({ page, request }) => {
     firstname: "Playwright",
     lastname: "User",
     email: `pw_${Date.now()}@example.com`,
-    password: "testpass",
     role: "admin",
   };
   const res = await request.post("http://localhost:3000/api/users", {
     data: userData,
   });
   expect(res.status()).toBe(201);
-  const user = await res.json();
-  const userId = user.idUser;
+  const createResponse = await res.json();
+  const userId =
+    (createResponse.user && createResponse.user.idUser) ||
+    createResponse.idUser;
 
   // Set userId and role in localStorage before page load
   await page.addInitScript((id) => {
