@@ -3,21 +3,31 @@ import { db } from "../backend/db";
 import { user } from "../backend/db/schema";
 import { hashPassword, generateStrongPassword } from "../backend/utils/auth";
 import { and, eq, or } from "drizzle-orm";
-import {
-  child,
-  activity,
-  picture,
-  message,
-  childSection,
-  pictureTag,
-} from "../backend/db/schema";
+import verifyJwt from "../backend/utils/verify-jwt";
 
 function isDemoRequest(req: VercelRequest): boolean {
-  const role = req.headers["x-user-role"] || req.query.role || req.body?.role;
-  return role === "demo";
+  const payload = verifyJwt.requireValidToken(req);
+  if (!payload) return false;
+  try {
+    return (payload as any).role === "demo";
+  } catch {
+    return false;
+  }
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // require a valid JWT for mutating operations
+  if (
+    req.method === "POST" ||
+    req.method === "DELETE" ||
+    req.method === "PUT"
+  ) {
+    const payload = verifyJwt.requireValidToken(req);
+    if (!payload) {
+      res.status(401).json({ error: "Authentification requise" });
+      return;
+    }
+  }
   if (isDemoRequest(req)) {
     res.status(403).json({ error: "Accès interdit en mode démo" });
     return;

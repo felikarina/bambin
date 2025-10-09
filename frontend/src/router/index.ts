@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
+import { jwtDecode } from "jwt-decode";
 import PhotoGallery from "../views/PhotoGallery.vue";
 import HelloWorld from "../components/HelloWorld.vue";
 import activityBook from "../views/activityBook.vue";
@@ -34,6 +35,7 @@ const routes = [
     path: "/ajout-photo",
     name: "uploadPhoto",
     component: uploadPhoto,
+    meta: { requiresAuth: true, role: ["admin", "demo", "nurseryStaff"] },
   },
   {
     path: "/journal-activite",
@@ -44,6 +46,7 @@ const routes = [
     path: "/ajout-activite",
     name: "writeActivity",
     component: WriteActivity,
+    meta: { requiresAuth: true, role: ["admin", "demo", "nurseryStaff"] },
   },
   {
     path: "/administration",
@@ -60,25 +63,33 @@ const router = createRouter({
 
 export function authGuard(to: any, from: any, next: any) {
   const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
+  let role = "";
+  if (token) {
+    try {
+      const decoded = jwtDecode(token) as { role?: string };
+      role = decoded.role ?? "";
+    } catch (e) {
+      role = "";
+    }
+  }
 
   if (to.meta.requiresAuth) {
     if (!token) {
       next("/");
-    } else {
-      if (to.meta.role) {
-        if (Array.isArray(to.meta.role)) {
-          if (!to.meta.role.includes(role)) {
-            next("/");
-            return;
-          }
-        } else if (to.meta.role !== role) {
+      return;
+    }
+    if (to.meta.role) {
+      if (Array.isArray(to.meta.role)) {
+        if (!to.meta.role.includes(role)) {
           next("/");
           return;
         }
+      } else if (to.meta.role !== role) {
+        next("/");
+        return;
       }
-      next();
     }
+    next();
   } else {
     next();
   }

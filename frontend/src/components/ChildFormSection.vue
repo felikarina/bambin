@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Child, User } from "../utils/api";
+import { getRole } from "../utils/auth";
 
 const props = defineProps<{
   newChild: Child;
@@ -14,6 +15,7 @@ const emit = defineEmits([
   "addChild",
   "update:selectedSectionId",
 ]);
+const role = getRole();
 
 const handleSectionChange = (event: Event) => {
   const target = event.target as HTMLSelectElement;

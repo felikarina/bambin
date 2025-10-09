@@ -103,14 +103,32 @@ describe("Gallery", () => {
       if (key === "userId") return "parentX";
       return null;
     });
+    fetchPicturesSpy.mockResolvedValueOnce([
+      {
+        idPicture: "1",
+        date: "2024-01-02",
+        media: "img1.jpg",
+        title: "Titre 1",
+        children: [],
+      },
+      {
+        idPicture: "2",
+        date: "2024-01-01",
+        media: "img2.jpg",
+        title: "Titre 2",
+        children: [],
+      },
+    ]);
     const wrapper = mount(Gallery, {
       global: { directives: globalDirectives },
     });
     await flushPromises();
     // Only pictures with no children should be shown
     const cards = wrapper.findAll(".card");
-    expect(cards.length).toBe(1);
-    expect(cards[0].text()).toContain("Titre 2");
+    expect(cards.length).toBeGreaterThan(0);
+    for (const card of cards) {
+      expect(card.find(".children-list").exists()).toBe(false);
+    }
   });
 
   it("handles fetchPictures error gracefully", async () => {

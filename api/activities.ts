@@ -2,18 +2,40 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { db } from "../backend/db";
 import { activity, sectionActivity } from "../backend/db/schema";
 import { eq } from "drizzle-orm";
-
-function isDemoRequest(req: VercelRequest): boolean {
-  const role = req.headers["x-user-role"] || req.query.role || req.body?.role;
-  return role === "demo";
-}
+import verifyJwt from "../backend/utils/verify-jwt";
+import { isDemoRequest } from "../backend/utils/auth";
+import { isParentRequest } from "../backend/utils/auth";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // require a valid token for mutating requests
   if (
-    (req.method === "POST" || req.method === "DELETE") &&
-    isDemoRequest(req)
+    req.method === "POST" ||
+    req.method === "DELETE" ||
+    req.method === "PUT"
+  ) {
+    const payload = verifyJwt.requireValidToken(req);
+    if (!payload) {
+      res.status(401).json({ error: "Authentification requise" });
+      return;
+    }
+  }
+
+  if (
+    req.method === "DELETE" ||
+    req.method === "PUT" ||
+    (req.method === "POST" && isDemoRequest(req))
   ) {
     res.status(403).json({ error: "Accès interdit en mode démo" });
+    return;
+  }
+
+  if (
+    (req.method === "DELETE" ||
+      req.method === "PUT" ||
+      req.method === "POST") &&
+    isParentRequest(req)
+  ) {
+    res.status(403).json({ error: "Accès interdit en mode parent" });
     return;
   }
 
@@ -41,6 +63,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         .json({ error: "Erreur lors de la création de l'activité" });
     }
   }
+
   if (req.method === "DELETE") {
     const id = req.query.id;
     if (!id) {
@@ -60,10 +83,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
   if (req.method === "PUT") {
-    if (isDemoRequest(req)) {
-      res.status(403).json({ error: "Accès interdit en mode démo" });
-      return;
-    }
     const id = req.query.id;
     if (!id) {
       return res.status(400).json({ error: "ID activité manquant" });

@@ -1,10 +1,16 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { db } from "../backend/db";
 import { section } from "../backend/db/schema";
+import verifyJwt from "../backend/utils/verify-jwt";
 
 function isDemoRequest(req: VercelRequest): boolean {
-  const role = req.headers["x-user-role"] || req.query.role || req.body?.role;
-  return role === "demo";
+  const payload = verifyJwt.requireValidToken(req);
+  if (!payload) return false;
+  try {
+    return (payload as any).role === "demo";
+  } catch {
+    return false;
+  }
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

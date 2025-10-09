@@ -12,14 +12,15 @@ import {
   type SectionActivity,
   type Section,
 } from "../utils/api";
+import { getRole, getUserId } from "../utils/auth";
 
 const activities = ref<Activity[]>([]);
 const filteredActivities = ref<Activity[]>([]);
 const sections = ref<Section[]>([]);
 const activityToSection = ref<Record<string, string | undefined>>({});
 
-const role = localStorage.getItem("role");
-const userId = localStorage.getItem("userId");
+const role = getRole();
+const userId = getUserId();
 
 const fetchAllAndFilter = async () => {
   try {

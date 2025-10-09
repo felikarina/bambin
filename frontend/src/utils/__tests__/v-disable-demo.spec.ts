@@ -38,28 +38,40 @@ describe("disableDemo directive", () => {
   });
 
   it("should disable element if role is demo (mounted)", () => {
-    window.localStorage.setItem("role", "demo");
+    window.localStorage.setItem(
+      "token",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiZGVtbyJ9.signature"
+    );
     const el = createElement("button") as HTMLButtonElement;
     disableDemo.mounted(el, {} as any);
     expect(el.disabled).toBe(true);
   });
 
   it("should not disable element if role is not demo (mounted)", () => {
-    window.localStorage.setItem("role", "admin");
+    window.localStorage.setItem(
+      "token",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.signature"
+    );
     const el = createElement("button") as HTMLButtonElement;
     disableDemo.mounted(el, {} as any);
     expect(el.disabled).toBe(false);
   });
 
   it("should disable element if role is demo (updated)", () => {
-    window.localStorage.setItem("role", "demo");
+    window.localStorage.setItem(
+      "token",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiZGVtbyJ9.signature"
+    );
     const el = createElement("button") as HTMLButtonElement;
     disableDemo.updated(el, {} as any);
     expect(el.disabled).toBe(true);
   });
 
   it("should enable element if role is not demo (updated)", () => {
-    window.localStorage.setItem("role", "admin");
+    window.localStorage.setItem(
+      "token",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.signature"
+    );
     const el = createElement("button") as HTMLButtonElement;
     el.disabled = true;
     disableDemo.updated(el, {} as any);
@@ -67,7 +79,10 @@ describe("disableDemo directive", () => {
   });
 
   it("should set attributes for non-form elements (demo)", () => {
-    window.localStorage.setItem("role", "demo");
+    window.localStorage.setItem(
+      "token",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiZGVtbyJ9.signature"
+    );
     const el = createElement("div");
     disableDemo.updated(el, {} as any);
     expect(el.getAttribute("data-demo-disabled")).toBe("true");
@@ -77,7 +92,10 @@ describe("disableDemo directive", () => {
   });
 
   it("should remove attributes for non-form elements (not demo)", () => {
-    window.localStorage.setItem("role", "admin");
+    window.localStorage.setItem(
+      "token",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.signature"
+    );
     const el = createElement("div");
     el.setAttribute("data-demo-disabled", "true");
     el.style.pointerEvents = "none";

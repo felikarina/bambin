@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
+import { getRole, getUserId } from "../utils/auth";
 import UserFormSection from "./UserFormSection.vue";
 import ChildFormSection from "./ChildFormSection.vue";
 import UserListSection from "./UserListSection.vue";
@@ -301,8 +302,10 @@ const getChildParents = (child: Child) => {
 };
 
 onMounted(() => {
-  isDemo.value = localStorage.getItem("role") === "demo";
-  newChild.value.userId = localStorage.getItem("userId") || "";
+  const role = getRole();
+  isDemo.value = role === "demo";
+
+  newChild.value.userId = getUserId();
   fetchUsers();
   fetchChildren();
   fetchSections();

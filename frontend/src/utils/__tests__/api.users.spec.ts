@@ -32,21 +32,30 @@ describe("api.ts - Users", () => {
   });
 
   it("fetchUsers retourne [] si role demo", async () => {
-    window.localStorage.setItem("role", "demo");
+    window.localStorage.setItem(
+      "token",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiZGVtbyJ9.signature"
+    );
     const result = await fetchUsers();
     expect(result).toEqual([]);
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
   it("fetchUsers retourne les users si ok", async () => {
-    window.localStorage.setItem("role", "admin");
+    // Use a mock JWT token for testing
+    const mockToken =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.test-signature";
+    localStorage.setItem("token", mockToken);
     fetchSpy.mockResolvedValueOnce({
       ok: true,
       json: async () => mockUsers,
     } as any);
     const result = await fetchUsers();
     expect(fetchSpy).toHaveBeenCalledWith("/api/users", {
-      headers: { "x-user-role": "admin" },
+      headers: {
+        "x-user-role": "admin",
+        Authorization: `Bearer ${mockToken}`,
+      },
     });
     expect(result).toEqual(mockUsers);
   });

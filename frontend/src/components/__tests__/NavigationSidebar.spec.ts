@@ -33,7 +33,10 @@ describe("NavigationSidebar", () => {
   });
 
   it("affiche le lien Administration seulement pour l'admin", async () => {
-    localStorage.setItem("role", "admin");
+    localStorage.setItem(
+      "token",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.signature"
+    );
     const wrapper = mount(NavigationSidebar, {
       global: { stubs: { RouterLink: RouterLinkStub } },
     });
@@ -61,7 +64,10 @@ describe("NavigationSidebar", () => {
   });
 
   it("respecte la structure HTML attendue avec admin", async () => {
-    localStorage.setItem("role", "admin");
+    localStorage.setItem(
+      "token",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.signature"
+    );
     const wrapper = mount(NavigationSidebar, {
       global: { stubs: { RouterLink: RouterLinkStub } },
     });

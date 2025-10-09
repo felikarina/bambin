@@ -27,8 +27,8 @@ describe("router/index.ts", () => {
 
   it("laisse passer si authentifié et rôle correct", async () => {
     (localStorage.getItem as any).mockImplementation((key: string) => {
-      if (key === "token") return "abc";
-      if (key === "role") return "admin";
+      if (key === "token")
+        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.signature";
       return null;
     });
     const next = vi.fn();
@@ -40,8 +40,8 @@ describe("router/index.ts", () => {
 
   it("redirige si le rôle ne correspond pas", async () => {
     (localStorage.getItem as any).mockImplementation((key: string) => {
-      if (key === "token") return "abc";
-      if (key === "role") return "user";
+      if (key === "token")
+        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidXNlciJ9.signature";
       return null;
     });
     const next = vi.fn();
@@ -53,8 +53,8 @@ describe("router/index.ts", () => {
 
   it("redirige si le rôle n'est pas dans le tableau des rôles autorisés", async () => {
     (localStorage.getItem as any).mockImplementation((key: string) => {
-      if (key === "token") return "abc";
-      if (key === "role") return "user";
+      if (key === "token")
+        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidXNlciJ9.signature";
       return null;
     });
     const next = vi.fn();
@@ -66,8 +66,8 @@ describe("router/index.ts", () => {
 
   it("laisse passer si le rôle est dans le tableau des rôles autorisés", async () => {
     (localStorage.getItem as any).mockImplementation((key: string) => {
-      if (key === "token") return "abc";
-      if (key === "role") return "admin";
+      if (key === "token")
+        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.signature";
       return null;
     });
     const next = vi.fn();

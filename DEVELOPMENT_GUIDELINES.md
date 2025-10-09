@@ -125,6 +125,12 @@ onMounted(() => { ... });
 - Afficher des messages d'erreur utilisateur
 - Logger les erreurs côté serveur
 
+#### **Sécurité des tests**
+
+- **NE JAMAIS** utiliser de vrais tokens JWT dans les tests publics
+- Utiliser des tokens de test avec signature factice (`test-signature`)
+- Les tokens de test ne doivent pas fonctionner avec le vrai `JWT_SECRET`
+
 ### 📝 **Documentation**
 
 #### **Commentaires**

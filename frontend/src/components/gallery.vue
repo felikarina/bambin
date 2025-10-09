@@ -7,6 +7,8 @@ import {
   fetchChildren,
   type Child,
 } from "../utils/api";
+import { getRole, getUserId } from "../utils/auth";
+
 type PictureWithChildren = Picture & {
   children?: { idChild: string; firstname: string; lastname: string }[];
 };
@@ -23,8 +25,8 @@ const closeModal = () => {
   selectedPicture.value = null;
 };
 
-const role = localStorage.getItem("role");
-const userId = localStorage.getItem("userId");
+const role = getRole();
+const userId = getUserId();
 
 const fetchPicturesAndSet = async () => {
   try {
@@ -35,18 +37,30 @@ const fetchPicturesAndSet = async () => {
         new Date(b.date).getTime() - new Date(a.date).getTime()
     );
     if (role === "parent" && userId) {
-      // Fetch all children and keep only those belonging to the parent
       const allChildren: Child[] = await fetchChildren();
       const myChildrenIds = allChildren
         .filter((c) => c.userId === userId || c.userId2 === userId)
         .map((c) => c.idChild);
-      // Filter pictures: no tag or at least one tag matches a child of the parent
-      filteredPictures.value = allPictures.filter((pic: any) => {
-        if (!pic.children || pic.children.length === 0) return true;
-        return pic.children.some((child: any) =>
-          myChildrenIds.includes(child.idChild)
+      // Filter: show pictures with no children OR with at least one child matching
+      const hasMatchingChild = allPictures.some(
+        (pic: any) =>
+          pic.children &&
+          pic.children.some((child: any) =>
+            myChildrenIds.includes(child.idChild)
+          )
+      );
+      if (!hasMatchingChild) {
+        filteredPictures.value = allPictures.filter(
+          (pic: any) => !pic.children || pic.children.length === 0
         );
-      });
+      } else {
+        filteredPictures.value = allPictures.filter((pic: any) => {
+          if (!pic.children || pic.children.length === 0) return true;
+          return pic.children.some((child: any) =>
+            myChildrenIds.includes(child.idChild)
+          );
+        });
+      }
     } else {
       filteredPictures.value = allPictures;
     }
