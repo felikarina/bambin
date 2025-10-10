@@ -2,36 +2,28 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { db } from "../backend/db";
 import { user } from "../backend/db/schema";
 import { hashPassword, generateStrongPassword } from "../backend/utils/auth";
-import { and, eq, or } from "drizzle-orm";
+import { and, eq, is, or } from "drizzle-orm";
 import verifyJwt from "../backend/utils/verify-jwt";
-
-function isDemoRequest(req: VercelRequest): boolean {
-  const payload = verifyJwt.requireValidToken(req);
-  if (!payload) return false;
-  try {
-    return (payload as any).role === "demo";
-  } catch {
-    return false;
-  }
-}
+import { isDemoRequest } from "../backend/utils/auth";
+import { isParentRequest } from "../backend/utils/auth";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // require a valid JWT for mutating operations
-  if (
-    req.method === "POST" ||
-    req.method === "DELETE" ||
-    req.method === "PUT"
-  ) {
-    const payload = verifyJwt.requireValidToken(req);
-    if (!payload) {
-      res.status(401).json({ error: "Authentification requise" });
-      return;
-    }
+  const payload = verifyJwt.requireValidToken(req);
+  if (!payload) {
+    res.status(401).json({ error: "Authentification requise" });
+    return;
   }
+
   if (isDemoRequest(req)) {
     res.status(403).json({ error: "Accès interdit en mode démo" });
     return;
   }
+
+  if (isParentRequest(req)) {
+    res.status(403).json({ error: "Accès interdit en mode parent" });
+    return;
+  }
+
   if (req.method === "POST") {
     const { firstname, lastname, email, role } = req.body;
     if (!firstname || !lastname || !email || !role) {

@@ -7,23 +7,17 @@ import { isDemoRequest } from "../backend/utils/auth";
 import { isParentRequest } from "../backend/utils/auth";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // require a valid token for mutating requests
-  if (
-    req.method === "POST" ||
-    req.method === "DELETE" ||
-    req.method === "PUT"
-  ) {
-    const payload = verifyJwt.requireValidToken(req);
-    if (!payload) {
-      res.status(401).json({ error: "Authentification requise" });
-      return;
-    }
+  const payload = verifyJwt.requireValidToken(req);
+  if (!payload) {
+    res.status(401).json({ error: "Authentification requise" });
+    return;
   }
 
   if (
-    req.method === "DELETE" ||
-    req.method === "PUT" ||
-    (req.method === "POST" && isDemoRequest(req))
+    (req.method === "DELETE" ||
+      req.method === "PUT" ||
+      req.method === "POST") &&
+    isDemoRequest(req)
   ) {
     res.status(403).json({ error: "Accès interdit en mode démo" });
     return;
