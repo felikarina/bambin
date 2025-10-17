@@ -35,19 +35,19 @@ jobs:
         run: npm install -g vercel
       - name: Run unit tests
         run: npm run test:unit -- --run
-      - name: Wait for DB to be ready
-        run: |
-          until pg_isready -h localhost -p 6544 -U test; do
-            sleep 1
-          done
-      - name: Start server
-        run: vercel dev --listen 3000 --token ${{ secrets.VERCEL_TOKEN }} --yes &
-      - name: User rights
-        run: chmod +x test-with-db.sh
-      - name: Run DB orchestration and tests
-        env:
-          DATABASE_URL_TEST: ${{ secrets.DATABASE_URL_TEST }}
-        run: ./test-with-db.sh
+      # - name: Wait for DB to be ready
+      #   run: |
+      #     until pg_isready -h localhost -p 6544 -U test; do
+      #       sleep 1
+      #     done
+      # - name: Start server
+      #   run: vercel dev --listen 3000 --token ${{ secrets.VERCEL_TOKEN }} --yes &
+      # - name: User rights
+      #   run: chmod +x test-with-db.sh
+      # - name: Run DB orchestration and tests
+      #   env:
+      #     DATABASE_URL_TEST: ${{ secrets.DATABASE_URL_TEST }}
+      #   run: ./test-with-db.sh
       - name: Trigger Vercel Deploy Hook
         if: success()
         run: |

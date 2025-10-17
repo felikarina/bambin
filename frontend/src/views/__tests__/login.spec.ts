@@ -38,7 +38,11 @@ describe("login.vue", () => {
   it("connecte et redirige l'admin vers /administration", async () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ token: "tok", role: "admin" }),
+      json: async () => ({
+        token:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.signature",
+        role: "admin",
+      }),
     });
     const wrapper = mount(login);
     await wrapper.find('input[type="email"]').setValue("admin@test.com");
@@ -51,7 +55,11 @@ describe("login.vue", () => {
   it("connecte et redirige le parent vers /galerie-photo", async () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ token: "tok", role: "parent" }),
+      json: async () => ({
+        token:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoicGFyZW50In0.signature",
+        role: "parent",
+      }),
     });
     const wrapper = mount(login);
     await wrapper.find('input[type="email"]').setValue("parent@test.com");
@@ -64,7 +72,11 @@ describe("login.vue", () => {
   it("connecte et redirige nurseryStaff vers /ajout-activite", async () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ token: "tok", role: "nurseryStaff" }),
+      json: async () => ({
+        token:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoibnVyc2VyeVN0YWZmIn0.signature",
+        role: "nurseryStaff",
+      }),
     });
     const wrapper = mount(login);
     await wrapper.find('input[type="email"]').setValue("staff@test.com");
@@ -77,7 +89,11 @@ describe("login.vue", () => {
   it("bouton démo connecte et redirige vers /galerie-photo", async () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ token: "tok", role: "parent" }),
+      json: async () => ({
+        token:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoicGFyZW50In0.signature",
+        role: "parent",
+      }),
     });
     const wrapper = mount(login);
     await wrapper.findAll("button")[1].trigger("click");
@@ -99,7 +115,11 @@ describe("login.vue", () => {
   it("ne redirige pas si le rôle est inconnu", async () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ token: "tok", role: "autre" }),
+      json: async () => ({
+        token:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYXV0cmUifQ.signature",
+        role: "autre",
+      }),
     });
     const wrapper = mount(login);
     await wrapper.find('input[type="email"]').setValue("autre@test.com");
@@ -124,15 +144,22 @@ describe("login.vue", () => {
     const setItemSpy = vi.spyOn(window.localStorage.__proto__, "setItem");
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ token: "tok", role: "parent", userId: "u1" }),
+      json: async () => ({
+        token:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoicGFyZW50In0.signature",
+        role: "parent",
+        userId: "u1",
+      }),
     });
     const wrapper = mount(login);
     await wrapper.find('input[type="email"]').setValue("parent@test.com");
     await wrapper.find('input[type="password"]').setValue("test");
     await wrapper.find("button").trigger("click");
     await wrapper.vm.$nextTick();
-    expect(setItemSpy).toHaveBeenCalledWith("token", "tok");
-    expect(setItemSpy).toHaveBeenCalledWith("role", "parent");
+    expect(setItemSpy).toHaveBeenCalledWith(
+      "token",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoicGFyZW50In0.signature"
+    );
     expect(setItemSpy).toHaveBeenCalledWith("userId", "u1");
   });
 
@@ -182,7 +209,11 @@ describe("login.vue", () => {
   it("calls loginDemo with demo credentials", async () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ token: "tok", role: "parent" }),
+      json: async () => ({
+        token:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoicGFyZW50In0.signature",
+        role: "parent",
+      }),
     });
     const wrapper = mount(login);
     await wrapper.findAll("button")[1].trigger("click");
@@ -235,7 +266,6 @@ describe("login.vue", () => {
     await wrapper.find("button").trigger("click");
     await wrapper.vm.$nextTick();
     expect(setItemSpy).toHaveBeenCalledWith("token", "");
-    expect(setItemSpy).toHaveBeenCalledWith("role", "");
     expect(setItemSpy).toHaveBeenCalledWith("userId", "");
   });
 
@@ -249,6 +279,5 @@ describe("login.vue", () => {
     await wrapper.findAll("button")[1].trigger("click");
     await wrapper.vm.$nextTick();
     expect(setItemSpy).toHaveBeenCalledWith("token", "");
-    expect(setItemSpy).toHaveBeenCalledWith("role", "");
   });
 });

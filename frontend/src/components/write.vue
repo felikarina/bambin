@@ -206,12 +206,7 @@ async function submitActivity() {
 }
 
 const filteredActivities = computed(() => {
-  let arr =
-    userRole.value === "admin" || userRole.value === "demo"
-      ? activities.value
-      : activities.value.filter((activity) => activity.userId === userId.value);
-  // Sort activities from most recent to oldest
-  return arr
+  return activities.value
     .slice()
     .sort(
       (a, b) =>

@@ -1,12 +1,16 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { db } from "../backend/db";
 import { pictureTag } from "../backend/db/schema";
+import verifyJwt from "../backend/utils/verify-jwt";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Only allow POST method
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
+  const payload = verifyJwt.requireValidToken(req as any);
+  if (!payload)
+    return res.status(401).json({ error: "Authentification requise" });
   try {
     let body = req.body;
     if (typeof body === "string") {

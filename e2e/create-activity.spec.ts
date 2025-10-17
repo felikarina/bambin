@@ -21,7 +21,10 @@ test("create an activity via the form", async ({ page, request }) => {
   // Set userId and role in localStorage before page load
   await page.addInitScript((id) => {
     localStorage.setItem("userId", id);
-    localStorage.setItem("role", "admin");
+    localStorage.setItem(
+      "token",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.signature"
+    );
   }, userId);
 
   // Go to the activity creation page

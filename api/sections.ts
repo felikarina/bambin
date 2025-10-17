@@ -1,13 +1,15 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { db } from "../backend/db";
 import { section } from "../backend/db/schema";
-
-function isDemoRequest(req: VercelRequest): boolean {
-  const role = req.headers["x-user-role"] || req.query.role || req.body?.role;
-  return role === "demo";
-}
+import verifyJwt from "../backend/utils/verify-jwt";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  const payload = verifyJwt.requireValidToken(req);
+  if (!payload) {
+    res.status(401).json({ error: "Authentification requise" });
+    return;
+  }
+
   // GET - Get all sections
   try {
     const data = await db.select().from(section);

@@ -232,7 +232,10 @@ describe("API utils", () => {
     });
 
     it("fetchChildren retourne un tableau vide en mode demo", async () => {
-      localStorage.setItem("role", "demo");
+      localStorage.setItem(
+        "token",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiZGVtbyJ9.signature"
+      );
       const result = await fetchChildren();
       expect(result).toEqual([]);
       expect(mockFetch).not.toHaveBeenCalled();
@@ -313,7 +316,10 @@ describe("API utils", () => {
     });
 
     it("fetchSections retourne un tableau vide en mode demo", async () => {
-      localStorage.setItem("role", "demo");
+      localStorage.setItem(
+        "token",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiZGVtbyJ9.signature"
+      );
       const result = await fetchSections();
       expect(result).toEqual([]);
       expect(mockFetch).not.toHaveBeenCalled();
@@ -397,31 +403,46 @@ describe("API utils", () => {
 
   describe("Headers avec rôle", () => {
     it("fetchChildren avec rôle dans localStorage", async () => {
-      localStorage.setItem("role", "admin");
+      // Use a mock JWT token for testing
+      const mockToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.test-signature";
+      localStorage.setItem("token", mockToken);
       const children: Child[] = [{ idChild: "1", firstname: "Test" }];
       mockFetch.mockResolvedValueOnce({ ok: true, json: async () => children });
 
       const result = await fetchChildren();
       expect(result).toEqual(children);
       expect(mockFetch).toHaveBeenCalledWith("/api/children", {
-        headers: { "x-user-role": "admin" },
+        headers: {
+          "x-user-role": "admin",
+          Authorization: `Bearer ${mockToken}`,
+        },
       });
     });
 
     it("fetchSections avec rôle dans localStorage", async () => {
-      localStorage.setItem("role", "teacher");
+      // Use a mock JWT token for testing (won't work with real JWT_SECRET)
+      const mockToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidGVhY2hlciJ9.test-signature";
+      localStorage.setItem("token", mockToken);
       const sections: Section[] = [{ idSection: "1", name: "Test" }];
       mockFetch.mockResolvedValueOnce({ ok: true, json: async () => sections });
 
       const result = await fetchSections();
       expect(result).toEqual(sections);
       expect(mockFetch).toHaveBeenCalledWith("/api/sections", {
-        headers: { "x-user-role": "teacher" },
+        headers: {
+          "x-user-role": "teacher",
+          Authorization: `Bearer ${mockToken}`,
+        },
       });
     });
 
     it("fetchChildSections avec rôle dans localStorage", async () => {
-      localStorage.setItem("role", "parent");
+      // Use a mock JWT token for testing
+      const mockToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoicGFyZW50In0.test-signature";
+      localStorage.setItem("token", mockToken);
       const childSections: ChildSection[] = [
         { idChildSection: "1", childId: "1" },
       ];
@@ -433,7 +454,10 @@ describe("API utils", () => {
       const result = await fetchChildSections();
       expect(result).toEqual(childSections);
       expect(mockFetch).toHaveBeenCalledWith("/api/child-sections", {
-        headers: { "x-user-role": "parent" },
+        headers: {
+          "x-user-role": "parent",
+          Authorization: `Bearer ${mockToken}`,
+        },
       });
     });
   });

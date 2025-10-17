@@ -3,13 +3,17 @@ import { db } from "../backend/db";
 import { picture } from "../backend/db/schema";
 import { eq } from "drizzle-orm";
 import { pictureTag, child } from "../backend/db/schema";
-
-function isDemoRequest(req: VercelRequest): boolean {
-  const role = req.headers["x-user-role"] || req.query.role || req.body?.role;
-  return role === "demo";
-}
+import verifyJwt from "../backend/utils/verify-jwt";
+import { isDemoRequest } from "../backend/utils/auth";
+import { isParentRequest } from "../backend/utils/auth";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  const payload = verifyJwt.requireValidToken(req);
+  if (!payload) {
+    res.status(401).json({ error: "Authentification requise" });
+    return;
+  }
+
   if (
     (req.method === "POST" || req.method === "DELETE") &&
     isDemoRequest(req)
@@ -17,6 +21,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.status(403).json({ error: "Accès interdit en mode démo" });
     return;
   }
+
+  if (
+    (req.method === "DELETE" ||
+      req.method === "PUT" ||
+      req.method === "POST") &&
+    isParentRequest(req)
+  ) {
+    res.status(403).json({ error: "Accès interdit en mode parent" });
+    return;
+  }
+
   // Endpoint to link children to a picture
   if (req.method === "POST" && req.url?.endsWith("/tags")) {
     try {

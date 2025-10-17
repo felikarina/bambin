@@ -4,7 +4,7 @@ import {
   addActivityApi,
   deleteActivityApi,
   type Activity,
-  getDemoRoleHeader,
+  getRoleHeader,
   updateActivityApi,
   fetchSectionActivities,
 } from "../api";
@@ -156,18 +156,24 @@ describe("api.ts - Activities", () => {
     );
   });
 
-  describe("getDemoRoleHeader", () => {
+  describe("getRoleHeader", () => {
     beforeEach(() => {
       window.localStorage.clear();
     });
 
     it("retourne un header avec le role si présent", () => {
-      window.localStorage.setItem("role", "admin");
-      expect(getDemoRoleHeader()).toEqual({ "x-user-role": "admin" });
+      // Use a mock JWT token for testing (won't work with real JWT_SECRET)
+      const mockToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.test-signature";
+      window.localStorage.setItem("token", mockToken);
+      expect(getRoleHeader()).toEqual({
+        "x-user-role": "admin",
+        Authorization: `Bearer ${mockToken}`,
+      });
     });
 
     it("retourne un header vide si pas de role", () => {
-      expect(getDemoRoleHeader()).toEqual({});
+      expect(getRoleHeader()).toEqual({});
     });
   });
 });

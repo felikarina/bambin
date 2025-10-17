@@ -1,4 +1,6 @@
 import * as bcrypt from "bcrypt";
+import verifyJwt from "./verify-jwt";
+import { VercelRequest } from "@vercel/node";
 
 export async function hashPassword(password: string): Promise<string> {
   const saltRounds = 10;
@@ -29,4 +31,24 @@ export function generateStrongPassword(length = 12): string {
     [combined[i], combined[j]] = [combined[j], combined[i]];
   }
   return combined.join("");
+}
+
+export function isDemoRequest(req: VercelRequest): boolean {
+  const payload = verifyJwt.requireValidToken(req);
+  if (!payload) return false;
+  try {
+    return (payload as any).role === "demo";
+  } catch {
+    return false;
+  }
+}
+
+export function isParentRequest(req: VercelRequest): boolean {
+  const payload = verifyJwt.requireValidToken(req);
+  if (!payload) return false;
+  try {
+    return (payload as any).role === "parent";
+  } catch {
+    return false;
+  }
 }

@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-const role = ref<string | null>(null);
-onMounted(() => {
-  role.value = localStorage.getItem("role");
-});
+import { computed } from "vue";
+import { getRole } from "../utils/auth";
+
+const role = computed(() => getRole());
 </script>
 
 <template>

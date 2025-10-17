@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, nextTick } from "vue";
 import { useRouter } from "vue-router";
+import { jwtDecode } from "jwt-decode";
+import { getRole, getUserId } from "../utils/auth";
 
 const email = ref("");
 const password = ref("");
@@ -27,11 +29,13 @@ const login = async () => {
     return;
   }
   localStorage.setItem("token", data.token ?? "");
-  localStorage.setItem("role", data.role ?? "");
   localStorage.setItem("userId", data.userId ?? "");
-  if (data.role === "admin") router.push("/administration");
-  else if (data.role === "parent") router.push("/galerie-photo");
-  else if (data.role === "nurseryStaff") router.push("/ajout-activite");
+  const role = getRole();
+  const userId = getUserId();
+
+  if (role === "admin") router.push("/administration");
+  else if (role === "parent") router.push("/galerie-photo");
+  else if (role === "nurseryStaff") router.push("/ajout-activite");
 };
 
 const loginDemo = async () => {
@@ -52,8 +56,14 @@ const loginDemo = async () => {
     return;
   }
   localStorage.setItem("token", data.token ?? "");
-  localStorage.setItem("role", data.role ?? "");
-  router.push("/galerie-photo");
+  localStorage.setItem("userId", data.userId ?? "");
+  const role = getRole();
+  const userId = getUserId();
+
+  if (role === "admin") router.push("/administration");
+  else if (role === "parent") router.push("/galerie-photo");
+  else if (role === "nurseryStaff") router.push("/ajout-activite");
+  else router.push("/galerie-photo");
 };
 
 const focusPassword = async () => {
