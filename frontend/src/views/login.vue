@@ -17,6 +17,7 @@ const login = async () => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email: email.value, password: password.value }),
+    credentials: "include",
   });
   const data = (await res.json()) as {
     error?: string;
@@ -28,10 +29,13 @@ const login = async () => {
     error.value = data.error || "Erreur";
     return;
   }
-  localStorage.setItem("token", data.token ?? "");
-  localStorage.setItem("userId", data.userId ?? "");
-  const role = getRole();
-  const userId = getUserId();
+  // token is stored as HttpOnly cookie by the server
+  const currentRes = await fetch("/api/current-user", {
+    credentials: "include",
+  });
+  const currentData = await currentRes.json();
+  const role = currentData.role ?? data.role;
+  const userId = currentData.userId ?? data.userId;
 
   if (role === "admin") router.push("/administration");
   else if (role === "parent") router.push("/galerie-photo");
@@ -44,6 +48,7 @@ const loginDemo = async () => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email: "demo@test.com", password: "test" }),
+    credentials: "include",
   });
   const data = (await res.json()) as {
     error?: string;
@@ -55,10 +60,12 @@ const loginDemo = async () => {
     error.value = data.error || "Erreur";
     return;
   }
-  localStorage.setItem("token", data.token ?? "");
-  localStorage.setItem("userId", data.userId ?? "");
-  const role = getRole();
-  const userId = getUserId();
+  const currentRes = await fetch("/api/current-user", {
+    credentials: "include",
+  });
+  const currentData = await currentRes.json();
+  const role = currentData.role ?? data.role;
+  const userId = currentData.userId ?? data.userId;
 
   if (role === "admin") router.push("/administration");
   else if (role === "parent") router.push("/galerie-photo");

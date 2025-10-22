@@ -125,8 +125,19 @@ const errors = ref({
 });
 
 onMounted(() => {
-  userId.value = localStorage.getItem("userId") || "";
-  userRole.value = localStorage.getItem("role") || "";
+  (async () => {
+    try {
+      const res = await fetch("/api/current-user", { credentials: "include" });
+      if (res.ok) {
+        const data = await res.json();
+        userId.value = data.userId || "";
+        userRole.value = data.role || "";
+      }
+    } catch (e) {
+      userId.value = "";
+      userRole.value = "";
+    }
+  })();
   const today = new Date();
   const yyyy = today.getFullYear();
   const mm = String(today.getMonth() + 1).padStart(2, "0");

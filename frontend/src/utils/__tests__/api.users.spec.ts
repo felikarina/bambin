@@ -23,7 +23,9 @@ describe("api.ts - Users", () => {
 
   beforeEach(() => {
     fetchSpy = vi.spyOn(global, "fetch");
-    window.localStorage.clear();
+    try {
+      window.localStorage.clear();
+    } catch (e) {}
   });
 
   afterEach(() => {
@@ -32,30 +34,26 @@ describe("api.ts - Users", () => {
   });
 
   it("fetchUsers retourne [] si role demo", async () => {
-    window.localStorage.setItem(
-      "token",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiZGVtbyJ9.signature"
-    );
+    // simulate server returning empty array when demo
+    fetchSpy.mockResolvedValueOnce({ ok: true, json: async () => [] } as any);
     const result = await fetchUsers();
     expect(result).toEqual([]);
-    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(fetchSpy).toHaveBeenCalledWith("/api/users", {
+      credentials: "include",
+    });
   });
 
   it("fetchUsers retourne les users si ok", async () => {
     // Use a mock JWT token for testing
     const mockToken =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.test-signature";
-    localStorage.setItem("token", mockToken);
     fetchSpy.mockResolvedValueOnce({
       ok: true,
       json: async () => mockUsers,
     } as any);
     const result = await fetchUsers();
     expect(fetchSpy).toHaveBeenCalledWith("/api/users", {
-      headers: {
-        "x-user-role": "admin",
-        Authorization: `Bearer ${mockToken}`,
-      },
+      credentials: "include",
     });
     expect(result).toEqual(mockUsers);
   });
@@ -66,7 +64,9 @@ describe("api.ts - Users", () => {
       json: async () => mockUsers,
     } as any);
     const result = await fetchUsers();
-    expect(fetchSpy).toHaveBeenCalledWith("/api/users");
+    expect(fetchSpy).toHaveBeenCalledWith("/api/users", {
+      credentials: "include",
+    });
     expect(result).toEqual(mockUsers);
   });
 
@@ -118,7 +118,7 @@ describe("api.ts - Users", () => {
     await expect(deleteUserApi("1")).resolves.toBeUndefined();
     expect(fetchSpy).toHaveBeenCalledWith("/api/users?id=1", {
       method: "DELETE",
-      headers: {},
+      credentials: "include",
     });
   });
 

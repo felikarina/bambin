@@ -23,10 +23,12 @@ describe("login.vue", () => {
   });
 
   it("affiche un message d'erreur si les identifiants sont invalides", async () => {
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: false,
-      json: async () => ({ error: "Erreur" }),
-    });
+    global.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({ error: "Erreur" }),
+      });
     const wrapper = mount(login);
     await wrapper.find('input[type="email"]').setValue("test@test.com");
     await wrapper.find('input[type="password"]').setValue("wrong");
@@ -36,14 +38,16 @@ describe("login.vue", () => {
   });
 
   it("connecte et redirige l'admin vers /administration", async () => {
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.signature",
-        role: "admin",
-      }),
-    });
+    global.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ role: "admin", userId: "u1" }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ role: "admin", userId: "u1" }),
+      });
     const wrapper = mount(login);
     await wrapper.find('input[type="email"]').setValue("admin@test.com");
     await wrapper.find('input[type="password"]').setValue("test");
@@ -53,14 +57,16 @@ describe("login.vue", () => {
   });
 
   it("connecte et redirige le parent vers /galerie-photo", async () => {
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoicGFyZW50In0.signature",
-        role: "parent",
-      }),
-    });
+    global.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ role: "parent", userId: "u2" }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ role: "parent", userId: "u2" }),
+      });
     const wrapper = mount(login);
     await wrapper.find('input[type="email"]').setValue("parent@test.com");
     await wrapper.find('input[type="password"]').setValue("test");
@@ -70,14 +76,16 @@ describe("login.vue", () => {
   });
 
   it("connecte et redirige nurseryStaff vers /ajout-activite", async () => {
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoibnVyc2VyeVN0YWZmIn0.signature",
-        role: "nurseryStaff",
-      }),
-    });
+    global.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ role: "nurseryStaff", userId: "u3" }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ role: "nurseryStaff", userId: "u3" }),
+      });
     const wrapper = mount(login);
     await wrapper.find('input[type="email"]').setValue("staff@test.com");
     await wrapper.find('input[type="password"]').setValue("test");
@@ -87,14 +95,16 @@ describe("login.vue", () => {
   });
 
   it("bouton démo connecte et redirige vers /galerie-photo", async () => {
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoicGFyZW50In0.signature",
-        role: "parent",
-      }),
-    });
+    global.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ role: "parent", userId: "u2" }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ role: "parent", userId: "u2" }),
+      });
     const wrapper = mount(login);
     await wrapper.findAll("button")[1].trigger("click");
     await wrapper.vm.$nextTick();
@@ -102,10 +112,12 @@ describe("login.vue", () => {
   });
 
   it("affiche une erreur si la connexion démo échoue", async () => {
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: false,
-      json: async () => ({ error: "Erreur démo" }),
-    });
+    global.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({ error: "Erreur démo" }),
+      });
     const wrapper = mount(login);
     await wrapper.findAll("button")[1].trigger("click");
     await wrapper.vm.$nextTick();
@@ -113,14 +125,16 @@ describe("login.vue", () => {
   });
 
   it("ne redirige pas si le rôle est inconnu", async () => {
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYXV0cmUifQ.signature",
-        role: "autre",
-      }),
-    });
+    global.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ role: "autre", userId: "u4" }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ role: "autre", userId: "u4" }),
+      });
     const wrapper = mount(login);
     await wrapper.find('input[type="email"]').setValue("autre@test.com");
     await wrapper.find('input[type="password"]').setValue("test");
@@ -141,26 +155,28 @@ describe("login.vue", () => {
   });
 
   it("saves token, role, userId in localStorage on successful login", async () => {
-    const setItemSpy = vi.spyOn(window.localStorage.__proto__, "setItem");
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoicGFyZW50In0.signature",
-        role: "parent",
-        userId: "u1",
-      }),
-    });
+    // After login the component should request current-user; mock both calls
+    global.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ role: "parent", userId: "u1" }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ role: "parent", userId: "u1" }),
+      });
     const wrapper = mount(login);
     await wrapper.find('input[type="email"]').setValue("parent@test.com");
     await wrapper.find('input[type="password"]').setValue("test");
     await wrapper.find("button").trigger("click");
     await wrapper.vm.$nextTick();
-    expect(setItemSpy).toHaveBeenCalledWith(
-      "token",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoicGFyZW50In0.signature"
-    );
-    expect(setItemSpy).toHaveBeenCalledWith("userId", "u1");
+    // ensure login was called with credentials include and that component asked current-user
+    expect((global.fetch as any).mock.calls[0][0]).toBe("/api/login");
+    expect((global.fetch as any).mock.calls[0][1]).toMatchObject({
+      credentials: "include",
+    });
+    expect((global.fetch as any).mock.calls[1][0]).toBe("/api/current-user");
   });
 
   it("resets error message on new login attempt", async () => {
@@ -187,10 +203,12 @@ describe("login.vue", () => {
   });
 
   it("calls login even if fields are empty", async () => {
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: false,
-      json: async () => ({ error: "Erreur" }),
-    });
+    global.fetch = vi
+      .fn()
+      .mockResolvedValue({
+        ok: false,
+        json: async () => ({ error: "Erreur" }),
+      });
     const wrapper = mount(login);
     await wrapper.find("button").trigger("click");
     await wrapper.vm.$nextTick();
@@ -202,19 +220,22 @@ describe("login.vue", () => {
           "Content-Type": "application/json",
         }),
         body: JSON.stringify({ email: "", password: "" }),
+        credentials: "include",
       })
     );
   });
 
   it("calls loginDemo with demo credentials", async () => {
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoicGFyZW50In0.signature",
-        role: "parent",
-      }),
-    });
+    global.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ role: "parent", userId: "u2" }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ role: "parent", userId: "u2" }),
+      });
     const wrapper = mount(login);
     await wrapper.findAll("button")[1].trigger("click");
     await wrapper.vm.$nextTick();
@@ -226,6 +247,7 @@ describe("login.vue", () => {
           "Content-Type": "application/json",
         }),
         body: JSON.stringify({ email: "demo@test.com", password: "test" }),
+        credentials: "include",
       })
     );
   });
@@ -255,29 +277,32 @@ describe("login.vue", () => {
   });
 
   it("sets empty string in localStorage if token/role/userId are missing (login)", async () => {
-    const setItemSpy = vi.spyOn(window.localStorage.__proto__, "setItem");
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({}),
-    });
+    // If login response has no role/userId we still expect the component to request current-user
+    global.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: true, json: async () => ({}) })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ role: null, userId: null }),
+      });
     const wrapper = mount(login);
     await wrapper.find('input[type="email"]').setValue("parent@test.com");
     await wrapper.find('input[type="password"]').setValue("test");
     await wrapper.find("button").trigger("click");
     await wrapper.vm.$nextTick();
-    expect(setItemSpy).toHaveBeenCalledWith("token", "");
-    expect(setItemSpy).toHaveBeenCalledWith("userId", "");
+    expect((global.fetch as any).mock.calls[0][0]).toBe("/api/login");
+    expect((global.fetch as any).mock.calls[1][0]).toBe("/api/current-user");
   });
 
   it("sets empty string in localStorage if token/role are missing (loginDemo)", async () => {
-    const setItemSpy = vi.spyOn(window.localStorage.__proto__, "setItem");
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({}),
-    });
+    global.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: true, json: async () => ({}) })
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ role: null }) });
     const wrapper = mount(login);
     await wrapper.findAll("button")[1].trigger("click");
     await wrapper.vm.$nextTick();
-    expect(setItemSpy).toHaveBeenCalledWith("token", "");
+    expect((global.fetch as any).mock.calls[0][0]).toBe("/api/login");
+    expect((global.fetch as any).mock.calls[1][0]).toBe("/api/current-user");
   });
 });

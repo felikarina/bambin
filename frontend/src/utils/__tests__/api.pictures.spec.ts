@@ -42,7 +42,9 @@ describe("api.ts - Pictures", () => {
       json: async () => mockPictures,
     } as any);
     const result = await fetchPictures();
-    expect(fetchSpy).toHaveBeenCalledWith("/api/pictures", { headers: {} });
+    expect(fetchSpy).toHaveBeenCalledWith("/api/pictures", {
+      credentials: "include",
+    });
     expect(result).toEqual(mockPictures);
   });
 
@@ -58,7 +60,7 @@ describe("api.ts - Pictures", () => {
     await expect(deletePictureApi("1")).resolves.toBeUndefined();
     expect(fetchSpy).toHaveBeenCalledWith("/api/pictures?id=1", {
       method: "DELETE",
-      headers: {},
+      credentials: "include",
     });
   });
 

@@ -32,6 +32,9 @@ describe("api.ts - Activities", () => {
     } as any);
     const result = await fetchActivities();
     expect(result).toEqual(mockActivities);
+    expect(fetchSpy).toHaveBeenCalledWith("/api/activities", {
+      credentials: "include",
+    });
   });
 
   it("fetchActivities lève une erreur si !ok", async () => {
@@ -49,6 +52,10 @@ describe("api.ts - Activities", () => {
     } as any);
     const result = await addActivityApi(newActivity);
     expect(result).toEqual({ success: true });
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "/api/activities",
+      expect.objectContaining({ method: "POST", credentials: "include" })
+    );
   });
 
   it("addActivityApi lève une erreur si !ok avec message d'erreur JSON", async () => {
@@ -105,6 +112,7 @@ describe("api.ts - Activities", () => {
       "/api/activities?id=1",
       expect.objectContaining({
         method: "PUT",
+        credentials: "include",
         headers: expect.objectContaining({
           "Content-Type": "application/json",
         }),
@@ -146,6 +154,7 @@ describe("api.ts - Activities", () => {
     const result = await fetchSectionActivities();
     const lastCall = fetchSpy.mock.calls[0];
     expect(lastCall[0]).toBe("/api/section-activities");
+    expect(lastCall[1]).toEqual({ credentials: "include" });
     expect(result).toEqual(mockSectionActivities);
   });
 
@@ -160,19 +169,7 @@ describe("api.ts - Activities", () => {
     beforeEach(() => {
       window.localStorage.clear();
     });
-
-    it("retourne un header avec le role si présent", () => {
-      // Use a mock JWT token for testing (won't work with real JWT_SECRET)
-      const mockToken =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.test-signature";
-      window.localStorage.setItem("token", mockToken);
-      expect(getRoleHeader()).toEqual({
-        "x-user-role": "admin",
-        Authorization: `Bearer ${mockToken}`,
-      });
-    });
-
-    it("retourne un header vide si pas de role", () => {
+    it("getRoleHeader retourne un objet vide (migration cookie)", () => {
       expect(getRoleHeader()).toEqual({});
     });
   });

@@ -68,11 +68,32 @@ const sortedPictures = computed(() => {
     );
 });
 
-onMounted(() => {
-  userId.value = localStorage.getItem("userId") || "";
-  fetchPicturesAndSet();
-  fetchChildren().then((res) => (children.value = res));
-  fetchChildSections().then((res) => (childSections.value = res));
+onMounted(async () => {
+  try {
+    const res = await fetch("/api/current-user", { credentials: "include" });
+    if (res.ok) {
+      const json = await res.json();
+      userId.value = json?.userId || "";
+    } else {
+      userId.value = "";
+    }
+  } catch (e) {
+    // fallback to empty if request fails
+    userId.value = "";
+  }
+
+  await fetchPicturesAndSet();
+  try {
+    children.value = await fetchChildren();
+  } catch (e: any) {
+    console.error("Error fetching children:", e.message);
+  }
+  try {
+    childSections.value = await fetchChildSections();
+  } catch (e: any) {
+    console.error("Error fetching child sections:", e.message);
+  }
+
   const today = new Date();
   const yyyy = today.getFullYear();
   const mm = String(today.getMonth() + 1).padStart(2, "0");
