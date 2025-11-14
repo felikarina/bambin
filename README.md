@@ -1,5 +1,7 @@
 # 🚀 Bambin
 
+<img width="60%" height="60%" alt="Capture d&#39;écran 2025-11-14 110736" src="https://github.com/user-attachments/assets/db60d366-d766-4e83-901e-1851f20c65a2" />
+
 Application de partage multimédia et d'informations entre crèches et parents (galerie photo, journal d'activité, gestion utilisateurs).
 
 Ce README explique comment installer et lancer le projet en local (mode développeur), gérer la base de données et lancer les tests.
@@ -177,3 +179,9 @@ npx vercel
 - `docker-compose.test.yml` : DB pour tests
 
 Voir le fichier DEVELOPMENT_GUIDELINES.md pour les conventions de développement et bonnes pratiques.
+
+## 📸 Captures d'écran de l'application
+
+<img width="50%" height="50%" alt="Capture d&#39;écran 2025-11-14 105410" src="https://github.com/user-attachments/assets/efab4f13-ca1e-437a-9a6c-62b97f66b46c" />   <img width="10%" height="10%" alt="Capture d&#39;écran 2025-11-14 105335" src="https://github.com/user-attachments/assets/d2372f2c-53e6-4072-b52b-57e4da05363c" />
+<img width="50%" height="50%" alt="Capture d&#39;écran 2025-11-14 105007" src="https://github.com/user-attachments/assets/f5027e74-320e-4776-a19f-d92952573db5" />   <img width="10%" height="10%" alt="Capture d&#39;écran 2025-11-14 105212" src="https://github.com/user-attachments/assets/d8e63133-0ea2-4425-9825-48dc754b6c83" />
+
