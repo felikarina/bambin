@@ -1,16 +1,16 @@
-# Bambin
+# 🚀 Bambin
 
 Application de partage multimédia et d'informations entre crèches et parents (galerie photo, journal d'activité, gestion utilisateurs).
 
 Ce README explique comment installer et lancer le projet en local (mode développeur), gérer la base de données et lancer les tests.
 
-## Contenu rapide
+## 📋 Contenu rapide
 
 - Backend (API serverless) : dossier `api/` (utilisé avec `vercel dev`).
 - Base de données : Postgres (fournie via `docker-compose.yml`).
 - Frontend : app Vue 3 + Vite (scripts définis dans `package.json` à la racine).
 
-## Prérequis
+## ⚙️ Prérequis
 
 - Git
 - Node.js (recommandé : Node 22 pour compatibilité avec `@tsconfig/node22`; Node >=18 devrait généralement fonctionner)
@@ -18,14 +18,14 @@ Ce README explique comment installer et lancer le projet en local (mode dévelop
 - Docker et Docker Compose (ou Docker Desktop)
 - Optionnel : `vercel` CLI (utilisé par le script `start`, sinon `npx vercel dev` fonctionne)
 
-## Cloner le dépôt
+## 📥 Cloner le dépôt
 
 ```bash
 git clone https://github.com/felikarina/bambin.git
 cd bambin
 ```
 
-## Installer les dépendances
+## 📦 Installer les dépendances
 
 Installez les dépendances à la racine du repo :
 
@@ -33,7 +33,7 @@ Installez les dépendances à la racine du repo :
 npm install
 ```
 
-## Configuration des variables d'environnement
+## 🔧 Configuration des variables d'environnement
 
 L'application attend une variable `DATABASE_URL` (utilisée par Drizzle / postgres). Exemple pour la configuration Docker fournie :
 
@@ -62,7 +62,7 @@ export DATABASE_URL_TEST="postgres://TEST_DB_USER:TEST_DB_PASS@localhost:TEST_DB
 
 Adaptez les valeurs si vous exécutez Postgres manuellement ou remote. Remplacez les placeholders par vos valeurs réelles en local ou dans CI.
 
-## Lancer le projet en local (mode complet)
+## ▶️ Lancer le projet en local (mode complet)
 
 Le script `start` dans `package.json` effectue deux choses :
 
@@ -80,7 +80,7 @@ Remarques :
 - Si vous n'avez pas globalement `vercel` : `npx vercel dev` fonctionnera aussi.
 - `start.ts` s'occupe d'arrêter les containers Docker quand vous terminez (SIGINT/SIGTERM).
 
-### Alternatives
+## 🔁 Alternatives
 
 - Lancer uniquement la base de données puis lancer VerceL manuellement :
 
@@ -96,9 +96,9 @@ npx vercel dev --listen 3000
 npm run dev
 ```
 
-Cette commande démarre le serveur Vite (port par défaut 5173). Si vous voulez travailler uniquement sur l'UI sans les APIs locales, c'est utile.
+Cette commande démarre le serveur Vite (port par défaut 5173).
 
-## Bases de données / Migrations (Drizzle)
+## 🗄️ Bases de données / Migrations (Drizzle)
 
 Les scripts utiles sont dans `package.json` :
 
@@ -114,9 +114,17 @@ export DATABASE_URL="postgres://DB_USER:DB_PASS@localhost:DB_PORT/DB_NAME"
 npm run db:migrate
 ```
 
-Si vous êtes en train de développer des changements de schéma, générez la migration, revoyez-la puis appliquez-la.
+Si vous modifiez le schéma de la base de données : générez la migration, vérifiez son contenu, puis appliquez-la.
 
-## Tests
+Exemple de procédure :
+
+```bash
+npm run db:generate   # génère la migration
+# vérifier le fichier généré dans le dossier des migrations
+npm run db:migrate    # applique la migration
+```
+
+## 🧪 Tests
 
 Les scripts de test disponibles :
 
@@ -134,20 +142,33 @@ npm run test:e2e
 
 Pour les tests qui nécessitent la DB, assurez-vous que le service Postgres de `docker-compose.test.yml` tourne ou que `DATABASE_URL` pointe sur une base de test compatible.
 
-## Scripts utiles (récapitulatif)
+## 🛠️ Scripts utiles (récapitulatif)
 
 - `npm run dev` — démarre Vite (frontend)
 
 - `npm run start` — démarre Docker + `vercel dev` (stack complète)
 
-## Dépannage rapide
+## ⚠️ Dépannage rapide
 
-- Docker ne démarre pas : vérifiez que Docker Desktop est installé et démarré.
-- `vercel` non trouvé : installez-le globalement `npm i -g vercel` ou utilisez `npx vercel`.
-- Erreur de connexion à la DB : vérifiez `DATABASE_URL`, port (`<DB_PORT>` pour `docker-compose.yml`) et que le container Postgres est en marche (`docker ps`).
-- Si TypeScript se plaint de la version Node : utilisez `nvm`/`nvm-windows` ou installez Node 22 (recommandé par `@tsconfig/node22`).
+- Docker ne démarre pas : vérifiez que Docker Desktop est installé et démarré. Pour vérifier les containers en cours :
 
-## Structure importante du repo
+```bash
+docker ps
+```
+
+- `vercel` non trouvé : installez-le globalement :
+
+```bash
+npm i -g vercel
+# ou utilisez
+npx vercel
+```
+
+- Erreur de connexion à la base de données : vérifiez la valeur de `DATABASE_URL`, le port (`<DB_PORT>` dans `docker-compose.yml`) et que le container Postgres est bien en marche (`docker ps`).
+
+- Si TypeScript se plaint de la version de Node : utilisez `nvm` / `nvm-windows` pour changer la version, ou installez Node 22 (recommandé par `@tsconfig/node22`).
+
+## 🗂️ Structure importante du repo
 
 - `api/` : fonctions API (Vercel)
 - `frontend/` et `src/` : code front (Vue 3 + Vite)
