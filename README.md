@@ -1,10 +1,12 @@
 # 🚀 Bambin
 
-<img width="60%" height="60%" alt="Capture d&#39;écran 2025-11-14 110736" src="https://github.com/user-attachments/assets/db60d366-d766-4e83-901e-1851f20c65a2" />
+<img width="70%" height="70%" alt="Capture d&#39;écran 2025-11-14 110736" src="https://github.com/user-attachments/assets/db60d366-d766-4e83-901e-1851f20c65a2" />
 
 Application de partage multimédia et d'informations entre crèches et parents (galerie photo, journal d'activité, gestion utilisateurs).
 
 Ce README explique comment installer et lancer le projet en local (mode développeur), gérer la base de données et lancer les tests.
+
+Pour voir la version démo cliquer sur le lien et appuyer sur le bouton "Démo visiteur" https://bambin-seven.vercel.app/
 
 ## 📋 Contenu rapide
 
