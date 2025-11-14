@@ -1,5 +1,4 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import { jwtDecode } from "jwt-decode";
 import PhotoGallery from "../views/PhotoGallery.vue";
 import HelloWorld from "../components/HelloWorld.vue";
 import activityBook from "../views/activityBook.vue";
@@ -62,7 +61,7 @@ const router = createRouter({
 });
 
 export async function authGuard(to: any, from: any, next: any) {
-  // Ask the server who the current user is (uses HttpOnly cookie)
+  // Ask the server who the current user is
   let current = { role: null as string | null, userId: null as string | null };
   try {
     const res = await fetch("/api/current-user", { credentials: "include" });

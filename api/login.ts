@@ -38,14 +38,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         expiresIn: "1d",
       }
     );
-    const maxAgeSeconds = 24 * 60 * 60; // 1 day, matches JWT expiresIn
+    const maxAgeSeconds = 24 * 60 * 60;
     const cookieParts = [
       `token=${token}`,
       `Path=/`,
       `Max-Age=${maxAgeSeconds}`,
       `HttpOnly`,
-      `SameSite=Lax`,
-      // `Secure`,
+      `SameSite=Strict`,
+      `Secure`,
     ];
 
     res.setHeader("Set-Cookie", cookieParts.join("; "));
