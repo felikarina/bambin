@@ -1,5 +1,15 @@
 import type { DirectiveBinding } from "vue";
-import { getRole } from "./auth";
+
+async function fetchRole(): Promise<string | null> {
+  try {
+    const res = await fetch("/api/current-user", { credentials: "include" });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.role ?? null;
+  } catch (e) {
+    return null;
+  }
+}
 
 function setDisabled(el: HTMLElement, value: boolean) {
   if (el instanceof HTMLTextAreaElement) {
@@ -27,12 +37,12 @@ function setDisabled(el: HTMLElement, value: boolean) {
 }
 
 const disableDemo = {
-  mounted(el: HTMLElement, binding: DirectiveBinding) {
-    const role = getRole();
+  async mounted(el: HTMLElement, binding: DirectiveBinding) {
+    const role = await fetchRole();
     setDisabled(el, role === "demo");
   },
-  updated(el: HTMLElement, binding: DirectiveBinding) {
-    const role = getRole();
+  async updated(el: HTMLElement, binding: DirectiveBinding) {
+    const role = await fetchRole();
     setDisabled(el, role === "demo");
   },
 };

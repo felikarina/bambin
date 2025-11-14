@@ -38,7 +38,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         expiresIn: "1d",
       }
     );
-    return res.status(200).json({ token, userId: foundUser.idUser });
+    const maxAgeSeconds = 24 * 60 * 60;
+    const cookieParts = [
+      `token=${token}`,
+      `Path=/`,
+      `Max-Age=${maxAgeSeconds}`,
+      `HttpOnly`,
+      `SameSite=Strict`,
+      `Secure`,
+    ];
+
+    res.setHeader("Set-Cookie", cookieParts.join("; "));
+
+    return res
+      .status(200)
+      .json({ role: foundUser.role, userId: foundUser.idUser });
   } catch (error) {
     console.error("Erreur lors de la tentative de connexion:", error);
     return res.status(500).json({ error: "Erreur interne du serveur" });

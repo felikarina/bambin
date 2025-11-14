@@ -27,8 +27,10 @@ global.fetch = mockFetch as any;
 
 describe("API utils", () => {
   beforeEach(() => {
-    // Reset localStorage before each test
-    localStorage.clear();
+    // Reset any localStorage usage (not used for auth anymore)
+    try {
+      localStorage.clear();
+    } catch (e) {}
   });
 
   afterEach(() => {
@@ -48,7 +50,9 @@ describe("API utils", () => {
     mockFetch.mockResolvedValueOnce({ ok: true, json: async () => users });
     const result = await fetchUsers();
     expect(result).toEqual(users);
-    expect(mockFetch).toHaveBeenCalledWith("/api/users");
+    expect(mockFetch).toHaveBeenCalledWith("/api/users", {
+      credentials: "include",
+    });
   });
 
   it("addUserApi ajoute un utilisateur", async () => {
@@ -65,7 +69,7 @@ describe("API utils", () => {
     expect(result).toEqual(created);
     expect(mockFetch).toHaveBeenCalledWith(
       "/api/users",
-      expect.objectContaining({ method: "POST" })
+      expect.objectContaining({ method: "POST", credentials: "include" })
     );
   });
 
@@ -74,7 +78,7 @@ describe("API utils", () => {
     await expect(deleteUserApi("1")).resolves.toBeUndefined();
     expect(mockFetch).toHaveBeenCalledWith(
       "/api/users?id=1",
-      expect.objectContaining({ method: "DELETE" })
+      expect.objectContaining({ method: "DELETE", credentials: "include" })
     );
   });
 
@@ -85,7 +89,9 @@ describe("API utils", () => {
     mockFetch.mockResolvedValueOnce({ ok: true, json: async () => activities });
     const result = await fetchActivities();
     expect(result).toEqual(activities);
-    expect(mockFetch).toHaveBeenCalledWith("/api/activities");
+    expect(mockFetch).toHaveBeenCalledWith("/api/activities", {
+      credentials: "include",
+    });
   });
 
   it("addActivityApi ajoute une activité", async () => {
@@ -102,7 +108,7 @@ describe("API utils", () => {
     expect(result).toEqual(created);
     expect(mockFetch).toHaveBeenCalledWith(
       "/api/activities",
-      expect.objectContaining({ method: "POST" })
+      expect.objectContaining({ method: "POST", credentials: "include" })
     );
   });
 
@@ -142,7 +148,7 @@ describe("API utils", () => {
       const result = await fetchPictures();
       expect(result).toEqual(pictures);
       expect(mockFetch).toHaveBeenCalledWith("/api/pictures", {
-        headers: {},
+        credentials: "include",
       });
     });
 
@@ -168,6 +174,7 @@ describe("API utils", () => {
         "/api/pictures",
         expect.objectContaining({
           method: "POST",
+          credentials: "include",
           headers: expect.objectContaining({
             "Content-Type": "application/json",
           }),
@@ -189,7 +196,7 @@ describe("API utils", () => {
       await expect(deletePictureApi("1")).resolves.toBeUndefined();
       expect(mockFetch).toHaveBeenCalledWith(
         "/api/pictures?id=1",
-        expect.objectContaining({ method: "DELETE" })
+        expect.objectContaining({ method: "DELETE", credentials: "include" })
       );
     });
 
@@ -228,17 +235,19 @@ describe("API utils", () => {
       mockFetch.mockResolvedValueOnce({ ok: true, json: async () => children });
       const result = await fetchChildren();
       expect(result).toEqual(children);
-      expect(mockFetch).toHaveBeenCalledWith("/api/children");
+      expect(mockFetch).toHaveBeenCalledWith("/api/children", {
+        credentials: "include",
+      });
     });
 
     it("fetchChildren retourne un tableau vide en mode demo", async () => {
-      localStorage.setItem(
-        "token",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiZGVtbyJ9.signature"
-      );
+      // Server now decides demo mode; mock server returning empty list
+      mockFetch.mockResolvedValueOnce({ ok: true, json: async () => [] });
       const result = await fetchChildren();
       expect(result).toEqual([]);
-      expect(mockFetch).not.toHaveBeenCalled();
+      expect(mockFetch).toHaveBeenCalledWith("/api/children", {
+        credentials: "include",
+      });
     });
 
     it("fetchChildren gère une erreur API", async () => {
@@ -263,6 +272,7 @@ describe("API utils", () => {
         "/api/children",
         expect.objectContaining({
           method: "POST",
+          credentials: "include",
           headers: expect.objectContaining({
             "Content-Type": "application/json",
           }),
@@ -284,7 +294,7 @@ describe("API utils", () => {
       await expect(deleteChildApi("1")).resolves.toBeUndefined();
       expect(mockFetch).toHaveBeenCalledWith(
         "/api/children?id=1",
-        expect.objectContaining({ method: "DELETE" })
+        expect.objectContaining({ method: "DELETE", credentials: "include" })
       );
     });
 
@@ -312,17 +322,19 @@ describe("API utils", () => {
       mockFetch.mockResolvedValueOnce({ ok: true, json: async () => sections });
       const result = await fetchSections();
       expect(result).toEqual(sections);
-      expect(mockFetch).toHaveBeenCalledWith("/api/sections");
+      expect(mockFetch).toHaveBeenCalledWith("/api/sections", {
+        credentials: "include",
+      });
     });
 
     it("fetchSections retourne un tableau vide en mode demo", async () => {
-      localStorage.setItem(
-        "token",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiZGVtbyJ9.signature"
-      );
+      // mock server returning empty sections for demo
+      mockFetch.mockResolvedValueOnce({ ok: true, json: async () => [] });
       const result = await fetchSections();
       expect(result).toEqual([]);
-      expect(mockFetch).not.toHaveBeenCalled();
+      expect(mockFetch).toHaveBeenCalledWith("/api/sections", {
+        credentials: "include",
+      });
     });
 
     it("fetchSections gère une erreur API", async () => {
@@ -383,14 +395,19 @@ describe("API utils", () => {
       });
       const result = await fetchChildSections();
       expect(result).toEqual(childSections);
-      expect(mockFetch).toHaveBeenCalledWith("/api/child-sections");
+      expect(mockFetch).toHaveBeenCalledWith("/api/child-sections", {
+        credentials: "include",
+      });
     });
 
     it("fetchChildSections retourne un tableau vide en mode demo", async () => {
-      localStorage.setItem("role", "demo");
+      // mock server returning empty child-sections for demo
+      mockFetch.mockResolvedValueOnce({ ok: true, json: async () => [] });
       const result = await fetchChildSections();
       expect(result).toEqual([]);
-      expect(mockFetch).not.toHaveBeenCalled();
+      expect(mockFetch).toHaveBeenCalledWith("/api/child-sections", {
+        credentials: "include",
+      });
     });
 
     it("fetchChildSections gère une erreur API", async () => {
@@ -413,10 +430,7 @@ describe("API utils", () => {
       const result = await fetchChildren();
       expect(result).toEqual(children);
       expect(mockFetch).toHaveBeenCalledWith("/api/children", {
-        headers: {
-          "x-user-role": "admin",
-          Authorization: `Bearer ${mockToken}`,
-        },
+        credentials: "include",
       });
     });
 
@@ -431,10 +445,7 @@ describe("API utils", () => {
       const result = await fetchSections();
       expect(result).toEqual(sections);
       expect(mockFetch).toHaveBeenCalledWith("/api/sections", {
-        headers: {
-          "x-user-role": "teacher",
-          Authorization: `Bearer ${mockToken}`,
-        },
+        credentials: "include",
       });
     });
 
@@ -454,10 +465,7 @@ describe("API utils", () => {
       const result = await fetchChildSections();
       expect(result).toEqual(childSections);
       expect(mockFetch).toHaveBeenCalledWith("/api/child-sections", {
-        headers: {
-          "x-user-role": "parent",
-          Authorization: `Bearer ${mockToken}`,
-        },
+        credentials: "include",
       });
     });
   });

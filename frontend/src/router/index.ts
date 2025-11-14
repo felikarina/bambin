@@ -1,5 +1,4 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import { jwtDecode } from "jwt-decode";
 import PhotoGallery from "../views/PhotoGallery.vue";
 import HelloWorld from "../components/HelloWorld.vue";
 import activityBook from "../views/activityBook.vue";
@@ -61,20 +60,20 @@ const router = createRouter({
   routes,
 });
 
-export function authGuard(to: any, from: any, next: any) {
-  const token = localStorage.getItem("token");
-  let role = "";
-  if (token) {
-    try {
-      const decoded = jwtDecode(token) as { role?: string };
-      role = decoded.role ?? "";
-    } catch (e) {
-      role = "";
-    }
+export async function authGuard(to: any, from: any, next: any) {
+  // Ask the server who the current user is
+  let current = { role: null as string | null, userId: null as string | null };
+  try {
+    const res = await fetch("/api/current-user", { credentials: "include" });
+    if (res.ok) current = await res.json();
+  } catch (e) {
+    // ignore
   }
 
+  const role = current.role ?? "";
+
   if (to.meta.requiresAuth) {
-    if (!token) {
+    if (!role) {
       next("/");
       return;
     }

@@ -1,16 +1,24 @@
 import { mount } from "@vue/test-utils";
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import NavigationSidebar from "../NavigationSidebar.vue";
 import { RouterLinkStub } from "@vue/test-utils";
 
 const flushPromises = () => new Promise((resolve) => setTimeout(resolve));
 
 describe("NavigationSidebar", () => {
+  let originalFetch: any;
   beforeEach(() => {
-    localStorage.clear();
+    originalFetch = global.fetch;
+    // mock fetch by default
+    global.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ role: null }),
+      } as any)
+    );
   });
   afterEach(() => {
-    localStorage.clear();
+    global.fetch = originalFetch;
   });
 
   it("devrait se monter correctement", () => {
@@ -33,9 +41,11 @@ describe("NavigationSidebar", () => {
   });
 
   it("affiche le lien Administration seulement pour l'admin", async () => {
-    localStorage.setItem(
-      "token",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.signature"
+    (global.fetch as any).mockImplementationOnce(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ role: "admin" }),
+      })
     );
     const wrapper = mount(NavigationSidebar, {
       global: { stubs: { RouterLink: RouterLinkStub } },
@@ -64,9 +74,11 @@ describe("NavigationSidebar", () => {
   });
 
   it("respecte la structure HTML attendue avec admin", async () => {
-    localStorage.setItem(
-      "token",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.signature"
+    (global.fetch as any).mockImplementationOnce(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ role: "admin" }),
+      })
     );
     const wrapper = mount(NavigationSidebar, {
       global: { stubs: { RouterLink: RouterLinkStub } },

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { getRole, getUserId } from "../utils/auth";
+import { fetchCurrentUser, getUserId } from "../utils/auth";
 import UserFormSection from "./UserFormSection.vue";
 import ChildFormSection from "./ChildFormSection.vue";
 import UserListSection from "./UserListSection.vue";
@@ -70,6 +70,10 @@ const isDemo = ref(false);
 
 const fetchUsers = async () => {
   try {
+    if (isDemo.value) {
+      users.value = fakeUsers as User[];
+      return;
+    }
     users.value = await fetchUsersApi();
   } catch (e: any) {
     errorMsg.value = e.message;
@@ -161,6 +165,10 @@ const copyPassword = async () => {
 
 const fetchChildren = async () => {
   try {
+    if (isDemo.value) {
+      children.value = fakeChildren as Child[];
+      return;
+    }
     children.value = await fetchChildrenApi();
   } catch (e: any) {
     errorMsgChild.value = e.message;
@@ -169,6 +177,10 @@ const fetchChildren = async () => {
 
 const fetchSections = async () => {
   try {
+    if (isDemo.value) {
+      sections.value = fakeSections as Section[];
+      return;
+    }
     sections.value = await fetchSectionsApi();
   } catch (e: any) {
     console.error("Erreur lors du fetch des sections:", e);
@@ -177,6 +189,10 @@ const fetchSections = async () => {
 
 const fetchChildSections = async () => {
   try {
+    if (isDemo.value) {
+      childSections.value = fakeChildSections as ChildSection[];
+      return;
+    }
     childSections.value = await fetchChildSectionsApi();
   } catch (e: any) {
     console.error("Erreur lors du fetch des associations enfant-section:", e);
@@ -301,15 +317,20 @@ const getChildParents = (child: Child) => {
   return "Parent non défini";
 };
 
-onMounted(() => {
-  const role = getRole();
-  isDemo.value = role === "demo";
+onMounted(async () => {
+  try {
+    const current = await fetchCurrentUser();
+    isDemo.value = current.role === "demo";
+    newChild.value.userId = current.userId || "";
+  } catch {
+    isDemo.value = false;
+    newChild.value.userId = getUserId();
+  }
 
-  newChild.value.userId = getUserId();
-  fetchUsers();
-  fetchChildren();
-  fetchSections();
-  fetchChildSections();
+  await fetchUsers();
+  await fetchChildren();
+  await fetchSections();
+  await fetchChildSections();
 });
 </script>
 <template>

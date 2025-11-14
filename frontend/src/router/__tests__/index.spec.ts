@@ -1,12 +1,13 @@
 import { describe, it, expect, vi } from "vitest";
 import router, { authGuard } from "../index";
 
-global.localStorage = {
-  getItem: vi.fn(() => null),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
-} as any;
+// mock fetch for /api/current-user
+global.fetch = vi.fn(() =>
+  Promise.resolve({
+    ok: true,
+    json: () => Promise.resolve({ role: null }),
+  } as any)
+) as any;
 
 describe("router/index.ts", () => {
   it("contient toutes les routes attendues", () => {
@@ -17,7 +18,9 @@ describe("router/index.ts", () => {
   });
 
   it("redirige vers / si non authentifié sur une route protégée", async () => {
-    (localStorage.getItem as any).mockReturnValueOnce(null);
+    (fetch as any).mockReturnValueOnce(
+      Promise.resolve({ ok: true, json: () => Promise.resolve({ role: null }) })
+    );
     const next = vi.fn();
     const to = { meta: { requiresAuth: true, role: "admin" } };
     const from = {};
@@ -26,10 +29,13 @@ describe("router/index.ts", () => {
   });
 
   it("laisse passer si authentifié et rôle correct", async () => {
-    (localStorage.getItem as any).mockImplementation((key: string) => {
-      if (key === "token")
-        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.signature";
-      return null;
+    (fetch as any).mockImplementation((url: string) => {
+      if (url === "/api/current-user")
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ role: "admin" }),
+        });
+      return Promise.resolve({ ok: false });
     });
     const next = vi.fn();
     const to = { meta: { requiresAuth: true, role: "admin" } };
@@ -39,10 +45,13 @@ describe("router/index.ts", () => {
   });
 
   it("redirige si le rôle ne correspond pas", async () => {
-    (localStorage.getItem as any).mockImplementation((key: string) => {
-      if (key === "token")
-        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidXNlciJ9.signature";
-      return null;
+    (fetch as any).mockImplementation((url: string) => {
+      if (url === "/api/current-user")
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ role: "user" }),
+        });
+      return Promise.resolve({ ok: false });
     });
     const next = vi.fn();
     const to = { meta: { requiresAuth: true, role: "admin" } };
@@ -52,10 +61,13 @@ describe("router/index.ts", () => {
   });
 
   it("redirige si le rôle n'est pas dans le tableau des rôles autorisés", async () => {
-    (localStorage.getItem as any).mockImplementation((key: string) => {
-      if (key === "token")
-        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidXNlciJ9.signature";
-      return null;
+    (fetch as any).mockImplementation((url: string) => {
+      if (url === "/api/current-user")
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ role: "user" }),
+        });
+      return Promise.resolve({ ok: false });
     });
     const next = vi.fn();
     const to = { meta: { requiresAuth: true, role: ["admin", "superadmin"] } };
@@ -65,10 +77,13 @@ describe("router/index.ts", () => {
   });
 
   it("laisse passer si le rôle est dans le tableau des rôles autorisés", async () => {
-    (localStorage.getItem as any).mockImplementation((key: string) => {
-      if (key === "token")
-        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.signature";
-      return null;
+    (fetch as any).mockImplementation((url: string) => {
+      if (url === "/api/current-user")
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ role: "admin" }),
+        });
+      return Promise.resolve({ ok: false });
     });
     const next = vi.fn();
     const to = { meta: { requiresAuth: true, role: ["admin", "superadmin"] } };

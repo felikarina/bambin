@@ -1,8 +1,19 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { getRole } from "../utils/auth";
+import { ref, onMounted } from "vue";
 
-const role = computed(() => getRole());
+const role = ref("");
+
+onMounted(async () => {
+  try {
+    const res = await fetch("/api/current-user", { credentials: "include" });
+    if (res.ok) {
+      const data = await res.json();
+      role.value = data.role ?? "";
+    }
+  } catch (e) {
+    role.value = "";
+  }
+});
 </script>
 
 <template>

@@ -1,20 +1,7 @@
-import { jwtDecode } from "jwt-decode";
-
+// With HttpOnly cookie authentication the client cannot read the token.
+// All requests should include credentials so the server can read the cookie.
 export function getRoleHeader(): HeadersInit {
-  const token = localStorage.getItem("token");
-  let role = "";
-  if (token) {
-    try {
-      const decoded = jwtDecode(token) as { role?: string };
-      role = decoded.role ?? "";
-    } catch (e) {
-      role = "";
-    }
-  }
-  // Return both the role header (used by legacy code) and Authorization Bearer
-  // so server can verify the JWT. Keep role header for backwards compatibility.
-  if (role) return { "x-user-role": role, Authorization: `Bearer ${token}` };
-  if (token) return { Authorization: `Bearer ${token}` };
+  // Legacy header support removed: server should read role from token cookie.
   return {};
 }
 
@@ -27,22 +14,8 @@ export interface User {
 }
 
 export async function fetchUsers(): Promise<User[]> {
-  const token = localStorage.getItem("token");
-  let role = "";
-  if (token) {
-    try {
-      const decoded = jwtDecode(token) as { role?: string };
-      role = decoded.role ?? "";
-    } catch (e) {
-      role = "";
-    }
-  }
-  if (role === "demo") return [];
-  const headers = getRoleHeader();
-  const hasHeaders = Object.keys(headers).length > 0;
-  const response = hasHeaders
-    ? await fetch("/api/users", { headers })
-    : await fetch("/api/users");
+  // Server handles role via token cookie. Include credentials on the request.
+  const response = await fetch("/api/users", { credentials: "include" });
   if (!response.ok) throw new Error("Erreur lors du fetch des utilisateurs");
   return (await response.json()) as User[];
 }
@@ -50,10 +23,8 @@ export async function fetchUsers(): Promise<User[]> {
 export async function addUserApi(newUser: Partial<User>) {
   const response = await fetch("/api/users", {
     method: "POST",
-    headers: Object.assign(
-      { "Content-Type": "application/json" },
-      getRoleHeader()
-    ),
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(newUser),
   });
   if (!response.ok) {
@@ -71,7 +42,7 @@ export async function addUserApi(newUser: Partial<User>) {
 export async function deleteUserApi(idUser: string) {
   const response = await fetch(`/api/users?id=${idUser}`, {
     method: "DELETE",
-    headers: getRoleHeader(),
+    credentials: "include",
   });
   if (!response.ok) {
     const text = await response.text();
@@ -94,10 +65,8 @@ export async function deleteUserApi(idUser: string) {
 export async function resetUserPasswordApi(idUser: string) {
   const response = await fetch(`/api/users?id=${idUser}`, {
     method: "PUT",
-    headers: Object.assign(
-      { "Content-Type": "application/json" },
-      getRoleHeader()
-    ),
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ action: "resetPassword" }),
   });
   if (!response.ok) {
@@ -128,11 +97,7 @@ export interface Activity {
 }
 
 export async function fetchActivities(): Promise<Activity[]> {
-  const headers = getRoleHeader();
-  const hasHeaders = Object.keys(headers).length > 0;
-  const response = hasHeaders
-    ? await fetch("/api/activities", { headers })
-    : await fetch("/api/activities");
+  const response = await fetch("/api/activities", { credentials: "include" });
   if (!response.ok) throw new Error("Erreur lors du fetch des activités");
   return (await response.json()) as Activity[];
 }
@@ -140,10 +105,8 @@ export async function fetchActivities(): Promise<Activity[]> {
 export async function addActivityApi(newActivity: Partial<Activity>) {
   const response = await fetch("/api/activities", {
     method: "POST",
-    headers: Object.assign(
-      { "Content-Type": "application/json" },
-      getRoleHeader()
-    ),
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(newActivity),
   });
   if (!response.ok) {
@@ -162,7 +125,7 @@ export async function addActivityApi(newActivity: Partial<Activity>) {
 export async function deleteActivityApi(idActivity: string) {
   const response = await fetch(`/api/activities?id=${idActivity}`, {
     method: "DELETE",
-    headers: { ...getRoleHeader() },
+    credentials: "include",
   });
   if (!response.ok) {
     const text = await response.text();
@@ -188,7 +151,8 @@ export async function updateActivityApi(
 ) {
   const response = await fetch(`/api/activities?id=${idActivity}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json", ...getRoleHeader() },
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(updated),
   });
   if (!response.ok) {
@@ -228,7 +192,7 @@ export interface Child {
 
 export async function fetchPictures(): Promise<Picture[]> {
   const response = await fetch("/api/pictures", {
-    headers: { ...getRoleHeader() },
+    credentials: "include",
   });
   if (!response.ok) throw new Error("Erreur lors du fetch des images");
   return (await response.json()) as Picture[];
@@ -237,7 +201,7 @@ export async function fetchPictures(): Promise<Picture[]> {
 export async function deletePictureApi(idPicture: string) {
   const response = await fetch(`/api/pictures?id=${idPicture}`, {
     method: "DELETE",
-    headers: { ...getRoleHeader() },
+    credentials: "include",
   });
   if (!response.ok) {
     const text = await response.text();
@@ -260,7 +224,8 @@ export async function deletePictureApi(idPicture: string) {
 export async function addPictureApi(newPicture: Partial<Picture>) {
   const response = await fetch("/api/pictures", {
     method: "POST",
-    headers: { "Content-Type": "application/json", ...getRoleHeader() },
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(newPicture),
   });
   if (!response.ok) {
@@ -279,7 +244,8 @@ export async function addPictureApi(newPicture: Partial<Picture>) {
 export async function addPictureTagsApi(idPicture: string, childIds: string[]) {
   const response = await fetch("/api/picture-tags", {
     method: "POST",
-    headers: { "Content-Type": "application/json", ...getRoleHeader() },
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ idPicture, childIds }),
   });
   if (!response.ok) {
@@ -295,22 +261,7 @@ export async function addPictureTagsApi(idPicture: string, childIds: string[]) {
 }
 
 export async function fetchChildren(): Promise<Child[]> {
-  const token = localStorage.getItem("token");
-  let role = "";
-  if (token) {
-    try {
-      const decoded = jwtDecode(token) as { role?: string };
-      role = decoded.role ?? "";
-    } catch (e) {
-      role = "";
-    }
-  }
-  if (role === "demo") return [];
-  const headers = getRoleHeader();
-  const hasHeaders = Object.keys(headers).length > 0;
-  const response = hasHeaders
-    ? await fetch("/api/children", { headers })
-    : await fetch("/api/children");
+  const response = await fetch("/api/children", { credentials: "include" });
   if (!response.ok) throw new Error("Erreur lors du fetch des enfants");
   return (await response.json()) as Child[];
 }
@@ -318,10 +269,8 @@ export async function fetchChildren(): Promise<Child[]> {
 export async function addChildApi(newChild: Partial<Child>) {
   const response = await fetch("/api/children", {
     method: "POST",
-    headers: Object.assign(
-      { "Content-Type": "application/json" },
-      getRoleHeader()
-    ),
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(newChild),
   });
   if (!response.ok) {
@@ -340,7 +289,7 @@ export async function addChildApi(newChild: Partial<Child>) {
 export async function deleteChildApi(idChild: string) {
   const response = await fetch(`/api/children?id=${idChild}`, {
     method: "DELETE",
-    headers: { ...getRoleHeader() },
+    credentials: "include",
   });
   if (!response.ok) {
     const text = await response.text();
@@ -375,22 +324,7 @@ export interface ChildSection {
 }
 
 export async function fetchSections(): Promise<Section[]> {
-  const token = localStorage.getItem("token");
-  let role = "";
-  if (token) {
-    try {
-      const decoded = jwtDecode(token) as { role?: string };
-      role = decoded.role ?? "";
-    } catch (e) {
-      role = "";
-    }
-  }
-  if (role === "demo") return [];
-  const headers = getRoleHeader();
-  const hasHeaders = Object.keys(headers).length > 0;
-  const response = hasHeaders
-    ? await fetch("/api/sections", { headers })
-    : await fetch("/api/sections");
+  const response = await fetch("/api/sections", { credentials: "include" });
   if (!response.ok) throw new Error("Erreur lors du fetch des sections");
   return (await response.json()) as Section[];
 }
@@ -400,7 +334,8 @@ export async function addChildSectionApi(
 ) {
   const response = await fetch("/api/child-sections", {
     method: "POST",
-    headers: { "Content-Type": "application/json", ...getRoleHeader() },
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       childId: newChildSection.childId,
       sectionName: newChildSection.sectionName,
@@ -420,13 +355,9 @@ export async function addChildSectionApi(
 }
 
 export async function fetchChildSections(): Promise<ChildSection[]> {
-  const role = localStorage.getItem("role");
-  if (role === "demo") return [];
-  const headers = { ...getRoleHeader() };
-  const hasHeaders = Object.keys(headers).length > 0;
-  const response = hasHeaders
-    ? await fetch("/api/child-sections", { headers })
-    : await fetch("/api/child-sections");
+  const response = await fetch("/api/child-sections", {
+    credentials: "include",
+  });
   if (!response.ok)
     throw new Error("Erreur lors du fetch des associations enfant-section");
   return (await response.json()) as ChildSection[];
@@ -439,11 +370,9 @@ export interface SectionActivity {
 }
 
 export async function fetchSectionActivities(): Promise<SectionActivity[]> {
-  const headers = { ...getRoleHeader() };
-  const hasHeaders = Object.keys(headers).length > 0;
-  const response = hasHeaders
-    ? await fetch("/api/section-activities", { headers })
-    : await fetch("/api/section-activities");
+  const response = await fetch("/api/section-activities", {
+    credentials: "include",
+  });
   if (!response.ok)
     throw new Error("Erreur lors du fetch des associations activité-section");
   return (await response.json()) as SectionActivity[];
