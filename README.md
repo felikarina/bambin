@@ -168,7 +168,7 @@ npx vercel
 
 - Si TypeScript se plaint de la version de Node : utilisez `nvm` / `nvm-windows` pour changer la version, ou installez Node 22 (recommandé par `@tsconfig/node22`).
 
-## 🗂️ Structure importante du repo
+## 🗂️ Structure importante du repo 
 
 - `api/` : fonctions API (Vercel)
 - `frontend/` et `src/` : code front (Vue 3 + Vite)
