@@ -34,7 +34,7 @@ const fetchPicturesAndSet = async () => {
     // Sort by date descending (most recent first)
     allPictures = allPictures.sort(
       (a: any, b: any) =>
-        new Date(b.date).getTime() - new Date(a.date).getTime()
+        new Date(b.date).getTime() - new Date(a.date).getTime(),
     );
     if (role === "parent" && userId) {
       const allChildren: Child[] = await fetchChildren();
@@ -46,18 +46,18 @@ const fetchPicturesAndSet = async () => {
         (pic: any) =>
           pic.children &&
           pic.children.some((child: any) =>
-            myChildrenIds.includes(child.idChild)
-          )
+            myChildrenIds.includes(child.idChild),
+          ),
       );
       if (!hasMatchingChild) {
         filteredPictures.value = allPictures.filter(
-          (pic: any) => !pic.children || pic.children.length === 0
+          (pic: any) => !pic.children || pic.children.length === 0,
         );
       } else {
         filteredPictures.value = allPictures.filter((pic: any) => {
           if (!pic.children || pic.children.length === 0) return true;
           return pic.children.some((child: any) =>
-            myChildrenIds.includes(child.idChild)
+            myChildrenIds.includes(child.idChild),
           );
         });
       }

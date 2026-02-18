@@ -101,7 +101,7 @@ function getSectionNameForActivity(activityId?: string | number) {
               </div>
             </div>
             <div class="card-content">
-              <div class="content has-text-weight-semibold">
+              <div class="content">
                 <h1>{{ activity.title }}</h1>
                 <p class="description-text">{{ activity.description }}</p>
               </div>
